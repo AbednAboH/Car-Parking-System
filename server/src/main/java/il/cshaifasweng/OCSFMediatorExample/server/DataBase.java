@@ -15,7 +15,6 @@ public class DataBase {
     private static SessionFactory getSessionFactory() throws HibernateException {
         final Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(ParkingLot.class);
-//        configuration.addAnnotatedClass(Employee.class);
         configuration.addAnnotatedClass(ParkingLotManager.class);
         configuration.addAnnotatedClass(ParkingLotEmployee.class);
         configuration.addAnnotatedClass(GlobalManager.class);

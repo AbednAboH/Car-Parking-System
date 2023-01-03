@@ -10,7 +10,7 @@ public class ParkingSpot implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name="row")
+    @Column(name="rowNum")
     private int rrow;
     @Column(name="floor")
     private int floor;

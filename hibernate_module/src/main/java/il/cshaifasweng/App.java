@@ -16,15 +16,14 @@ public class App
 
     private static Session session;
 
-    private static SessionFactory getSessionFactory(boolean update_create) throws HibernateException {
+    private static SessionFactory getSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(ParkingLot.class);
         configuration.addAnnotatedClass(ParkingSpot.class);
         configuration.addAnnotatedClass(ParkingLotManager.class);
         configuration.addAnnotatedClass(ParkingLotEmployee.class);
         configuration.addAnnotatedClass(GlobalManager.class);
-//        if(update_create) configuration.setProperty("hibernate.hbm2ddl.auto","update");
-//        else configuration.setProperty("hibernate.hbm2ddl.auto","create");
+
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build()
                 ;
@@ -34,13 +33,12 @@ public class App
 
     public static void main( String[] args ) {
         try {
-            SessionFactory sessionFactory = getSessionFactory(false);
+            SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
 //            ParkingLot park=new ParkingLot();
 //            ParkingSpot spot=new ParkingSpot();
 //            session.save(park);
 //            session.save(spot);
-            session.flush();
             session.beginTransaction();
 //            deleteParkingLots(33,42);
 //            addParkingLotToDB(3,3,3);
