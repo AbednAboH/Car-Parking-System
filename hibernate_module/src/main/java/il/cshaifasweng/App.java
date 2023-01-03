@@ -1,7 +1,6 @@
 package il.cshaifasweng;
 
 import java.util.List;
-import java.util.Random;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,7 +14,7 @@ public class App
 {
 
     private static Session session;
-
+//creates a session factory and adds all "class" type entities to the session
     private static SessionFactory getSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(ParkingLot.class);
@@ -35,15 +34,10 @@ public class App
         try {
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
-//            ParkingLot park=new ParkingLot();
-//            ParkingSpot spot=new ParkingSpot();
-//            session.save(park);
-//            session.save(spot);
             session.beginTransaction();
-//            deleteParkingLots(33,42);
-//            addParkingLotToDB(3,3,3);
-//            printAllParkingLots();
-
+            ParkingLotManager manager=new ParkingLotManager("bhaa","manager",25.9);
+            addParkingLotToDB(3,3,3,manager);
+//          printAllParkingLots();
             session.getTransaction().commit(); // Save everything.
 
         } catch (Exception exception) {
@@ -53,68 +47,55 @@ public class App
             System.err.println("An error occured, changes have been rolled back.");
             exception.printStackTrace();
         } finally {
+            assert session != null;
             session.close();
             session.getSessionFactory().close();
-        }
-    }
-    private static void generateParkingLots() throws Exception {
-        Random random = new Random();
 
-        for (int i = 0; i < 10; i++) {
-            ParkingLot parkingLot = new ParkingLot(random.nextInt(14), 3, 3 + random.nextInt(4));
-            session.save(parkingLot);
-            session.flush();
         }
     }
-    private static void addParkingLotToDB(int floor,int rowsInEachFloor,int rowCapacity) throws Exception {
-            session.save(new ParkingLot(floor,rowsInEachFloor, rowCapacity));
-            ParkingLot parking = retrievLastAdded(ParkingLot.class);
+
+    private static ParkingLot addParkingLotToDB(int floor,int rowsInEachFloor,int rowCapacity,ParkingLotManager manager) throws Exception {
+            session.save(manager);
+            manager= retrieveLastAdded(ParkingLotManager.class);
+            session.save(new ParkingLot(floor,rowsInEachFloor, rowCapacity,manager));
+            ParkingLot parking = retrieveLastAdded(ParkingLot.class);
+//            manager.setParkingLot(parking);
             parking.initiateParkingSpots();
             for (ParkingSpot spot:parking.getSpots()){
                 spot.setParkingLot(parking);
                 session.save(spot);
             }
             session.flush();
-
+            return parking;
     }
-    public static <T> T retrievLastAdded(Class<T> EntityClass){
+//these functions delete ,finds and prints all entities of type X
+    // in other words if you want to Print Parking lot , all you would do is insert ParkingLot.Class
+    // then the function iterates over all parking lots in the DB and prints/deletes/retrieves them
+    public static <T> T retrieveLastAdded(Class<T> EntityClass){
         String hql ="FROM "+EntityClass.getName()+" e ORDER BY e.id DESC";
         TypedQuery<T> query = session.createQuery(hql, EntityClass).setMaxResults(1);
         return query.getSingleResult();
     }
 
-    private static void deleteParkingLots(int fromId,int toId){
+    private static <T> void deleteEntity(int fromId,int toId,Class<T> EntityClass){
         for (int id=fromId;id<=toId;id++){
-        ParkingLot parkingLot =  session.get(ParkingLot.class, id);
-//        ParkingLotEmployee employee=session.get(ParkingLotEmployee.class,);
-        if (parkingLot!=null)
-            session.delete(parkingLot);
-
+            T entity =  session.get(EntityClass, id);
+        if (entity!=null)
+            session.delete(entity);
         }
-
     }
 
-    private static List<ParkingLot> getAllParkingLots() throws Exception {
+    private static <T> List<T> getAllEntities(Class<T> EntityClass) throws Exception {
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<ParkingLot> query = builder.createQuery(ParkingLot.class);
+        CriteriaQuery<T> query = builder.createQuery(EntityClass);
         query.from(ParkingLot.class);
-        List<ParkingLot> data = session.createQuery(query).getResultList();
-        return data;
+        return session.createQuery(query).getResultList();
     }
 
-    private static void printAllParkingLots() throws Exception {
-        List<ParkingLot> park = getAllParkingLots();
-        for (ParkingLot parkingL : park) {
-
-            System.out.print("Id: ");
-            System.out.print(parkingL.getId());
-            System.out.print(", floor: ");
-            System.out.print(parkingL.getFloor());
-            System.out.print(", row capacity:");
-            System.out.print(parkingL.getRowCapacity());
-            System.out.print(", rows in each floor: ");
-            System.out.print(parkingL.getRowsInEachFloor());
-            System.out.print('\n');
+    private static <T> void Print(Class<T> Entity) throws Exception {
+        List<T> entity =getAllEntities(Entity) ;
+        for (T tinyEntity : entity) {
+            System.out.println(tinyEntity.toString());
         }
     }
 }

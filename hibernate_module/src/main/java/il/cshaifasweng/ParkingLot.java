@@ -22,20 +22,26 @@ public class ParkingLot implements Serializable {
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot")
     private List<ParkingLotEmployee> employeeList;
-    @OneToOne(fetch=FetchType.LAZY,mappedBy = "parkingLot")
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="parkingLotManager_id")
     private ParkingLotManager manager;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private GlobalManager executiveManager;
+
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot")
     private List<ParkingSpot> spots=new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="globalManager_id")
+    private GlobalManager executiveManager;
 
-    public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity) {
+    public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity,ParkingLotManager manager) {
         this.floor = floor;
         this.rowsInEachFloor = rowsInEachFloor;
         this.rowCapacity = rowCapacity;
         this.spots=new ArrayList<ParkingSpot>();
         this.employeeList=new ArrayList<ParkingLotEmployee>();
+        setManager(manager);
+        manager.setParkingLot(this);
+//        this.initiateParkingSpots();
         // TODO: 1/3/2023 add initiation of specific classes
 
     }
@@ -48,6 +54,16 @@ public class ParkingLot implements Serializable {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ParkingLot{" +
+                "id='" + id + '\'' +
+                ", Floor=" + floor +
+                ", Rows in floor=" + rowsInEachFloor +
+                ", Row Depth="+rowCapacity+
+                ",Manager id"+manager.getId()+'}';
     }
 
 
