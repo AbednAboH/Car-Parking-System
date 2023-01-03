@@ -9,9 +9,9 @@
 
 
 * first steps were to create a data base :
-      * used an azure server to implement a MySQL data base 
-      * we used UML language to desighn the strucure of the project (skelaton) that described a 3 tier system :
-          * Entity : holds all the data of an entity 
-          * Control : holds all function that are communication based 
-          * Boundary : A Gui for each user 
+   * used an azure server to implement a MySQL data base 
+     * we used UML language to desighn the strucure of the project (skelaton) that described a 3 tier system :
+      * Entity : holds all the data of an entity 
+      * Control : holds all function that are communication based 
+      * Boundary : A Gui for each user 
      
