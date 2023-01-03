@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrimaryController">
+   <children>
+      <Label layoutX="294.0" layoutY="-5.0" prefHeight="37.0" prefWidth="107.0" text="Welcome">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="PLtable" layoutX="21.0" layoutY="32.0" prefHeight="135.0" prefWidth="667.0">
+        <columns>
+          <TableColumn fx:id="PLidColumn" prefWidth="188.0" text="Parking Lot id" />
+          <TableColumn fx:id="PLrowsColumn" minWidth="4.666656494140625" prefWidth="152.66665649414062" text="Rows" />
+            <TableColumn fx:id="PLcolsColumn" prefWidth="160.0" text="Columns" />
+            <TableColumn fx:id="PLdepthColumn" prefWidth="165.33333333333337" text="Depth" />
+        </columns>
+      </TableView>
+      <TableView fx:id="subTable" layoutX="21.0" layoutY="181.0" prefHeight="205.0" prefWidth="667.0">
+        <columns>
+          <TableColumn fx:id="subIDcolumn" prefWidth="26.000028610229492" text="ID" />
+          <TableColumn fx:id="subTypeColumn" prefWidth="189.9999656677246" text="Order/Subscription type" />
+            <TableColumn fx:id="totalPriceColumn" prefWidth="48.0" text="Total" />
+            <TableColumn fx:id="subPriceColumn" prefWidth="214.66664123535156" text="Order/Subscription Price per Hour" />
+            <TableColumn fx:id="hoursInMonthColumn" prefWidth="196.66671752929688" text="Subscription Hours Monthly" />
+        </columns>
+      </TableView>
+      <Label layoutX="21.0" layoutY="401.0" text="Change Subscription hours amount:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="430.0" text="Enter Subsription ID:" />
+      <TextField fx:id="subToChangeIDtxt" layoutX="21.0" layoutY="453.0" prefHeight="25.0" prefWidth="62.0" />
+      <Label layoutX="217.0" layoutY="430.0" text="Enter new amount:" />
+      <TextField fx:id="newAmountTxt" layoutX="217.0" layoutY="453.0" prefHeight="25.0" prefWidth="62.0" />
+      <AnchorPane fx:id="errorMsgArea" layoutX="21.0" layoutY="571.0" prefHeight="79.0" prefWidth="535.0" visible="false">
+         <children>
+            <Label layoutX="2.0" layoutY="31.0" text="Please enter a valid Order/Subscription ID/Price" textFill="RED">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="okBtn" layoutX="338.0" layoutY="27.0" mnemonicParsing="false" onAction="#HideErrorMsg" text="OK" />
+         </children>
+      </AnchorPane>
+      <Label layoutX="470.0" layoutY="388.0" opacity="0.7" prefHeight="25.0" prefWidth="217.0" text="* All prices are considered per car *">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="492.0" text="Change Hourly price:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="523.0" text="Enter One time purchase/Kiosk ID:" />
+      <TextField fx:id="HourlyIDTxt" layoutX="21.0" layoutY="546.0" prefHeight="25.0" prefWidth="62.0" />
+      <Label layoutX="217.0" layoutY="523.0" text="Enter new price:" />
+      <TextField fx:id="hourlyPriceTxt" layoutX="217.0" layoutY="546.0" prefHeight="25.0" prefWidth="62.0" />
+      <Button fx:id="applyAmountBtn" layoutX="335.0" layoutY="453.0" mnemonicParsing="false" onAction="#SendAmountChange" prefHeight="27.0" prefWidth="49.0" text="Apply" />
+      <Button fx:id="applyPriceBtn" layoutX="336.0" layoutY="545.0" mnemonicParsing="false" onAction="#SendPriceChange" prefHeight="27.0" prefWidth="49.0" text="Apply" />
+   </children>
+</AnchorPane>
