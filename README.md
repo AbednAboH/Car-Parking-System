@@ -1,13 +1,17 @@
-# OCSF Mediator Example
+# CSP system :
+* This project is a Car Parking System that allows costumers to :
+  * subscribe to a monthly subscription
+  * order a spot in a specific parking lot before hand 
+  * this project also manages how the cars are inserted/extracted to the parking lot 
+  * supports multiple parking lots and multiple costumers 
+  * allows useres that are not registered in the system to look at a cataloge that describes the parking lot fees and available parking lots in the whole country 
+  * a robust and new way to manage parking lots with time based system 
 
-## Structure
-Pay attention to the three modules:
-1. **client** - a simple client built using JavaFX and OCSF. We use EventBus (which implements the mediator pattern) in order to pass events between classes (in this case: between SimpleClient and PrimaryController).
-2. **server** - a simple server built using OCSF.
-3. **entities** - a shared module where all the entities of the project live.
 
-## Running
-1. Run Maven install **in the parent project**.
-2. Run the server using the exec:java goal in the server module.
-3. Run the client using the javafx:run goal in the client module.
-4. Press the button and see what happens!
+* first steps were to create a data base :
+   * used an azure server to implement a MySQL data base 
+     * we used UML language to desighn the strucure of the project (skelaton) that described a 3 tier system :
+      * Entity : holds all the data of an entity 
+      * Control : holds all function that are communication based 
+      * Boundary : A Gui for each user 
+     
