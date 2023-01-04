@@ -11,6 +11,7 @@ public enum PricingChartEnum {
 
     public final double value;
     private PricingChartEnum(double value){this.value = value;}
+
 }
 
 /*

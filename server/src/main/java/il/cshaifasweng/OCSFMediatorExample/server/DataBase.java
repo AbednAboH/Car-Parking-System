@@ -60,14 +60,16 @@ public class DataBase {
 //        DataBase.session.flush();
 //        DataBase.session.save(employee_1);
 
+        ParkingLotManager manager=new ParkingLotManager("idiot","manager",13);
+        ParkingLot parkingLot_1 = new ParkingLot(3,3,4,manager);
+        ParkingLotManager manager1=new ParkingLotManager("idiot2","manager",13);
+        ParkingLot parkingLot_2 = new ParkingLot(3,3,3,manager1);
+        ParkingLotManager manager2=new ParkingLotManager("idiot3","manager",13);
+        ParkingLot parkingLot_3 = new ParkingLot(3,2,5,manager2);
 
-        ParkingLot parkingLot_1 = new ParkingLot(3,3,4);
-//        parkingLot_1.addNewEmployee(employee_1);
-        ParkingLot parkingLot_2 = new ParkingLot(3,3,3);
-//        parkingLot_2.addNewEmployee(employee_2);
-        ParkingLot parkingLot_3 = new ParkingLot(3,2,5);
-//        parkingLot_3.addNewEmployee(employee_3);
-
+        DataBase.session.save(manager);
+        DataBase.session.save(manager1);
+        DataBase.session.save(manager2);
         DataBase.session.save(parkingLot_1);
         DataBase.session.save(parkingLot_2);
         DataBase.session.save(parkingLot_3);

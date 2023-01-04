@@ -1,9 +1,6 @@
 package il.cshaifasweng;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="parkingLotManagers")
@@ -14,7 +11,9 @@ public class ParkingLotManager extends Employee{
     public ParkingLotManager(String name, String title, double salary) {
         super(name, title, salary);
     }
-
+    public ParkingLotManager(String firstname,String lastname,String title,String email,double salary){
+        super(firstname,lastname,title,email,salary);
+    }
     public ParkingLotManager() {
     }
 
@@ -26,6 +25,6 @@ public class ParkingLotManager extends Employee{
     }
     @Override
     public String toString(){
-        return super.toString() +  ", parkingLot=" + parkingLot ;
+        return "parkingLotManager"+super.toString() +  ", parkingLot=" + parkingLot.getId() ;
     }
 }

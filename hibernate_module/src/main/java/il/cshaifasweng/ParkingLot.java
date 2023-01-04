@@ -20,18 +20,18 @@ public class ParkingLot implements Serializable {
     @Column(name="RowCapacity")
     private int rowCapacity;
 
-    @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot")
+    @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<ParkingLotEmployee> employeeList;
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name="parkingLotManager_id")
     private ParkingLotManager manager;
 
-    @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot")
+    @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot",cascade =CascadeType.ALL,orphanRemoval = true)
     private List<ParkingSpot> spots=new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="globalManager_id")
-    private GlobalManager executiveManager;
+    @JoinColumn(name="executiveManager_id")
+    private static GlobalManager executiveManager=new GlobalManager("ElonMusk","CEO",1000000);
 
     public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity,ParkingLotManager manager) {
         this.floor = floor;
@@ -41,7 +41,7 @@ public class ParkingLot implements Serializable {
         this.employeeList=new ArrayList<ParkingLotEmployee>();
         setManager(manager);
         manager.setParkingLot(this);
-//        this.initiateParkingSpots();
+        this.initiateParkingSpots();
         // TODO: 1/3/2023 add initiation of specific classes
 
     }
@@ -102,6 +102,10 @@ public class ParkingLot implements Serializable {
 
     public void setEmployeeList(List<ParkingLotEmployee> employeeList) {
         this.employeeList = employeeList;
+    }
+    public void addEmployee(ParkingLotEmployee employee) {
+        this.employeeList.add(employee);
+
     }
 
     public ParkingLotManager getManager() {

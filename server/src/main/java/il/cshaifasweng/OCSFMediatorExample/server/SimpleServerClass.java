@@ -40,15 +40,15 @@ public class SimpleServerClass extends AbstractServer {
 //        Employee employee_3 = new Employee("Shehab", 23, 15.0);
 
 
-        ParkingLot parkingLot_1 = new ParkingLot(3, 3, 4);
+//        ParkingLot parkingLot_1 = new ParkingLot(3, 3, 4);
 //        parkingLot_1.addNewEmployee(employee_1);
-        parkingLots.add(parkingLot_1);
-        ParkingLot parkingLot_2 = new ParkingLot(3, 3, 3);
+//        parkingLots.add(parkingLot_1);
+//        ParkingLot parkingLot_2 = new ParkingLot(3, 3, 3);
 //        parkingLot_2.addNewEmployee(employee_2);
-        parkingLots.add(parkingLot_2);
-        ParkingLot parkingLot_3 = new ParkingLot(3, 2, 5);
+//        parkingLots.add(parkingLot_2);
+//        ParkingLot parkingLot_3 = new ParkingLot(3, 2, 5);
 //        parkingLot_3.addNewEmployee(employee_3);
-        parkingLots.add(parkingLot_3);
+//        parkingLots.add(parkingLot_3);
 
 
     }

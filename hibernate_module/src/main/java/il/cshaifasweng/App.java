@@ -35,11 +35,11 @@ public class App
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
-            ParkingLotManager manager=new ParkingLotManager("bhaa","manager",25.9);
-            addParkingLotToDB(3,3,3,manager);
-//          printAllParkingLots();
-            session.getTransaction().commit(); // Save everything.
+            addParkingLotEmployee("msaod","maroom","kiosk Operator","something@CSP.co.il",234,4);
 
+            Print(ParkingLot.class);
+            Print(ParkingLotManager.class);
+            session.getTransaction().commit(); // Save everything.
         } catch (Exception exception) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -56,11 +56,9 @@ public class App
 
     private static ParkingLot addParkingLotToDB(int floor,int rowsInEachFloor,int rowCapacity,ParkingLotManager manager) throws Exception {
             session.save(manager);
-            manager= retrieveLastAdded(ParkingLotManager.class);
-            session.save(new ParkingLot(floor,rowsInEachFloor, rowCapacity,manager));
+            session.save(new ParkingLot(floor,rowsInEachFloor, rowCapacity,retrieveLastAdded(ParkingLotManager.class)));
             ParkingLot parking = retrieveLastAdded(ParkingLot.class);
-//            manager.setParkingLot(parking);
-            parking.initiateParkingSpots();
+
             for (ParkingSpot spot:parking.getSpots()){
                 spot.setParkingLot(parking);
                 session.save(spot);
@@ -77,18 +75,23 @@ public class App
         return query.getSingleResult();
     }
 
+    // TODO: 1/4/2023 check which entities are deleted and if relevant entieties are deleted likewise
     private static <T> void deleteEntity(int fromId,int toId,Class<T> EntityClass){
         for (int id=fromId;id<=toId;id++){
             T entity =  session.get(EntityClass, id);
+
         if (entity!=null)
             session.delete(entity);
         }
+    }
+    private static <T> T getEntity(int EntityId,Class<T> EntityClass){
+             return session.get(EntityClass,EntityId);
     }
 
     private static <T> List<T> getAllEntities(Class<T> EntityClass) throws Exception {
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(EntityClass);
-        query.from(ParkingLot.class);
+        query.from(EntityClass);
         return session.createQuery(query).getResultList();
     }
 
@@ -97,5 +100,17 @@ public class App
         for (T tinyEntity : entity) {
             System.out.println(tinyEntity.toString());
         }
+        System.out.println("\n");
+    }
+    private static void addParkingLotEmployee(String firstName,String lastName, String title,String email,double salary,int parkingLotId){
+        ParkingLot pl=getEntity(parkingLotId,ParkingLot.class);
+        ParkingLotEmployee employee=new ParkingLotEmployee(firstName,lastName,title,email,salary,pl);
+        session.save(employee);
+        pl.addEmployee(employee);
+        session.flush();
+    }
+    private static void addExecutiveManager(String name,String title,double salary){
+        GlobalManager globalManager=new GlobalManager(name,title,salary);
+        ParkingLot pl=retrieveLastAdded(ParkingLot.class);
     }
 }

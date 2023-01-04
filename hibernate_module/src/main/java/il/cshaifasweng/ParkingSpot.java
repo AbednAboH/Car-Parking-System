@@ -1,6 +1,8 @@
 package il.cshaifasweng;
 
 
+import net.bytebuddy.implementation.ToStringMethod;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,9 +25,18 @@ public class ParkingSpot implements Serializable {
     @Column(name="SavedSpace")
     private boolean saved;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parkingLot_id")
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "parkinglots_id")
     private ParkingLot parkingLot;
+
+    public void setParkingLot(ParkingLot parkingLot) {
+        this.parkingLot = parkingLot;
+    }
+
+    public ParkingLot getParkingLot() {
+        return parkingLot;
+    }
+
     public ParkingSpot(int row, int floor, int depth,ParkingLot parkingLot) {
         this.rrow = row;
         this.floor = floor;
@@ -34,10 +45,6 @@ public class ParkingSpot implements Serializable {
         currentCarID ="";
         saved=false;
         setParkingLot(parkingLot);
-    }
-
-    public void setParkingLot(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
     }
 
     public ParkingSpot(int row, int floor, int depth, boolean occupied, String currentCarId, boolean saved,ParkingLot parkingLot) {
@@ -115,6 +122,10 @@ public class ParkingSpot implements Serializable {
         if(!this.isSaved())
             this.saved = true;
         return true;
+    }
+    @Override
+    public String toString(){
+        return "["+floor+"]"+"["+rrow+"]"+"["+depth+"]=O"+occupied+"_S"+saved;
     }
 
 

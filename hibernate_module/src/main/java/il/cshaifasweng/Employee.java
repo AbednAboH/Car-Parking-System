@@ -39,10 +39,19 @@ public abstract class Employee implements Serializable {
 
 
 
-    public Employee(String firstName, String title, double salary) {
+    public Employee(String firstName,String lastName, String title,String email, double salary) {
         this.firstName = firstName;
         this.title = title;
         this.salary = salary;
+        this.lastName=lastName;
+        this.email=email;
+    }
+    public Employee(String firstName, String title ,double salary) {
+        this.firstName = firstName;
+        this.title = title;
+        this.salary = salary;
+        this.lastName=lastName;
+        this.email=email;
     }
 
     public Employee() {
@@ -84,14 +93,14 @@ public abstract class Employee implements Serializable {
     }
 
 
-
     @Override
     public String toString() {
-        return "ParkingLotEmployee{" +
-                "name='" + firstName + '\'' +
-                ", age=" + title +
-                ", id=" + id +
+        return "{" +", id=" + id +
+                "name='" + firstName +" "+lastName+ '\'' +
+                ", title=" + title +
+                ", Email="+email+
                 '}';
     }
 
 }
+

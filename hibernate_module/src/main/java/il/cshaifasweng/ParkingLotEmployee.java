@@ -12,6 +12,10 @@ public class ParkingLotEmployee extends Employee{
     public ParkingLotEmployee(String name, String title, double salary) {
         super(name, title, salary);
     }
+    public ParkingLotEmployee(String firstname,String lastname,String title,String email,double salary,ParkingLot parkingLot) {
+        super(firstname,lastname,title,email,salary);
+        this.parkingLot=parkingLot;
+    }
     public ParkingLotEmployee() {}
     public ParkingLot getParkingLot() {
         return parkingLot;
@@ -21,6 +25,6 @@ public class ParkingLotEmployee extends Employee{
     }
     @Override
     public String toString(){
-        return super.toString() +  ", parkingLot=" + parkingLot ;
+        return "ParkingLotEmployee"+super.toString()+"parkingLotId="+parkingLot.getId();
     }
 }
