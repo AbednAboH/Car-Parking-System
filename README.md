@@ -15,3 +15,17 @@
       * Control : holds all function that are communication based 
       * Boundary : A Gui for each user 
      
+4.1.22:
+Parking lot data base is done with tests  
+Parking lot Employees data base is done with tests 
+Parking lot managers data bas is done with tests
+parking lot Global manager data base needs to be modified in some way .. don't know how but there might be a future change
+
+remaining data bases to be configured :
+pricing chart 
+Complaints entity 
+Reports entity
+costumer entity
+
+i will work on them on the 5 or 6 of this month. 
+
