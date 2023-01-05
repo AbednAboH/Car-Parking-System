@@ -1,4 +1,4 @@
-# CSP system :
+# CPS system :
 * This project is a Car Parking System that allows costumers to :
   * subscribe to a monthly subscription
   * order a spot in a specific parking lot before hand 
