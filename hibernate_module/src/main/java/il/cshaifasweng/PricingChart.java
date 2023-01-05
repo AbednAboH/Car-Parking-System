@@ -1,19 +1,14 @@
 package il.cshaifasweng;
 
-import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
-import javax.persistence.OneToOne;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "prices")
 public class PricingChart implements Serializable {
+//    @OneToMany(fetch=FetchType.LAZY,mappedBy = "pricingChart" ,cascade =CascadeType.ALL,orphanRemoval = true)
+//    private List<ParkingLot> parkingLot;
 
     @Column(name = "Order/Subscription Type")
     private final String parkViaKioskName = "Park via Kiosk";
@@ -21,15 +16,15 @@ public class PricingChart implements Serializable {
     private final String regularSubName = "Regular Subscription";
     private final String regularSubWithCarsName = "Regular Subscription with multiple cars";
     private final String fullSubName = "Full Subscription";
-
     @Column(name = "Order/Subscription Price per Hour")
+
     private Double parkViaKioskHourly;
     private Double oneTimePurchaseHourly;
     private Double regularSubHourly;
     private Double regularSubWithCarsHourly;
     private Double fullSubHourly;
-
     @Column(name = "Subscription Hours Monthly")
+
     private int parkViaKioskMonthlyHours = 0;
     private int oneTimePurchaseMonthlyHours = 0;
     private int regularSubMonthlyHours;
@@ -42,10 +37,10 @@ public class PricingChart implements Serializable {
     private Double regularSubTotal;
     private Double regularSubWithCarsTotal;
     private Double fullSubTotal;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     public PricingChart() {
 
     }
@@ -186,4 +181,15 @@ public class PricingChart implements Serializable {
         return fullSubTotal;
     }
 
+//    public void addParkingLot(ParkingLot pl){
+//        this.parkingLot.add(pl);
+//        pl.setPricingChart(this);
+//    }
+//    public List<ParkingLot> getParkingLot() {
+//        return parkingLot;
+//    }
+//
+//    public void setParkingLot(List<ParkingLot> parkingLot) {
+//        this.parkingLot = parkingLot;
+//    }
 }

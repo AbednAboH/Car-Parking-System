@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Message;
+import il.cshaifasweng.Message;
 
 public class ErrorEvent {
     private Message message;

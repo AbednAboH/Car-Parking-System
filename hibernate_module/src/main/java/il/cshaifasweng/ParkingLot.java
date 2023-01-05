@@ -19,6 +19,16 @@ public class ParkingLot implements Serializable {
     private int rowsInEachFloor;
     @Column(name="RowCapacity")
     private int rowCapacity;
+//    @ManyToOne(fetch=FetchType.LAZY)
+//    PricingChart pricingChart;
+//
+//    public PricingChart getPricingChart() {
+//        return pricingChart;
+//    }
+//
+//    public void setPricingChart(PricingChart pricingChart) {
+//        this.pricingChart = pricingChart;
+//    }
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<ParkingLotEmployee> employeeList;

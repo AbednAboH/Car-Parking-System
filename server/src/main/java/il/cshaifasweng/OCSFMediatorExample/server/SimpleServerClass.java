@@ -2,9 +2,8 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 
 import com.google.gson.Gson;
 import il.cshaifasweng.ParkingLot;
-import il.cshaifasweng.Employee;
 import il.cshaifasweng.PricingChart;
-import il.cshaifasweng.OCSFMediatorExample.entities.Message;
+import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;

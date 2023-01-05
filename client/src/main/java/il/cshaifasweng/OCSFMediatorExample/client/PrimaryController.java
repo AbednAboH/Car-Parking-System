@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
-import il.cshaifasweng.OCSFMediatorExample.entities.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.ParkingLot;
-import il.cshaifasweng.OCSFMediatorExample.entities.PricingChart;
+import il.cshaifasweng.Message;
+import il.cshaifasweng.ParkingLot;
+import il.cshaifasweng.PricingChart;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

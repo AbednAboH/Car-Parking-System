@@ -2,7 +2,7 @@
 //
 //import il.cshaifasweng.ParkingLotEmployee;
 //import il.cshaifasweng.OCSFMediatorExample.entities.PricingChartEnum;
-//import il.cshaifasweng.OCSFMediatorExample.entities.Message;
+//import il.cshaifasweng.Message;
 //import il.cshaifasweng.ParkingLot;
 //import il.cshaifasweng.PricingChart;
 //import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;

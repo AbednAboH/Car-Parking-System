@@ -22,6 +22,7 @@ public class App
         configuration.addAnnotatedClass(ParkingLotManager.class);
         configuration.addAnnotatedClass(ParkingLotEmployee.class);
         configuration.addAnnotatedClass(GlobalManager.class);
+//        configuration.addAnnotatedClass(PricingChart.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build()
@@ -35,10 +36,12 @@ public class App
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
-            addParkingLotEmployee("msaod","maroom","kiosk Operator","something@CSP.co.il",234,4);
+//            addParkingLotEmployee("msaod","maroom","kiosk Operator","something@CSP.co.il",234,6);
+//            Print(ParkingLot.class);
+//            Print(ParkingLotManager.class);
+//            Print(ParkingLotEmployee.class);
+//            deleteEntity(6,6,ParkingLot.class);
 
-            Print(ParkingLot.class);
-            Print(ParkingLotManager.class);
             session.getTransaction().commit(); // Save everything.
         } catch (Exception exception) {
             if (session != null) {
@@ -50,6 +53,7 @@ public class App
             assert session != null;
             session.close();
             session.getSessionFactory().close();
+            System.exit(0);
 
         }
     }
