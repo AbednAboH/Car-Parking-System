@@ -22,6 +22,11 @@ public class App
         configuration.addAnnotatedClass(ParkingLotManager.class);
         configuration.addAnnotatedClass(ParkingLotEmployee.class);
         configuration.addAnnotatedClass(GlobalManager.class);
+        configuration.addAnnotatedClass(Penalty.class);
+        configuration.addAnnotatedClass(Refund.class);
+        configuration.addAnnotatedClass(Subscription.class);
+        configuration.addAnnotatedClass(RegularSubscription.class);
+        configuration.addAnnotatedClass(FullSubscription.class);
 //        configuration.addAnnotatedClass(PricingChart.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
