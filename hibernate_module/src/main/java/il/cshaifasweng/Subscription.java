@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-@MappedSuperclass
+@Entity
 @Data
 public abstract class Subscription implements Serializable {
     public final int NUMBER_OF_DAYS = 7;
@@ -39,6 +39,7 @@ public abstract class Subscription implements Serializable {
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "Car" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList;
+//    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
 
     public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
         this.customer = customer;
@@ -47,6 +48,10 @@ public abstract class Subscription implements Serializable {
         this.expirationDate = expirationDate;
         this.isActive = isActive;
         this.allowedDays = allowedDays;
+    }
+
+    public Subscription() {
+
     }
 
 
