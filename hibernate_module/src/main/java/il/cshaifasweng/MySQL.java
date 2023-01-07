@@ -1,5 +1,6 @@
 package il.cshaifasweng;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Entity;
@@ -69,13 +70,14 @@ public class MySQL
     }
 
     private static <T> List<T> acquireEntitiesFromDB(String entityType) throws Exception{
-
+        List<T> entities=new ArrayList<>();
         try {
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
-            List<T> entities=getAllEntities(mappedClasses.get(entityType));
+            entities=getAllEntities(mappedClasses.get(entityType));
             session.getTransaction().commit(); // Save everything.
+            return entities;
         } catch (Exception exception) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -89,7 +91,7 @@ public class MySQL
             System.exit(0);
 
         }
-//        return entities;
+        return entities;
     }
     private static ParkingLot addParkingLotToDB(int floor,int rowsInEachFloor,int rowCapacity,ParkingLotManager manager) throws Exception {
             session.save(new ParkingLot(floor,rowsInEachFloor, rowCapacity,manager));
