@@ -1,5 +1,6 @@
 package il.cshaifasweng.control;
 
+import il.cshaifasweng.Customer;
 import il.cshaifasweng.ParkingLot;
 import il.cshaifasweng.Penalty;
 import org.hibernate.CustomEntityDirtinessStrategy;
@@ -56,6 +57,7 @@ public class PenaltyControl {
 
         // commit the transaction
         session.getTransaction().commit();
+        return true;
     }
 
     public boolean penaltyOnArrival(Customer customer, ParkingLot parkingLot){

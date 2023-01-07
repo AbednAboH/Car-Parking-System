@@ -1,42 +1,28 @@
 package il.cshaifasweng;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
+@Data
 @Table(name = "one_time_customer")
-public class OneTimeCustomer {
+public class OneTimeCustomer extends Customer{
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name="customerId")
-    private String customerId;
-    @Column(name = "carId")
-    private String carId;
-    @Column(name = "exitTime")
+    @Column(name = "exit_time")
     private LocalTime exitTime;
 
     public OneTimeCustomer(){
     }
-    public OneTimeCustomer(String customerId , String carId , LocalTime exitTime){
-        this.carId=carId;
-        this.customerId=customerId;
-        this.exitTime=exitTime;
+
+    public OneTimeCustomer(LocalTime exitTime) {
+        this.exitTime = exitTime;
     }
 
-    public String getCarId() { return carId; }
-
-    public void setCarId(String carId) { this.carId = carId; }
-
-    public String getCustomerId() { return customerId; }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public OneTimeCustomer(List<Car> customers, LocalTime exitTime) {
+        super(customers);
+        this.exitTime = exitTime;
     }
-
-    public LocalTime getExitTime() { return exitTime;}
-
-    public void setExitTime(LocalTime exitTime) { this.exitTime = exitTime;}
 }
