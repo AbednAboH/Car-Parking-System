@@ -215,25 +215,25 @@ public class PrimaryController {
     public void setSubChartDataFromServer(SubscriptionsChartResults event) {
         PricingChart PCresult = (PricingChart) event.getMessage().getObject();
         ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
-        tmp.add(new SubscriptionChartModel(
-                1, PCresult.getParkViaKioskName(), PCresult.getParkViaKioskHourly()
-                , PCresult.getParkViaKioskMonthlyHours(), PCresult.getParkViaKioskTotal()));
-
-        tmp.add(new SubscriptionChartModel(
-                2, PCresult.getOneTimePurchaseName(), PCresult.getOneTimePurchaseHourly()
-                , PCresult.getOneTimePurchaseMonthlyHours(), PCresult.getOneTimePurchaseTotal()));
-
-        tmp.add(new SubscriptionChartModel(
-                3, PCresult.getRegularSubName(), PCresult.getRegularSubHourly()
-                , PCresult.getRegularSubMonthlyHours(), PCresult.getRegularSubTotal()));
-
-        tmp.add(new SubscriptionChartModel(
-                4, PCresult.getRegularSubWithCarsName(), PCresult.getRegularSubWithCarsHourly()
-                , PCresult.getRegularSubWithCarsMonthlyHours(), PCresult.getRegularSubWithCarsTotal()));
-
-        tmp.add(new SubscriptionChartModel(
-                5, PCresult.getFullSubName(), PCresult.getFullSubHourly(),
-                PCresult.getFullSubMonthlyHours(), PCresult.getFullSubTotal()));
+//        tmp.add(new SubscriptionChartModel(
+//                1, PCresult.getParkViaKioskName(), PCresult.getParkViaKioskHourly()
+//                , PCresult.getParkViaKioskMonthlyHours(), PCresult.getParkViaKioskTotal()));
+//
+//        tmp.add(new SubscriptionChartModel(
+//                2, PCresult.getOneTimePurchaseName(), PCresult.getOneTimePurchaseHourly()
+//                , PCresult.getOneTimePurchaseMonthlyHours(), PCresult.getOneTimePurchaseTotal()));
+//
+//        tmp.add(new SubscriptionChartModel(
+//                3, PCresult.getRegularSubName(), PCresult.getRegularSubHourly()
+//                , PCresult.getRegularSubMonthlyHours(), PCresult.getRegularSubTotal()));
+//
+//        tmp.add(new SubscriptionChartModel(
+//                4, PCresult.getRegularSubWithCarsName(), PCresult.getRegularSubWithCarsHourly()
+//                , PCresult.getRegularSubWithCarsMonthlyHours(), PCresult.getRegularSubWithCarsTotal()));
+//
+//        tmp.add(new SubscriptionChartModel(
+//                5, PCresult.getFullSubName(), PCresult.getFullSubHourly(),
+//                PCresult.getFullSubMonthlyHours(), PCresult.getFullSubTotal()));
 
 
         subIDcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));

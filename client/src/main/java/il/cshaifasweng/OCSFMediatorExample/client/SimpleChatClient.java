@@ -15,9 +15,7 @@ import java.time.format.DateTimeFormatter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-/**
- * JavaFX App
- */
+
 public class SimpleChatClient extends Application {
 
     private static Scene scene;

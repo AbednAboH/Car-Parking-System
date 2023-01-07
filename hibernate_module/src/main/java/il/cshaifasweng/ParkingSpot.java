@@ -125,7 +125,7 @@ public class ParkingSpot implements Serializable {
     }
     @Override
     public String toString(){
-        return "["+floor+"]"+"["+rrow+"]"+"["+depth+"]=O"+occupied+"_S"+saved;
+        return "parkingLotId="+parkingLot.getId()+" ["+floor+"]"+"["+rrow+"]"+"["+depth+"]= OC"+occupied+" S"+saved;
     }
 
 
