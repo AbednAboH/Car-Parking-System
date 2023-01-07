@@ -47,7 +47,7 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.6.0</version>
                     <configuration>
-                        <mainClass>il.cshaifasweng.App</mainClass>
+                        <mainClass>il.cshaifasweng.MySQL</mainClass>
                         <executable>java</executable>
                         <arguments>
                         </arguments>

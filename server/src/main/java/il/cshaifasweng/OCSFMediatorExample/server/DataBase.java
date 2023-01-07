@@ -46,10 +46,10 @@ public class DataBase {
 
     private static void initializeData() throws Exception {
 
-        PricingChart pricingChart = new PricingChart(8.0, 7.0,
-                60, 54, 72);
-        DataBase.session.save(pricingChart);
-        DataBase.session.flush();
+//        PricingChart pricingChart = new PricingChart(8.0, 7.0,
+//                60, 54, 72);
+//        DataBase.session.save(pricingChart);
+//        DataBase.session.flush();
 
 //        Employee employee_1 = new Employee("Abed", 24, 24.0);
 //        Employee employee_2 = new Employee("Lian", 22, 20.0);

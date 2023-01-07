@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import com.google.gson.Gson;
+import il.cshaifasweng.MySQL;
 import il.cshaifasweng.ParkingLot;
 import il.cshaifasweng.PricingChart;
 import il.cshaifasweng.Message;
@@ -15,42 +16,14 @@ import java.util.HashMap;
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static ArrayList<ParkingLot> parkingLots = new ArrayList<>();
-    private static PricingChart pricingChart;
+    private static ArrayList<PricingChart> pricingChart;
     private static HashMap<String, Double> prices = new HashMap<>();
-
+    private static final MySQL sqlDB=new MySQL();
     public SimpleServerClass(int port) {
         super(port);
-        addData();
     }
 
-    private void addData() {
-//        prices.put("park_via_kiosk",8);
-//        prices.put("one_time_purchased_ahead",7);
-//        prices.put("regular_subscription",54*7);
-//        prices.put("regular_multiple_cars",7);
-//        prices.put("full_subscription",7);
 
-
-        pricingChart = new PricingChart(8.0, 7.0,
-                60, 54, 72);
-
-//        Employee employee_1 = new Employee("Abed", 24, 24.0);
-//        Employee employee_2 = new Employee("Lian", 22, 20.0);
-//        Employee employee_3 = new Employee("Shehab", 23, 15.0);
-
-
-//        ParkingLot parkingLot_1 = new ParkingLot(3, 3, 4);
-//        parkingLot_1.addNewEmployee(employee_1);
-//        parkingLots.add(parkingLot_1);
-//        ParkingLot parkingLot_2 = new ParkingLot(3, 3, 3);
-//        parkingLot_2.addNewEmployee(employee_2);
-//        parkingLots.add(parkingLot_2);
-//        ParkingLot parkingLot_3 = new ParkingLot(3, 2, 5);
-//        parkingLot_3.addNewEmployee(employee_3);
-//        parkingLots.add(parkingLot_3);
-
-
-    }
 
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
@@ -97,6 +70,7 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void sendParkingLots(Message message, ConnectionToClient client) throws IOException {
+
         message.setObject(parkingLots);
         client.sendToClient(message);
     }
@@ -110,30 +84,30 @@ public class SimpleServerClass extends AbstractServer {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
         String subID = msg.substring(idx + 1);
-        switch (subID) {
-            case "1":
-                pricingChart.setParkViaKioskHourly((Double) message.getObject());
-                break;
-            case "2":
-                pricingChart.setOneTimePurchaseHourly((Double) message.getObject());
-                break;
-        }
+//        switch (subID) {
+//            case "1":
+//                pricingChart.setParkViaKioskHourly((Double) message.getObject());
+//                break;
+//            case "2":
+//                pricingChart.setOneTimePurchaseHourly((Double) message.getObject());
+//                break;
+//        }
     }
 
     public void updateSubscriptionAmount(Message message, ConnectionToClient client) throws IOException {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
         String subID = msg.substring(idx + 1);
-        switch (subID) {
-            case "3":
-                pricingChart.setRegularSubMonthlyHours((int) message.getObject());
-                break;
-            case "4":
-                pricingChart.setRegularSubWithCarsMonthlyHours((int) message.getObject());
-                break;
-            case "5":
-                pricingChart.setFullSubMonthlyHours((int) message.getObject());
-                break;
-        }
+//        switch (subID) {
+//            case "3":
+//                pricingChart.setRegularSubMonthlyHours((int) message.getObject());
+//                break;
+//            case "4":
+//                pricingChart.setRegularSubWithCarsMonthlyHours((int) message.getObject());
+//                break;
+//            case "5":
+//                pricingChart.setFullSubMonthlyHours((int) message.getObject());
+//                break;
+//        }
     }
 }
