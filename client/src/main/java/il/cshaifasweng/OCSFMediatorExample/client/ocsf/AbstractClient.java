@@ -4,7 +4,7 @@
 
 package il.cshaifasweng.OCSFMediatorExample.client.ocsf;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Message;
+import il.cshaifasweng.Message;
 
 import java.io.*;
 import java.net.*;
