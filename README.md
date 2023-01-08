@@ -20,13 +20,16 @@
 * Parking lot Employees data base is done with tests 
 * Parking lot managers data bas is done with tests
 * parking lot Global manager data base needs to be modified in some way .. don't know how but there might be a future change
-## progress up until  8.1.23
+## progress update  7.1.23
 # Interface :
-  * Created an interface that manipulats a Class , this was done using templates
-  * this interface was based on the DAO design pattern 
+  * Created an interface that manipulats a Table entity , this was done using templates
+  * this interface was based on the DAO design pattern .
   * this interface can accomodate any type of class and thus enables data manipulation dynamically 
   * each class/Table that we wish to update will be accessed and altered using DataBaseManipulation<T> class:
-
+      
+## progress update 8.1.23:
+  * initial prototype works perfectly with connection to Data Base.
+  * need to be altered such that it asks for a permition from Excutive manager for altering the table.cc 
  
 # remaining data bases to be configured :
  
