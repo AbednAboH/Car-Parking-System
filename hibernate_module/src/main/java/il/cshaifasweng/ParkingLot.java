@@ -42,7 +42,26 @@ public class ParkingLot implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="executiveManager_id")
     private static GlobalManager executiveManager=new GlobalManager("ElonMusk","CEO",1000000);
+    public ParkingLot(ParkingLot pl){
+        this.id=pl.getId();
+        this.rowCapacity=pl.getRowCapacity();
+        this.floor=pl.getFloor();
+        this.rowsInEachFloor=pl.getRowsInEachFloor();
+        this.employeeList=pl.getEmployeeList();
+        this.manager=pl.getManager();
+        this.spots=pl.getSpots();
 
+    }
+    public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity) {
+        this.floor = floor;
+        this.rowsInEachFloor = rowsInEachFloor;
+        this.rowCapacity = rowCapacity;
+        this.spots=new ArrayList<ParkingSpot>();
+        this.employeeList=new ArrayList<ParkingLotEmployee>();
+        this.initiateParkingSpots();
+        // TODO: 1/3/2023 add initiation of specific classes
+
+    }
     public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity,ParkingLotManager manager) {
         this.floor = floor;
         this.rowsInEachFloor = rowsInEachFloor;

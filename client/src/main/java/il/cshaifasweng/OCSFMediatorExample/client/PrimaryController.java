@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
@@ -186,7 +187,7 @@ public class PrimaryController {
 
     @Subscribe
     public void setParkingLotDataFromServer(ParkingLotResults event) {
-        ArrayList<ParkingLot> PLresults = (ArrayList<ParkingLot>) event.getMessage().getObject();
+       List<ParkingLot> PLresults = (List<ParkingLot>) event.getMessage().getObject();
         ObservableList<ParkingLotModel> tmp = FXCollections.observableArrayList();
         int i = 1;
         for (ParkingLot PL :
@@ -205,11 +206,13 @@ public class PrimaryController {
 
     @Subscribe
     public void setSubChartDataFromServer(SubscriptionsChartResults event) {
-        ArrayList<PricingChart> PCresult = (ArrayList<PricingChart>) event.getMessage().getObject();
+        List<PricingChart> PCresult = (ArrayList<PricingChart>) event.getMessage().getObject();
         ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
         int i=0,hours;
         double rate;
         for (PricingChart price :PCresult){
+            System.out.println(price);
+            System.out.println("yeah");
             if(price.isByHourOrSubscription()){
                 rate=price.getRate();
                 hours=1;
@@ -223,7 +226,7 @@ public class PrimaryController {
                     ++i, price.getName(), rate
                     ,hours, rate));
         }
-        System.out.println(PCresult.get(1));
+//        System.out.println(PCresult.get(1));
 
 
 

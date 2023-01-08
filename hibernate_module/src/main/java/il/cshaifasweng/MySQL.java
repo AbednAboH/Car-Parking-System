@@ -18,7 +18,7 @@ import org.hibernate.service.ServiceRegistry;
 
 public class MySQL
 {
-    private static final Class[] classes=new Class[]{ParkingLot.class,ParkingSpot.class,ParkingLotManager.class,ParkingLotEmployee.class,
+    public static final Class[] classes=new Class[]{ParkingLot.class,ParkingSpot.class,ParkingLotManager.class,ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
@@ -27,7 +27,7 @@ public class MySQL
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session
-    private static SessionFactory getSessionFactory() throws HibernateException {
+    public static SessionFactory getSessionFactory() throws HibernateException {
 
         Configuration configuration = new Configuration();
         for (Class cl:classes)
@@ -40,9 +40,8 @@ public class MySQL
 
     public static void main( String[] args ) {
         try {
-            SessionFactory sessionFactory = getSessionFactory();
-            session = sessionFactory.openSession();
-            session.beginTransaction();
+            connectToDB();
+            initiatePricingChart();
             printAllEntities();
 
             session.getTransaction().commit(); // Save everything.
@@ -82,17 +81,7 @@ public class MySQL
     }
     public static <T> List<T> acquireEntitiesFromDB(String entityType) throws Exception{
         List<T> entities=new ArrayList<>();
-        try {
-            connectToDB();
-            entities=getAllEntities(mappedClasses.get(entityType));
-            commitToDB();
-            return entities;
-        }
-        catch (Exception exception) {
-           handleException(exception);
-        } finally {
-            finalizeConnection();
-        }
+        entities=getAllEntities(mappedClasses.get(entityType));
         return entities;
     }
     private static ParkingLot addParkingLotToDB(int floor,int rowsInEachFloor,int rowCapacity,ParkingLotManager manager) throws Exception {

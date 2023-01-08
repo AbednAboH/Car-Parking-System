@@ -64,6 +64,14 @@ public class PricingChart implements Serializable {
     public PricingChart() {
 
     }
+    public PricingChart(PricingChart pc) {
+        this.id=pc.id;
+        this.name=pc.name;
+        this.rate=pc.rate;
+        this.byHourOrSubscription=pc.byHourOrSubscription;
+        this.rateId=pc.rateId;
+
+    }
 
     public PricingChart(String name,boolean byHourOrSubscription,int rateId,double rate) {
         this.name=name;
