@@ -23,13 +23,13 @@
 
 # remaining data bases to be configured :
 Date 8.1.2023
-* complaint
-* Kiosk
-* costumer service
-* Order
-* Report
-
-* robot
+   * complaint
+   * Kiosk
+   * costumer service
+   * Order
+   * Report
+   * costumer service employee
+   * robot
 
 i will work on them on the 5 or 6 of this month. 
 
