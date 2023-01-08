@@ -9,7 +9,7 @@ import java.util.List;
 public class DataBaseManipulation<T> implements DAO<T>{
 
     @Override
-    public T get(long id,Class<T> type) {
+    public T get(int id,Class<T> type) {
        Session session=factory.openSession();
        session.beginTransaction();
        T object=session.get(type,id);

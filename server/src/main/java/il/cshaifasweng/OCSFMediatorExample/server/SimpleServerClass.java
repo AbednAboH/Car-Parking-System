@@ -11,6 +11,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import org.jvnet.staxex.MtomEnabled;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,19 +36,15 @@ public class SimpleServerClass extends AbstractServer {
         String request = message.getMessage();
 
         try {
-            System.out.println("Try");
             if (request.isBlank()) {
                     message.setMessage("Error! we got an empty message");
                     client.sendToClient(message);
-                    System.out.println("black");
                 }
                 else if (request.startsWith("#getAllParkingLots")) {
-                    System.out.println("PL");
                     sendParkingLots(message, client);
 
                 }
                 else if (request.startsWith("#getPricingChart")) {
-                    System.out.println("PC");
                     sendPricesChart(message, client);
 
                 }
@@ -107,9 +104,8 @@ public class SimpleServerClass extends AbstractServer {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
         String subID = msg.substring(idx + 1);
-
-        PricingChart chartObject = MySQL.getEntityByName(Integer.parseInt(subID), "Prices");
-        chartObject.setRate((Double) message.getObject());
-        MySQL.update(chartObject);
+        PricingChart chartObject=pChart.get(Integer.parseInt(subID),PricingChart.class);
+        chartObject.setRate((Integer) message.getObject());
+        pChart.update(chartObject);
     }
 }

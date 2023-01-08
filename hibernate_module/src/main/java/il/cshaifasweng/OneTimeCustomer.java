@@ -21,8 +21,8 @@ public class OneTimeCustomer extends Customer{
         this.exitTime = exitTime;
     }
 
-    public OneTimeCustomer(List<Car> customers, LocalTime exitTime) {
-        super(customers);
+    public OneTimeCustomer(List<Car> cars, LocalTime exitTime) {
+        super(cars);
         this.exitTime = exitTime;
     }
 }

@@ -211,22 +211,16 @@ public class PrimaryController {
         int i=0,hours;
         double rate;
         for (PricingChart price :PCresult){
-            System.out.println(price);
-            System.out.println("yeah");
             if(price.isByHourOrSubscription()){
                 rate=price.getRate();
                 hours=1;
-
             }
             else {
-                rate = price.getRate() * PCresult.get(price.getRateId()).getRate();
+                rate = price.getRate() * PCresult.get(price.getRateId()-1).getRate();
                 hours=(int)price.getRate();
             }
-            tmp.add(new SubscriptionChartModel(
-                    ++i, price.getName(), rate
-                    ,hours, rate));
+            tmp.add(new SubscriptionChartModel(++i, price.getName(), rate,hours, rate));
         }
-//        System.out.println(PCresult.get(1));
 
 
 

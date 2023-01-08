@@ -15,13 +15,13 @@ public abstract class Customer implements Serializable {
     private int id;
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<Car> customers = new ArrayList<>();
+    private List<Car> cars = new ArrayList<>();
 
     public Customer() {
     }
 
-    public Customer(List<Car> customers) {
-        this.customers = customers;
+    public Customer(List<Car> cars) {
+        this.cars = cars;
     }
 
 }

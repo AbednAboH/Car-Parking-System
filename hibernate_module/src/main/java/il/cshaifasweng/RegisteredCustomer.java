@@ -18,7 +18,6 @@ public class RegisteredCustomer extends Customer{
     private  List<Order> Orders;
     @Column(name = "means_of_contact")
     private String meansOfContact;
-
     public RegisteredCustomer(){
     }
 
@@ -33,8 +32,8 @@ public class RegisteredCustomer extends Customer{
         Orders = orders;
     }
 
-    public RegisteredCustomer(List<Car> customers, List<Subscription> subscriptions, List<Order> orders, String meansOfContact) {
-        super(customers);
+    public RegisteredCustomer(List<Car> cars, List<Subscription> subscriptions, List<Order> orders, String meansOfContact) {
+        super(cars);
         Subscriptions = subscriptions;
         Orders = orders;
         this.meansOfContact = meansOfContact;

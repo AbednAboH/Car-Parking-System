@@ -18,5 +18,12 @@ public class Car {
     @ManyToOne
     @JoinColumn(name = "subscription_id")
     private Subscription subscription; // Redundant?
+    public Car(){
 
+    }
+    public Car(int id, Customer customer, Subscription subscription) {
+        this.id = id;
+        this.customer = customer;
+        this.subscription = subscription;
+    }
 }
