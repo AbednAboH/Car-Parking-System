@@ -22,10 +22,14 @@
 * parking lot Global manager data base needs to be modified in some way .. don't know how but there might be a future change
 
 # remaining data bases to be configured :
-* pricing chart 
-* Complaints entity 
-* Reports entity
-* costumer entity
+Date 8.1.2023
+* complaint
+* Kiosk
+* costumer service
+* Order
+* Report
+
+* robot
 
 i will work on them on the 5 or 6 of this month. 
 
