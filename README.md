@@ -15,13 +15,21 @@
       * Control : holds all function that are communication based 
       * Boundary : A Gui for each user 
      
-# 4.1.22:
+# progress up until  4.1.23:
 * Parking lot data base is done with tests  
-*  Parking lot Employees data base is done with tests 
+* Parking lot Employees data base is done with tests 
 * Parking lot managers data bas is done with tests
 * parking lot Global manager data base needs to be modified in some way .. don't know how but there might be a future change
+## progress up until  8.1.23
+# Interface :
+  * Created an interface that manipulats a Class , this was done using templates
+  * this interface was based on the DAO design pattern 
+  * this interface can accomodate any type of class and thus enables data manipulation dynamically 
+  * each class/Table that we wish to update will be accessed and altered using DataBaseManipulation<T> class:
 
+ 
 # remaining data bases to be configured :
+ 
 Date 8.1.2023
    * complaint
    * Kiosk
@@ -31,5 +39,5 @@ Date 8.1.2023
    * costumer service employee
    * robot
 
-i will work on them on the 5 or 6 of this month. 
 
+  
