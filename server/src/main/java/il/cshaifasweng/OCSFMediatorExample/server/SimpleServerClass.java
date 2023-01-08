@@ -12,13 +12,11 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-    private static ArrayList<ParkingLot> parkingLots = new ArrayList<>();
-    private static ArrayList<PricingChart> pricingChart;
-    private static HashMap<String, Double> prices = new HashMap<>();
-    private static final MySQL sqlDB=new MySQL();
+
     public SimpleServerClass(int port) {
         super(port);
     }
@@ -32,30 +30,31 @@ public class SimpleServerClass extends AbstractServer {
         String request = message.getMessage();
 
         try {
-            if (request.isBlank()) {
-                message.setMessage("Error! we got an empty message");
-                client.sendToClient(message);
-                return;
-            }
-            if (request.startsWith("#getAllParkingLots")) {
-                sendParkingLots(message, client);
-                return;
-            }
-            if (request.startsWith("#getPricingChart")) {
-                sendPricesChart(message, client);
-                return;
-            }
-            if (request.startsWith("#updatePrice")) {
-                updatePriceChart(message, client);
-                return;
-            }
-            if (request.startsWith("#updateAmount")) {
-                updateSubscriptionAmount(message, client);
-                return;
-            }
+
+                if (request.isBlank()) {
+                    message.setMessage("Error! we got an empty message");
+                    client.sendToClient(message);
+                }
+                else if (request.startsWith("#getAllParkingLots")) {
+                    sendParkingLots(message, client);
+                }
+                else if (request.startsWith("#getPricingChart")) {
+                    sendPricesChart(message, client);
+                }
+                else if (request.startsWith("#updatePrice")) {
+                    updatePriceChart(message, client);
+                }
+                else if (request.startsWith("#updateAmount")) {
+                    updateSubscriptionAmount(message, client);
+                }
+                else {
+                    System.out.println("no selection was done!!!");
+                }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }
 
 
@@ -69,45 +68,39 @@ public class SimpleServerClass extends AbstractServer {
         }
     }
 
-    public void sendParkingLots(Message message, ConnectionToClient client) throws IOException {
-
-        message.setObject(parkingLots);
+    public void sendParkingLots(Message message, ConnectionToClient client) throws IOException,Exception {
+        List<ParkingLot> pl=MySQL.acquireEntitiesFromDB("Lot");
+        for (ParkingLot p :pl)
+            System.out.println(p);
+        message.setObject(pl);
         client.sendToClient(message);
     }
 
-    public void sendPricesChart(Message message, ConnectionToClient client) throws IOException {
-        message.setObject(pricingChart);
+    public void sendPricesChart(Message message, ConnectionToClient client) throws IOException,Exception {
+        List<PricingChart> pc=MySQL.acquireEntitiesFromDB("Prices");
+        for (PricingChart p:pc)
+            System.out.println(p);
+        message.setObject(MySQL.acquireEntitiesFromDB("Prices"));
         client.sendToClient(message);
     }
 
-    public void updatePriceChart(Message message, ConnectionToClient client) throws IOException {
+    public void updatePriceChart(Message message, ConnectionToClient client) throws IOException,Exception {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
         String subID = msg.substring(idx + 1);
-//        switch (subID) {
-//            case "1":
-//                pricingChart.setParkViaKioskHourly((Double) message.getObject());
-//                break;
-//            case "2":
-//                pricingChart.setOneTimePurchaseHourly((Double) message.getObject());
-//                break;
-//        }
+
+            PricingChart chartObject=MySQL.getEntityByName(Integer.parseInt(subID),"Prices");
+            chartObject.setRate((Double) message.getObject());
+            MySQL.update(chartObject);
     }
 
-    public void updateSubscriptionAmount(Message message, ConnectionToClient client) throws IOException {
+    public void updateSubscriptionAmount(Message message, ConnectionToClient client) throws IOException,Exception {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
         String subID = msg.substring(idx + 1);
-//        switch (subID) {
-//            case "3":
-//                pricingChart.setRegularSubMonthlyHours((int) message.getObject());
-//                break;
-//            case "4":
-//                pricingChart.setRegularSubWithCarsMonthlyHours((int) message.getObject());
-//                break;
-//            case "5":
-//                pricingChart.setFullSubMonthlyHours((int) message.getObject());
-//                break;
-//        }
+
+        PricingChart chartObject = MySQL.getEntityByName(Integer.parseInt(subID), "Prices");
+        chartObject.setRate((Double) message.getObject());
+        MySQL.update(chartObject);
     }
 }

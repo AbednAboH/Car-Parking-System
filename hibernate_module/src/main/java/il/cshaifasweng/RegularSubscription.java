@@ -29,4 +29,8 @@ public class RegularSubscription extends Subscription implements Serializable {
         this.desegnatedParkingLot = desegnatedParkingLot;
         this.extractionDate = extractionDate;
     }
+
+    public RegularSubscription() {
+        super();
+    }
 }

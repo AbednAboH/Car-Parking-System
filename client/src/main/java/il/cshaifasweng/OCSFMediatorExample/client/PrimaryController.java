@@ -87,15 +87,11 @@ public class PrimaryController {
         String subID = subToChangeIDtxt.getText();
         String newAmount = newAmountTxt.getText();
 
-        if (subID.compareTo("") == 0)
+        if (subID.compareTo("") == 0||newAmount.compareTo("") == 0) {
             return false;
-        if (newAmount.compareTo("") == 0)
-            return false;
+        }
         try {
-            if (Integer.parseInt(newAmount) <= 0)
-                return false;
-
-            if (Integer.parseInt(subID) < 3 || Integer.parseInt(subID) > 5)
+            if (Integer.parseInt(newAmount) <= 0||Integer.parseInt(subID) < 3 || Integer.parseInt(subID) > 5)
                 return false;
         } catch (Exception e) {
             return false;
@@ -107,15 +103,11 @@ public class PrimaryController {
         String subID = HourlyIDTxt.getText();
         String newPrice = hourlyPriceTxt.getText();
 
-        if (subID.compareTo("") == 0)
-            return false;
-        if (newPrice.compareTo("") == 0)
+
+        if (subID.compareTo("") == 0||newPrice.compareTo("") == 0)
             return false;
         try {
-            if (Double.parseDouble(newPrice) <= 0)
-                return false;
-
-            if (Integer.parseInt(subID) <= 0 || Integer.parseInt(subID) > 2)
+            if (Double.parseDouble(newPrice) <= 0||Integer.parseInt(subID) <= 0 || Integer.parseInt(subID) > 2)
                 return false;
         } catch (Exception e) {
             return false;
@@ -213,27 +205,28 @@ public class PrimaryController {
 
     @Subscribe
     public void setSubChartDataFromServer(SubscriptionsChartResults event) {
-        PricingChart PCresult = (PricingChart) event.getMessage().getObject();
+        ArrayList<PricingChart> PCresult = (ArrayList<PricingChart>) event.getMessage().getObject();
         ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
-//        tmp.add(new SubscriptionChartModel(
-//                1, PCresult.getParkViaKioskName(), PCresult.getParkViaKioskHourly()
-//                , PCresult.getParkViaKioskMonthlyHours(), PCresult.getParkViaKioskTotal()));
-//
-//        tmp.add(new SubscriptionChartModel(
-//                2, PCresult.getOneTimePurchaseName(), PCresult.getOneTimePurchaseHourly()
-//                , PCresult.getOneTimePurchaseMonthlyHours(), PCresult.getOneTimePurchaseTotal()));
-//
-//        tmp.add(new SubscriptionChartModel(
-//                3, PCresult.getRegularSubName(), PCresult.getRegularSubHourly()
-//                , PCresult.getRegularSubMonthlyHours(), PCresult.getRegularSubTotal()));
-//
-//        tmp.add(new SubscriptionChartModel(
-//                4, PCresult.getRegularSubWithCarsName(), PCresult.getRegularSubWithCarsHourly()
-//                , PCresult.getRegularSubWithCarsMonthlyHours(), PCresult.getRegularSubWithCarsTotal()));
-//
-//        tmp.add(new SubscriptionChartModel(
-//                5, PCresult.getFullSubName(), PCresult.getFullSubHourly(),
-//                PCresult.getFullSubMonthlyHours(), PCresult.getFullSubTotal()));
+        int i=0,hours;
+        double rate;
+        for (PricingChart price :PCresult){
+            if(price.isByHourOrSubscription()){
+                rate=price.getRate();
+                hours=1;
+
+            }
+            else {
+                rate = price.getRate() * PCresult.get(price.getRateId()).getRate();
+                hours=(int)price.getRate();
+            }
+            tmp.add(new SubscriptionChartModel(
+                    ++i, price.getName(), rate
+                    ,hours, rate));
+        }
+        System.out.println(PCresult.get(1));
+
+
+
 
 
         subIDcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));

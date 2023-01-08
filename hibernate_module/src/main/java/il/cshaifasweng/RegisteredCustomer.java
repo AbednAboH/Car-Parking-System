@@ -11,6 +11,7 @@ import java.util.List;
 @Table(name = "registered_customer")
 public class RegisteredCustomer extends Customer{
 
+
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List< Subscription>  Subscriptions;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
