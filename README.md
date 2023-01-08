@@ -15,17 +15,32 @@
       * Control : holds all function that are communication based 
       * Boundary : A Gui for each user 
      
-# 4.1.22:
+# progress up until  4.1.23:
 * Parking lot data base is done with tests  
-*  Parking lot Employees data base is done with tests 
+* Parking lot Employees data base is done with tests 
 * Parking lot managers data bas is done with tests
 * parking lot Global manager data base needs to be modified in some way .. don't know how but there might be a future change
-
+## progress update  7.1.23
+# Interface :
+  * Created an interface that manipulats a Table entity , this was done using templates
+  * this interface was based on the DAO design pattern .
+  * this interface can accomodate any type of class and thus enables data manipulation dynamically 
+  * each class/Table that we wish to update will be accessed and altered using DataBaseManipulation<T> class:
+      
+## progress update 8.1.23:
+  * initial prototype works perfectly with connection to Data Base.
+  * need to be altered such that it asks for a permition from Excutive manager for altering the table.cc 
+ 
 # remaining data bases to be configured :
-* pricing chart 
-* Complaints entity 
-* Reports entity
-* costumer entity
+ 
+Date 8.1.2023
+   * complaint
+   * Kiosk
+   * costumer service
+   * Order
+   * Report
+   * costumer service employee
+   * robot
 
-i will work on them on the 5 or 6 of this month. 
 
+  
