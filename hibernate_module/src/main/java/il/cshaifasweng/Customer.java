@@ -16,7 +16,8 @@ public abstract class Customer implements Serializable {
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> cars = new ArrayList<>();
-
+    @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Complaint> complaint;
     public Customer() {
     }
 
