@@ -1,7 +1,7 @@
-package il.cshaifasweng;
+package il.cshaifasweng.ParkingLotEntities;
 
 
-import net.bytebuddy.implementation.ToStringMethod;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.*;
 import java.io.Serializable;

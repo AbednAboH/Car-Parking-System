@@ -1,10 +1,12 @@
-package il.cshaifasweng;
+package il.cshaifasweng.LogInEntities.Employees;
+
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="parkingLotManagers")
-public class ParkingLotManager extends Employee{
+public class ParkingLotManager extends Employee {
     @OneToOne(fetch = FetchType.LAZY)
     private ParkingLot parkingLot;
 

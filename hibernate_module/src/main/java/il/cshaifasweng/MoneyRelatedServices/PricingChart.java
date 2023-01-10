@@ -1,8 +1,7 @@
-package il.cshaifasweng;
+package il.cshaifasweng.MoneyRelatedServices;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "PricingChart")

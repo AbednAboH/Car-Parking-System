@@ -1,20 +1,20 @@
-package il.cshaifasweng;
+package il.cshaifasweng.customerCatalogEntities;
 
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Data
 @Table(name = "regular_subscriptions")
-public class RegularSubscription extends Subscription implements Serializable {
+public class RegularSubscription extends Subscription {
 
     @ManyToOne
-    @Column(name = "parking_lot_id",nullable = false)
+    @JoinColumn(name = "parkingLot_id",nullable = false)
     private ParkingLot desegnatedParkingLot;
 
     @Column(columnDefinition = "TIME",nullable = false)
@@ -32,5 +32,9 @@ public class RegularSubscription extends Subscription implements Serializable {
 
     public RegularSubscription() {
         super();
+    }
+    @Override
+    public String toString(){
+        return super.toString()+", parkingLot="+desegnatedParkingLot.getId()+", extractionDate="+extractionDate;
     }
 }

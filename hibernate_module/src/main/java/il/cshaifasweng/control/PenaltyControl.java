@@ -1,12 +1,10 @@
 package il.cshaifasweng.control;
 
-import il.cshaifasweng.Customer;
-import il.cshaifasweng.ParkingLot;
-import il.cshaifasweng.Penalty;
-import org.hibernate.CustomEntityDirtinessStrategy;
+import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.MoneyRelatedServices.Penalty;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 public class PenaltyControl {
     private static SessionFactory factory = MainControl.getSessionFactory();

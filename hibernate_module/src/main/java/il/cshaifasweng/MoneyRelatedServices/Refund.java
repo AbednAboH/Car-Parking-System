@@ -1,4 +1,4 @@
-package il.cshaifasweng;
+package il.cshaifasweng.MoneyRelatedServices;
 
 import lombok.Data;
 import lombok.Getter;

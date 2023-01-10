@@ -1,4 +1,7 @@
-package il.cshaifasweng;
+package il.cshaifasweng.customerCatalogEntities;
+
+import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
@@ -23,6 +26,8 @@ public class Complaint {
     private Customer customer;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parkingLot_id")
+
+
     private ParkingLot parkingLot;
     @Column(name="Active")
     private boolean active;
@@ -38,7 +43,7 @@ public class Complaint {
         this.customer = customer;
         this.active = active;
     }
-    public Complaint(int id, String text, SimpleDateFormat date, SimpleDateFormat durationToAnswer, Customer customer, boolean active,ParkingLot pl) {
+    public Complaint(int id, String text, SimpleDateFormat date, SimpleDateFormat durationToAnswer, Customer customer, boolean active, ParkingLot pl) {
         this.id = id;
         this.text = text;
         this.date = date;
@@ -47,7 +52,10 @@ public class Complaint {
         this.active = active;
         parkingLot=pl;
     }
-
+    @Override
+    public String toString(){
+     return "id="+id+", date="+date+", customer="+customer.getId()+", active="+active+", text="+text;
+    }
     public int getId() {
         return id;
     }

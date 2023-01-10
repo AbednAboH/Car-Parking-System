@@ -1,4 +1,4 @@
-package il.cshaifasweng;
+package il.cshaifasweng.LogInEntities.Employees;
 
 import javax.persistence.*;
 import java.io.Serializable;

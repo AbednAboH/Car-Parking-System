@@ -1,17 +1,17 @@
-package il.cshaifasweng;
+package il.cshaifasweng.customerCatalogEntities;
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Data
 @Table(name = "full_subscriptions")
-public class FullSubscription extends Subscription implements Serializable {
+public class FullSubscription extends Subscription {
 
     @Column(name = "consecutive_parking_days", nullable = false)
     private int consecutiveParkingDays;
@@ -25,9 +25,15 @@ public class FullSubscription extends Subscription implements Serializable {
         this.consecutiveParkingDays = consecutiveParkingDays;
     }
 
+    public FullSubscription() {
+    }
+
 
     public boolean isValid(){
         return getCarsList().size() == 1;
     }
 
+    public String toString(){
+        return super.toString()+", consicutiveDays"+consecutiveParkingDays;
+    }
 }

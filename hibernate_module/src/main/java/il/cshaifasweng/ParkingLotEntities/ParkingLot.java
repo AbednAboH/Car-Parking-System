@@ -1,4 +1,8 @@
-package il.cshaifasweng;
+package il.cshaifasweng.ParkingLotEntities;
+
+import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
+import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
+import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 
 import javax.persistence.*;
 import java.io.Serializable;

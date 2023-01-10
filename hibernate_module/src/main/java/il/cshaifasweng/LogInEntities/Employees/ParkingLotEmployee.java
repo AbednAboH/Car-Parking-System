@@ -1,10 +1,12 @@
-package il.cshaifasweng;
+package il.cshaifasweng.LogInEntities.Employees;
+
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="parkingLotEmployees")
-public class ParkingLotEmployee extends Employee{
+public class ParkingLotEmployee extends Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parkingLot_id")
     private ParkingLot parkingLot;
