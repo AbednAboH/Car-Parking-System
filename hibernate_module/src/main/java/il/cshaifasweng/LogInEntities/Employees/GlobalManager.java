@@ -1,4 +1,6 @@
-package il.cshaifasweng;
+package il.cshaifasweng.LogInEntities.Employees;
+
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name="globalManagers")
-public class GlobalManager extends Employee{
+public class GlobalManager extends Employee {
     @OneToMany(fetch = FetchType.LAZY)
     private List<ParkingLot> parkingLot;
 

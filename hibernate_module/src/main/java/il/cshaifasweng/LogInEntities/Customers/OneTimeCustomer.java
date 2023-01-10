@@ -1,5 +1,6 @@
-package il.cshaifasweng;
+package il.cshaifasweng.LogInEntities.Customers;
 
+import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "one_time_customer")
-public class OneTimeCustomer extends Customer{
+public class OneTimeCustomer extends Customer {
 
     @Column(name = "exit_time")
     private LocalTime exitTime;
@@ -17,12 +18,8 @@ public class OneTimeCustomer extends Customer{
     public OneTimeCustomer(){
     }
 
-    public OneTimeCustomer(LocalTime exitTime) {
-        this.exitTime = exitTime;
-    }
-
-    public OneTimeCustomer(List<Car> cars, LocalTime exitTime) {
-        super(cars);
+    public OneTimeCustomer(int id, String email, Car cars, LocalTime exitTime) {
+        super(id, email, cars);
         this.exitTime = exitTime;
     }
 }

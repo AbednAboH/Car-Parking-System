@@ -1,6 +1,10 @@
-package il.cshaifasweng;
+package il.cshaifasweng.customerCatalogEntities;
 
 
+import il.cshaifasweng.LocalDateAttributeConverter;
+import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy =InheritanceType.JOINED)
 @Data
 public abstract class Subscription implements Serializable {
     public final int NUMBER_OF_DAYS = 7;
@@ -17,8 +22,8 @@ public abstract class Subscription implements Serializable {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id",nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "registeredCustomer_id",nullable = false)
+    private RegisteredCustomer registeredCustomer;
 
     @Column(name = "hoursPerMonth")
     private int hoursPerMonth;
@@ -37,12 +42,11 @@ public abstract class Subscription implements Serializable {
     @Column(name = "allowed_days")
     private String allowedDays;
 
-    @OneToMany(fetch=FetchType.LAZY,mappedBy = "Car" ,cascade =CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList;
 //    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
 
     public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
-        this.customer = customer;
         this.hoursPerMonth = hoursPerMonth;
         this.startDate = startDate;
         this.expirationDate = expirationDate;
@@ -70,5 +74,14 @@ public abstract class Subscription implements Serializable {
         return array;
     }
 
+    @Override
+    public String toString(){
+        return "SubId="+id+", customerId="+registeredCustomer.getId()
+                +", hours_per_month="+hoursPerMonth
+                +", subscriptionDate="+startDate+
+                ", experation="+expirationDate
+                +", active" + isActive+
+                ", allowedDays="+allowedDays;
+    }
 
 }

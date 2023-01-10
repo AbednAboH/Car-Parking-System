@@ -1,10 +1,10 @@
 //package il.cshaifasweng.OCSFMediatorExample.server;
 //
-//import il.cshaifasweng.ParkingLotEmployee;
+//import il.cshaifasweng.LogIn.Employees.ParkingLotEmployee;
 //import il.cshaifasweng.OCSFMediatorExample.entities.PricingChartEnum;
 //import il.cshaifasweng.Message;
-//import il.cshaifasweng.ParkingLot;
-//import il.cshaifasweng.PricingChart;
+//import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+//import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 //import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 //import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 //import org.hibernate.HibernateException;

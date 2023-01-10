@@ -1,6 +1,7 @@
-package il.cshaifasweng;
+package il.cshaifasweng.MoneyRelatedServices;
 
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
 import lombok.Data;
 
 import javax.persistence.*;

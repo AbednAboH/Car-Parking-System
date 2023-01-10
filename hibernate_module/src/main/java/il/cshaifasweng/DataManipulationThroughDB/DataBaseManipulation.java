@@ -1,4 +1,4 @@
-package il.cshaifasweng.Interfaces;
+package il.cshaifasweng.DataManipulationThroughDB;
 
 import org.hibernate.Session;
 

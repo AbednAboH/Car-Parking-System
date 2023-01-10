@@ -1,6 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import il.cshaifasweng.*;
+import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
+import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
+import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import org.hibernate.HibernateException;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;

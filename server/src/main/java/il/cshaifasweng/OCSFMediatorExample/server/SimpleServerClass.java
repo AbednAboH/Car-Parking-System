@@ -1,21 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import com.google.gson.Gson;
-import il.cshaifasweng.Interfaces.DataBaseManipulation;
-import il.cshaifasweng.MySQL;
-import il.cshaifasweng.ParkingLot;
-import il.cshaifasweng.PricingChart;
+import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
-import org.jvnet.staxex.MtomEnabled;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
