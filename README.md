@@ -42,5 +42,14 @@ Date 8.1.2023
    * costumer service employee
    * robot
 
-
+## Date 11.1.23
+# remaining entities:
+ *Kiosk
+ *order
+ *robot
+# authintication protocols are completed , we use a query class for authintication that resides in EntitiesLogIn
+ 2 options :
+  * get a number between 1 to 7 if an entity exists.
+  * get an entity !
+ 
   
