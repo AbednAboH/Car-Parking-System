@@ -11,4 +11,5 @@ public interface DAO<T> {
     void save(T t,Class<T> type);
     void update(T t);
     void delete(T t,Class<T> type);
+
 }

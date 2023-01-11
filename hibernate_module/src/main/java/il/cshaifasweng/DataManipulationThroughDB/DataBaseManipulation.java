@@ -1,5 +1,6 @@
 package il.cshaifasweng.DataManipulationThroughDB;
 
+import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -57,5 +58,8 @@ public class DataBaseManipulation<T> implements DAO<T>{
         session.close();
 
     }
+
+
+
 
 }
