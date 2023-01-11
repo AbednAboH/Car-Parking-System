@@ -2,6 +2,7 @@ package il.cshaifasweng.LogInEntities.Employees;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.net.PasswordAuthentication;
 
 @MappedSuperclass
 public abstract class Employee implements Serializable {
@@ -20,7 +21,8 @@ public abstract class Employee implements Serializable {
     private double salary;
     @Column(name="Email")
     private String email;
-
+    @Column
+    private String password;
     public String getLastName() {
         return lastName;
     }
@@ -45,6 +47,7 @@ public abstract class Employee implements Serializable {
         this.salary = salary;
         this.lastName=lastName;
         this.email=email;
+        this.password=firstName+lastName;
     }
     public Employee(String firstName, String title ,double salary) {
         this.firstName = firstName;
@@ -52,6 +55,7 @@ public abstract class Employee implements Serializable {
         this.salary = salary;
         this.lastName=lastName;
         this.email=email;
+        this.password=firstName;
     }
 
     public Employee() {
