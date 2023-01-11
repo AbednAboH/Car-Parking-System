@@ -20,7 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class PrimaryController {
+public class pricingChartEdit {
     @FXML
     private TableColumn<ParkingLotModel, Integer> PLcolsColumn;
 
