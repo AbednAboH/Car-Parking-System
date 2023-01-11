@@ -8,21 +8,22 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
+import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<PricingChart>();
     private static DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<ParkingLot>();
     private static DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
+    private static DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
 
     public SimpleServerClass(int port) {
-
         super(port);
-
     }
 
 
@@ -41,15 +42,13 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
             } else if (request.startsWith("#updatePrice")) {
-                System.out.println("Update");
                 updatePriceChart(message, client);
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
-            } else if (request.startsWith("#palceOrder")) {
+            } else if (request.startsWith("#placeOrder")) {
                 placeNewOrder(message, client);
-            } else {
+            }else {
                 System.out.println("no selection was done!!!");
-
             }
 
 
@@ -102,6 +101,6 @@ public class SimpleServerClass extends AbstractServer {
 
     public void placeNewOrder(Message message, ConnectionToClient client)throws IOException, Exception {
         orderHandler.save((Order)message.getObject() ,Order.class);
-
+        client.sendToClient(message);
     }
 }

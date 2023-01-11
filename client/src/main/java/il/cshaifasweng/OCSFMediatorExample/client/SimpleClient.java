@@ -20,6 +20,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new SubscriptionsChartResults(message));
 		}else if(message.getMessage().equals("#getAllParkingLots")){
 			EventBus.getDefault().post(new ParkingLotResults(message));
+		}else if(message.getMessage().equals("#placeOrder")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")){
 			EventBus.getDefault().post(new ErrorEvent(message));
 		}else {

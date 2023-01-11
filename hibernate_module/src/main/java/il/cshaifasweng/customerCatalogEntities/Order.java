@@ -1,13 +1,21 @@
 package il.cshaifasweng.customerCatalogEntities;
 
+import il.cshaifasweng.LocalDateAttributeConverter;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "orders")
-public class Order {
+public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -27,11 +35,23 @@ public class Order {
     @Column(name = "active")
     private boolean active;
 
-    @Column(name = "enteringTimeAndDate")
-    private SimpleDateFormat dateAndTimeToEnter;
+    @Convert(converter = LocalDateAttributeConverter.class)
+    @Column(name = "reservationDate")
+    private LocalDate reservationDate;
 
+    @Column(name = "enter")
+    private String enteringHour;
+
+    @Column(name = "exit")
+    private String exitingHour;
+
+    @Convert(converter = LocalDateAttributeConverter.class)
+    @Column(name = "enteringTimeAndDate")
+    private LocalDate dateAndTimeToEnter;
+
+    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name = "leavingTimeAndDate")
-    private SimpleDateFormat dateAndTimeToLeave;
+    private LocalDate dateAndTimeToLeave;
 
     @Column(name = "carID")
     private String carID;
@@ -44,7 +64,7 @@ public class Order {
     }
 
     public Order(int registeredCustomerID, int parkingLotID, boolean active,
-                 SimpleDateFormat dateAndTimeToEnter, SimpleDateFormat dateAndTimeToLeave,
+                 LocalDate dateAndTimeToEnter, LocalDate dateAndTimeToLeave,
                  String carID, String email) {
         this.registeredCustomerID = registeredCustomerID;
         this.parkingLotID = parkingLotID;
@@ -55,63 +75,5 @@ public class Order {
         this.email = email;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public int getRegisteredCustomerID() {
-        return registeredCustomerID;
-    }
-
-    public void setRegisteredCustomerID(int registeredCustomerID) {
-        this.registeredCustomerID = registeredCustomerID;
-    }
-
-    public int getParkingLotID() {
-        return parkingLotID;
-    }
-
-    public void setParkingLotID(int parkingLotID) {
-        this.parkingLotID = parkingLotID;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public SimpleDateFormat getDateAndTimeToEnter() {
-        return dateAndTimeToEnter;
-    }
-
-    public void setDateAndTimeToEnter(SimpleDateFormat dateAndTimeToEnter) {
-        this.dateAndTimeToEnter = dateAndTimeToEnter;
-    }
-
-    public SimpleDateFormat getDateAndTimeToLeave() {
-        return dateAndTimeToLeave;
-    }
-
-    public void setDateAndTimeToLeave(SimpleDateFormat dateAndTimeToLeave) {
-        this.dateAndTimeToLeave = dateAndTimeToLeave;
-    }
-
-    public String getCarID() {
-        return carID;
-    }
-
-    public void setCarID(String carID) {
-        this.carID = carID;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
