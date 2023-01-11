@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.awt.event.ActionEvent;
+import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
@@ -45,33 +45,33 @@ public class OrderController {
         return true;
     }
 
-//    @FXML
-//    void saveOrder(ActionEvent event) {
-//        try {
-//            if (orderInfoValidation()) {
-//                SimpleDateFormat date = new SimpleDateFormat();
-//                Order newOrder = new Order(1, 1,
-//                        true, date, date, plateNum.getText(), emailInput.getText());
-//                Message message = new Message("#placeOrder", newOrder);
-//                SimpleClient.getClient().sendToServer(message);
-//            } else {
-//
-//            }
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
+    @FXML
+    void saveOrder(ActionEvent event) {
+        try {
+            if (orderInfoValidation()) {
+                SimpleDateFormat date = new SimpleDateFormat();
+                Order newOrder = new Order(1, 1,
+                        true, date, date, plateNum.getText(), emailInput.getText());
+                Message message = new Message("#placeOrder", newOrder);
+                SimpleClient.getClient().sendToServer(message);
+            } else {
+
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
         System.out.println("done");
     }
 
-//    @FXML
-//    void initialize() {
-//        EventBus.getDefault().register(this);
-//    }
+    @FXML
+    void initialize() {
+        EventBus.getDefault().register(this);
+    }
 
 
 }
