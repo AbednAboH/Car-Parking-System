@@ -3,6 +3,8 @@ package il.cshaifasweng.LogInEntities.Customers;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "registered_customer")
+@Getter
+@Setter
 public class RegisteredCustomer extends Customer {
 
 //    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
