@@ -19,6 +19,10 @@ public abstract class Customer implements Serializable {
     private int id;
     @Column(name="Email")
     private String email;
+    @Column(name="firstName")
+    private String firstName;
+    @Column(name="lastName")
+    private String lastName;
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> cars = new ArrayList<>();
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
