@@ -116,7 +116,7 @@ public class LogInController{
 
     private void askForUser(String email,String password){
         try {
-            Message message = new Message("#getUser&"+ email + "&"+password);
+            Message message = new Message("#LogIn&"+ email + "&"+password);
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -124,10 +124,21 @@ public class LogInController{
             e.printStackTrace();
         }
     }
-
+    private void registerUser(String email,String password,String firstName,String lastName){
+        try {
+            Message message = new Message("#Register&"+ email + "&"+password+"&"+firstName+"&"+lastName);
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            showErrorMessage(Constants.INTERNAL_ERROR);
+            e.printStackTrace();
+        }
+    }
     @Subscribe
-    private void getUser(LogInSubscriber event) {
+    public void getUser(LogInSubscriber event) {
+
         this.user =  event.getMessage().getObject();
+
     }
 
     @FXML

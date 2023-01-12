@@ -86,9 +86,11 @@ public class SimpleServerClass extends AbstractServer {
     }
     protected void Login(Message message,ConnectionToClient client){
 
-        // TODO: 1/11/2023 handle message format for authintication get email and password
-        String email="sdfasf",password="sdfasdf";
-        String userName="";
+        // TODO: 1/11/2023 check errors
+        String email,password,userName="";
+        String[] mess=message.getMessage().split("&");
+        email=mess[1];
+        password=mess[2];
         int clientType=0;
         clientType=AuthenticationService.checkAuthintecatedEntityType(email,password);
         if(clientType<=0)
