@@ -7,6 +7,8 @@ import il.cshaifasweng.LogInEntities.Employees.*;
 import il.cshaifasweng.MySQL;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import javax.persistence.NoResultException;
 import java.util.Map;
 
 
@@ -59,19 +61,28 @@ public class AuthenticationService {
 
     }
     public static <T> T emailQuery(int classNum,String email,Session session){
-        Class<T> entitiesClass=mappedClasses.get(classNum);
-        String hql = new StringBuilder().append("SELECT c FROM ").append(entitiesClass.getName()).append(" WHERE c.email = :email").toString();
-        return session.createQuery(hql, entitiesClass).setParameter("email", email).getSingleResult();
-
+       try {
+           Class<T> entitiesClass = mappedClasses.get(classNum);
+           String hql = new StringBuilder().append("SELECT c FROM ").append(entitiesClass.getName()).append(" c WHERE c.email = :email").toString();
+           return session.createQuery(hql, entitiesClass).setParameter("email", email).getSingleResult();
+       }
+       catch (NoResultException e){
+           return null;
+       }
     }
 
     private static <T> T retrieveUser(int classNum,String email,String password,Session session){
-        Class<T> entitiesClass=mappedClasses.get(classNum);
-        String hql = new StringBuilder().append("SELECT c FROM ").append(entitiesClass.getName()).append(" WHERE c.email = :email and c.password = :password").toString();
-        return session.createQuery(hql, entitiesClass).setParameter("email", email)
-                .setParameter("password", password)
-                .getSingleResult();
+        try {
 
+            Class<T> entitiesClass = mappedClasses.get(classNum);
+            String hql = new StringBuilder().append("SELECT c FROM ").append(entitiesClass.getName()).append(" c WHERE c.email = :email and c.password = :password").toString();
+            return session.createQuery(hql, entitiesClass).setParameter("email", email)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        }
+        catch(NoResultException e){
+            return null;
+        }
     }
 
 }

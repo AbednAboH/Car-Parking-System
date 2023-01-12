@@ -71,7 +71,7 @@ public class MySQL
 //            RegisteredCustomer customer=retrieveLastAdded(RegisteredCustomer.class);
 
 
-            initiatePricingChart();
+//            initiatePricingChart();
 //            deleteEntity(1,200,ParkingLot.class);
             printAllEntities();
 

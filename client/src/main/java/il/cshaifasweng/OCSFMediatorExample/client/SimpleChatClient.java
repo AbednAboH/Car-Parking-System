@@ -52,7 +52,7 @@ public class SimpleChatClient extends Application {
 
     @Subscribe
     public void onMessageEvent(MessageEvent message) {
-
+        System.out.println(message);
     }
 
 

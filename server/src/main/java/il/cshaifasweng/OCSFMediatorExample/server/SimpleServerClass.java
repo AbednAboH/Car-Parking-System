@@ -44,6 +44,10 @@ public class SimpleServerClass extends AbstractServer {
                 Login(message,client);
                 client.sendToClient(message);
 
+            }else if (request.startsWith("#Register")) {
+                registerUser(message,client);
+                client.sendToClient(message);
+
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
@@ -70,18 +74,20 @@ public class SimpleServerClass extends AbstractServer {
     }
     protected void registerUser(Message message,ConnectionToClient client){
         // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
-        String name="aasd",email="blalba";
+        String[] mess=message.getMessage().split("&");
+        String name=mess[3],email=mess[1],password=mess[2],lastName=mess[4];
         if (AuthenticationService.checkEmailExistance(email)){
             // TODO: 1/11/2023 use a username instead more secure
             message.setMessage("email already exists");
             return;
         }
-        //TODO:1/11/23 get all fields of Registered cutomer that are relevant to being a user
-        RegisteredCustomer customer=new RegisteredCustomer();
+        //TODO:1/11/23 might need to update the fields later on , for now this is the current format
+        RegisteredCustomer customer=new RegisteredCustomer(2003,email,name,password);
         rCustomer.save(customer,RegisteredCustomer.class);
         customer=rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put( customer.getId(), customer);
         client.setInfo("userId",customer.getId());
+        System.out.println(customer);
         message.setMessage("RegistrationSuccessful");
     }
     protected void Login(Message message,ConnectionToClient client){
@@ -91,6 +97,8 @@ public class SimpleServerClass extends AbstractServer {
         String[] mess=message.getMessage().split("&");
         email=mess[1];
         password=mess[2];
+        System.out.println("get customer");
+
         int clientType=0;
         clientType=AuthenticationService.checkAuthintecatedEntityType(email,password);
         if(clientType<=0)
@@ -99,16 +107,19 @@ public class SimpleServerClass extends AbstractServer {
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
             clientsEmployeeMap.put( user.getId(), user);
             client.setInfo("userId",user.getId());
+            message.setObject(user);
             userName=user.getFirstName()+user.getLastName();
         }
         else if(clientType<=5){
+            System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
+            message.setObject(user);
             clientsCustomersMap.put( user.getId(), user);
             client.setInfo("userId",user.getId());
             userName=user.getFirstName()+user.getLastName();
         }
 
-        message.setMessage("Welcome " + userName + "!");
+
     }
     public void sendToAllClients(Message message) {
         try {

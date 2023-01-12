@@ -73,10 +73,10 @@ public class LogInController{
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
-
     @FXML
     protected void onLoginButtonClick() {
         try {
+            System.out.println("mhmod");
             if (loginUsernameTextField.getText().isBlank() || loginPasswordPasswordField.getText().isBlank()) {
                 invalidLoginCredentials.setText("The Login fields are required!");
                 invalidLoginCredentials.setStyle(errorMessage);
@@ -90,7 +90,6 @@ public class LogInController{
                 return;
             }
             askForUser(loginUsernameTextField.getText(), loginPasswordPasswordField.getText());
-            Thread.sleep(SECOND * 20);
             if (validateCredentials()) {
                 invalidLoginCredentials.setText("Login Successful!");
 // TODO: 10/01/2023 Add root for the next screen.
@@ -124,35 +123,28 @@ public class LogInController{
             e.printStackTrace();
         }
     }
-    private void registerUser(String email,String password,String firstName,String lastName){
-        try {
-            Message message = new Message("#Register&"+ email + "&"+password+"&"+firstName+"&"+lastName);
-            SimpleClient.getClient().sendToServer(message);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            showErrorMessage(Constants.INTERNAL_ERROR);
-            e.printStackTrace();
-        }
-    }
+
     @Subscribe
     public void getUser(LogInSubscriber event) {
-
+        System.out.println("get user method event");
         this.user =  event.getMessage().getObject();
+        System.out.println(event.getMessage());
+        System.out.println(user);
 
     }
 
     @FXML
     protected void onSignUpButtonClick() {
 
-        male.setToggleGroup(toggleGroup);
-        female.setToggleGroup(toggleGroup);
-        // Set one of the radio buttons as the default selection
-        male.setSelected(true);
-        // Create a horizontal box to hold the radio buttons
-        HBox hbox = new HBox(male, female);
-        toggleGroup.selectedToggleProperty().addListener((ov, oldToggle, newToggle) -> {
-            selected = (RadioButton) newToggle;
-        });
+//        male.setToggleGroup(toggleGroup);
+//        female.setToggleGroup(toggleGroup);
+//        // Set one of the radio buttons as the default selection
+//        male.setSelected(true);
+//        // Create a horizontal box to hold the radio buttons
+//        HBox hbox = new HBox(male, female);
+//        toggleGroup.selectedToggleProperty().addListener((ov, oldToggle, newToggle) -> {
+//            selected = (RadioButton) newToggle;
+//        });
         String username = signUpUsernameTextField.getText();
         String password = signUpPasswordPasswordField.getText();
         String repeatPassword = signUpRepeatPasswordPasswordField.getText();
@@ -196,7 +188,7 @@ public class LogInController{
             invalidLoginCredentials.setText("");
             return;
         }
-        if(!addNewUser(username,password,email,signUpDateDatePicker.getValue(),selected.getText() == "Male" ? "Male" : "Female")) {
+        if(!addNewUser(username,password,email,signUpDateDatePicker.getValue(),"LastName")) {
             invalidSignupCredentials.setText("Something went wrong in the process, please try again!");
             invalidSignupCredentials.setStyle(errorMessage);
             signUpPasswordPasswordField.setStyle(errorStyle);
@@ -204,6 +196,7 @@ public class LogInController{
             invalidLoginCredentials.setText("");
             return;
         }
+
         invalidSignupCredentials.setText("Signed up successfully !!");
         invalidSignupCredentials.setStyle(successMessage);
         signUpUsernameTextField.setStyle(successStyle);
@@ -220,8 +213,15 @@ public class LogInController{
         alert.setContentText(message.toString());
         alert.showAndWait();
     }
-    private boolean addNewUser(String username, String password, String email, LocalDate value, String s) {
-        // TODO: 10/01/2023 Post request to add the user to the system, and return true if the process was done successfully.
+    private boolean addNewUser(String username, String password, String email, LocalDate value, String lastName) {
+        try {
+            Message message = new Message("#Register&"+ email + "&"+password+"&"+username+"&"+lastName);
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            showErrorMessage(Constants.INTERNAL_ERROR);
+            e.printStackTrace();
+        }
         return true;
     }
 
