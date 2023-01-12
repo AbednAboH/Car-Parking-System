@@ -56,9 +56,10 @@ public class SimpleServerClass extends AbstractServer {
 
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
+            }else if (request.startsWith("#ConnectionAlive")) {
+                System.out.println("Alive!");
             } else {
                 System.out.println("no selection was done!!!");
-
             }
 
 
