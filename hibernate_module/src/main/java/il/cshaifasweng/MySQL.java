@@ -1,21 +1,30 @@
 package il.cshaifasweng;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import javax.persistence.Entity;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
+import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee;
 import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
+import il.cshaifasweng.MoneyRelatedServices.Penalty;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.MoneyRelatedServices.Refund;
+import il.cshaifasweng.MoneyRelatedServices.Reports;
+import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
+import il.cshaifasweng.customerCatalogEntities.Complaint;
+import il.cshaifasweng.customerCatalogEntities.FullSubscription;
+import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,11 +35,17 @@ import org.hibernate.service.ServiceRegistry;
 public class MySQL
 {
     public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
-            GlobalManager.class,PricingChart.class};
+            GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Customer.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),
-            Map.entry("Prices", PricingChart.class));
+            Map.entry("Prices",PricingChart.class),Map.entry("Service",CustomerServiceEmployee.class)
+            ,Map.entry("FullSub",FullSubscription.class),Map.entry("RegularSub",RegularSubscription.class)
+            ,Map.entry("Sub",Subscription.class),Map.entry("Car",Car.class)
+            ,Map.entry("Complaint",Complaint.class),Map.entry("OneTime",OneTimeCustomer.class),Map.entry("Registered",RegisteredCustomer.class)
+            ,Map.entry("Penalty",Penalty.class),Map.entry("Refund",Refund.class)
+            ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class));
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session

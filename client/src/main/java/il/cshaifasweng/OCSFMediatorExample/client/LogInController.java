@@ -2,12 +2,23 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 
 public class LogInController{
 
@@ -44,6 +55,24 @@ public class LogInController{
     private RadioButton female;
     RadioButton selected;
     ToggleGroup toggleGroup = new ToggleGroup();
+    private Object user;
+    public final int SECOND = 6000;
+    private CountDownLatch latch;
+    public static AtomicInteger authintication=new AtomicInteger(0);
+    @FXML
+    void initialize(){
+//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(LogInController.this);
+
+        try {
+            // Check if the connection with the server is alive.
+            Message message = new Message("#ConnectionAlive");
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            showErrorMessage(Constants.INTERNAL_ERROR);
+            e.printStackTrace();
+        }
+    }
 
     // Creation of methods which are activated on events in the forms
     @FXML
@@ -52,47 +81,86 @@ public class LogInController{
         stage.close();
     }
 
+    @Subscribe
+//    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void getUser(LogInSubscriber event) {
+        System.out.println("get user method event");
+        if(event.getMessage().getMessage().startsWith("#authintication"))
+              if (event.getMessage().getMessage().startsWith("#authintication successful!"))
+                  authintication.set(1);
+              else
+                  authintication.set(2);
+//            EventBus.getDefault().unregister(this);
+        this.user =  event.getMessage().getObject();
+
+    }
     @FXML
     protected void onLoginButtonClick() {
-        if (loginUsernameTextField.getText().isBlank() || loginPasswordPasswordField.getText().isBlank()) {
-            invalidLoginCredentials.setText("The Login fields are required!");
-            invalidLoginCredentials.setStyle(errorMessage);
-            invalidSignupCredentials.setText("");
+        //validation
+        Task<Void> eventTask = new Task<Void>() {
+            @Override
+            protected Void call() {
+                System.out.println("send to server");
+                askForUser(loginUsernameTextField.getText(), loginPasswordPasswordField.getText());
+                while (authintication.get()==0) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // Handle exception
+                    }
+                }
+                Platform.runLater(() -> {
+                    if (validateCredentials()) {
+                        //login success
+                        invalidLoginCredentials.setText("Login Successful!");
+                        invalidLoginCredentials.setStyle(successMessage);
+                        loginUsernameTextField.setStyle(successStyle);
+                        try {
+//                            EventBus.getDefault().unregister(LogInController.this);
+                            SimpleChatClient.setRoot("primary");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        invalidLoginCredentials.setText("Invalid data");
+                        loginUsernameTextField.setStyle(errorStyle);
+                        loginPasswordPasswordField.setStyle(errorStyle);
+                        loginUsernameTextField.setText("");
+                        loginPasswordPasswordField.setText("");
+                        authintication.set(0);
+                    }
 
-            if (loginUsernameTextField.getText().isBlank()) {
-                loginUsernameTextField.setStyle(errorStyle);
-            } else if (loginPasswordPasswordField.getText().isBlank()) {
-                loginPasswordPasswordField.setStyle(errorStyle);
+                });
+                return null;
             }
-            return;
-        }
-        if(validateCredentials(loginUsernameTextField.getText(),loginPasswordPasswordField.getText())) {
-            invalidLoginCredentials.setText("Login Successful!");
-// TODO: 10/01/2023 Add root for the next screen. 
-            invalidLoginCredentials.setStyle(successMessage);
-            loginUsernameTextField.setStyle(successStyle);
-            loginPasswordPasswordField.setStyle(successStyle);
-            invalidSignupCredentials.setText("");
-        }else{
-            loginUsernameTextField.setStyle(errorStyle);
-            loginPasswordPasswordField.setStyle(errorStyle);
-            loginUsernameTextField.setText("");
-            loginPasswordPasswordField.setText("");
+        };
+        new Thread(eventTask).start();
+    }
+
+    private void askForUser(String email,String password){
+        try {
+            Message message = new Message("#LogIn&"+ email + "&"+password);
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            showErrorMessage(Constants.INTERNAL_ERROR);
+            e.printStackTrace();
         }
     }
 
     @FXML
     protected void onSignUpButtonClick() {
 
-        male.setToggleGroup(toggleGroup);
-        female.setToggleGroup(toggleGroup);
-        // Set one of the radio buttons as the default selection
-        male.setSelected(true);
-        // Create a horizontal box to hold the radio buttons
-        HBox hbox = new HBox(male, female);
-        toggleGroup.selectedToggleProperty().addListener((ov, oldToggle, newToggle) -> {
-            selected = (RadioButton) newToggle;
-        });
+//        male.setToggleGroup(toggleGroup);
+//        female.setToggleGroup(toggleGroup);
+//        // Set one of the radio buttons as the default selection
+//        male.setSelected(true);
+//        // Create a horizontal box to hold the radio buttons
+//        HBox hbox = new HBox(male, female);
+//        toggleGroup.selectedToggleProperty().addListener((ov, oldToggle, newToggle) -> {
+//            selected = (RadioButton) newToggle;
+//        });
         String username = signUpUsernameTextField.getText();
         String password = signUpPasswordPasswordField.getText();
         String repeatPassword = signUpRepeatPasswordPasswordField.getText();
@@ -136,7 +204,7 @@ public class LogInController{
             invalidLoginCredentials.setText("");
             return;
         }
-        if(!addNewUser(username,password,email,signUpDateDatePicker.getValue(),selected.getText() == "Male" ? "Male" : "Female")) {
+        if(!addNewUser(username,password,email,signUpDateDatePicker.getValue(),"LastName")) {
             invalidSignupCredentials.setText("Something went wrong in the process, please try again!");
             invalidSignupCredentials.setStyle(errorMessage);
             signUpPasswordPasswordField.setStyle(errorStyle);
@@ -144,6 +212,7 @@ public class LogInController{
             invalidLoginCredentials.setText("");
             return;
         }
+
         invalidSignupCredentials.setText("Signed up successfully !!");
         invalidSignupCredentials.setStyle(successMessage);
         signUpUsernameTextField.setStyle(successStyle);
@@ -153,9 +222,22 @@ public class LogInController{
         invalidLoginCredentials.setText("");
 
     }
-
-    private boolean addNewUser(String username, String password, String email, LocalDate value, String s) {
-        // TODO: 10/01/2023 Post request to add the user to the system, and return true if the process was done successfully.
+    public void showErrorMessage(Constants message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message.toString());
+        alert.showAndWait();
+    }
+    private boolean addNewUser(String username, String password, String email, LocalDate value, String lastName) {
+        try {
+            Message message = new Message("#Register&"+ email + "&"+password+"&"+username+"&"+lastName);
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            showErrorMessage(Constants.INTERNAL_ERROR);
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -164,9 +246,12 @@ public class LogInController{
         return true;
     }
 
-    private boolean validateCredentials(String username, String password) {
-        // TODO: 10/01/2023 Create a validation method which ask the server for the credentials of the user.
-        return true;
+    private boolean validateCredentials() {
+        if (authintication.get()==2)
+            return false;
+        else if(authintication.get()==1)
+            return true;
+        return false;
     }
 
     private boolean validateEmail(String mail){

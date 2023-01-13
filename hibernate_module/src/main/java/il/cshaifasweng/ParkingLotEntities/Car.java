@@ -28,7 +28,7 @@ public class Car {
     }
     @Override
     public String toString(){
-        return "Id="+id+", CarID="+carNum+", customerId"+customer.getId();
+        return "Id="+id+", CarID="+carNum;
     }
 
 }

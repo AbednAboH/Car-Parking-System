@@ -14,6 +14,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +22,9 @@ import java.util.Map;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-    private static DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
-    private static DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
+    private static DataBaseManipulation<PricingChart> pChart=new DataBaseManipulation<PricingChart>();
+    private static DataBaseManipulation<ParkingLot> pLot= new DataBaseManipulation<ParkingLot>();
+    private static DataBaseManipulation<Order> orderHandler= new DataBaseManipulation<Order>();
     private static DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
@@ -49,10 +51,17 @@ public class SimpleServerClass extends AbstractServer {
                 Login(message,client);
                 client.sendToClient(message);
 
+            }else if (request.startsWith("#Register")) {
+                registerUser(message,client);
+                client.sendToClient(message);
+
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
-            } else if (request.startsWith("#getPricingChart")) {
+            }else if (request.startsWith("#placeOrder")) {
+                placeOrder(message, client);
+            }
+            else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
 
             } else if (request.startsWith("#updatePrice")) {
@@ -68,10 +77,12 @@ public class SimpleServerClass extends AbstractServer {
             else if (request.startsWith("#showSubscription")) {
                 showSubscription(message, client);
             }else {
+            }else if (request.startsWith("#ConnectionAlive")) {
+                System.out.println("Alive!");
+            } else {
                 System.out.println("no selection was done!!!");
 
             }
-
 
 
         } catch (Exception ex) {
@@ -98,43 +109,62 @@ public class SimpleServerClass extends AbstractServer {
 
     protected void registerUser(Message message,ConnectionToClient client){
         // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
-        String name="aasd",email="blalba";
+        String[] mess=message.getMessage().split("&");
+        String name=mess[3],email=mess[1],password=mess[2],lastName=mess[4];
         if (AuthenticationService.checkEmailExistance(email)){
             // TODO: 1/11/2023 use a username instead more secure
             message.setMessage("email already exists");
             return;
         }
-        //TODO:1/11/23 get all fields of Registered cutomer that are relevant to being a user
-        RegisteredCustomer customer=new RegisteredCustomer();
+        //TODO:1/11/23 might need to update the fields later on , for now this is the current format
+        RegisteredCustomer customer=new RegisteredCustomer(2003,email,name,password);
         rCustomer.save(customer,RegisteredCustomer.class);
         customer=rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put( customer.getId(), customer);
         client.setInfo("userId",customer.getId());
+        System.out.println(customer);
         message.setMessage("RegistrationSuccessful");
     }
     protected void Login(Message message,ConnectionToClient client){
 
-        // TODO: 1/11/2023 handle message format for authintication get email and password
-        String email="sdfasf",password="sdfasdf";
-        String userName="";
+        String email,password,userName="";
+        String[] mess=message.getMessage().split("&");
+        email=mess[1];
+        password=mess[2];
+        System.out.println("get customer");
+
         int clientType=0;
         clientType=AuthenticationService.checkAuthintecatedEntityType(email,password);
         if(clientType<=0)
-            message.setMessage("authintication failed!");
+            message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
-            clientsEmployeeMap.put( user.getId(), user);
-            client.setInfo("userId",user.getId());
-            userName=user.getFirstName()+user.getLastName();
+            if (clientsEmployeeMap.containsKey(user.getId()))
+                message.setMessage("#alreadySignedIn");
+                // TODO: 1/13/2023 add this option in sign in screen !!
+            else {
+
+                clientsEmployeeMap.put(user.getId(), user);
+                client.setInfo("userId", user.getId());
+                message.setMessage("#authintication successful!");
+                message.setObject(user);
+            }
         }
         else if(clientType<=5){
+            System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
-            clientsCustomersMap.put( user.getId(), user);
-            client.setInfo("userId",user.getId());
-            userName=user.getFirstName()+user.getLastName();
+            if (clientsCustomersMap.containsKey(user.getId()))
+                message.setMessage("#alreadySignedIn");
+                // TODO: 1/13/2023 add this option in sign in screen !!
+            else {
+                message.setMessage("#authintication successful!");
+                message.setObject(user);
+                clientsCustomersMap.put( user.getId(), user);
+                client.setInfo("userId",user.getId());
+
+            }
         }
 
-        message.setMessage("Welcome " + userName + "!");
     }
     public void sendToAllClients(Message message) {
         try {
@@ -175,5 +205,10 @@ public class SimpleServerClass extends AbstractServer {
         PricingChart chartObject = pChart.get(Integer.parseInt(subID), PricingChart.class);
         chartObject.setRate((Integer) message.getObject());
         pChart.update(chartObject);
+    }
+
+    public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
+        orderHandler.save((Order)message.getObject(), Order.class);
+        client.sendToClient(message);
     }
 }
