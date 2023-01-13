@@ -51,5 +51,15 @@ Date 8.1.2023
  2 options :
   * get a number between 1 to 7 if an entity exists.
   * get an entity !
+## Date 12.1.23
+ * authintication and registration (sign in and sign up)between client and server established and the returened object is correct
+ * when each client signs in , its id is saved in the server ,so when we switch between scenes we always know which type of client is connected to the server ! 
+## Date 13.1.23
+# Login
+ * login GUI works 
+ * Regestration also works , might need to change inputs no more no less 
+ * used threads to ensure that the GUI doesn't freeze using Task Class and a String authentication object to determine the state of the request
+ *authentication is null when the request to get the account is still waiting on the server and when its updated we get out of the loop , as the server would surely return an answer . 
+ 
  
   
