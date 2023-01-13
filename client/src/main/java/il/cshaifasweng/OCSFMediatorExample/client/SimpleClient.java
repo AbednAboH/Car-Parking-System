@@ -21,6 +21,10 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new SubscriptionsChartResults(message));
 		}else if(message.getMessage().equals("#getAllParkingLots")){
 			EventBus.getDefault().post(new ParkingLotResults(message));
+		} else if (message.getMessage().equals("#showOrders")) {
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if (message.getMessage().equals("#showSubscription")) {
+			EventBus.getDefault().post(new SubscriptionResponse(message));
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
 		}else if(message.getMessage().equals("#placeOrder")){

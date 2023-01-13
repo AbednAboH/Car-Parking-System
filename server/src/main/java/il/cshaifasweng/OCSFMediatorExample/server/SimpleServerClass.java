@@ -12,6 +12,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class SimpleServerClass extends AbstractServer {
     private static DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
+    private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
+
 
     public SimpleServerClass(int port) {
 
@@ -62,9 +66,15 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#updatePrice")) {
                 System.out.println("Update");
                 updatePriceChart(message, client);
-
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
+
+            }else if (request.startsWith("#showOrders")){
+                showOrders(message , client);
+            }
+            else if (request.startsWith("#showSubscription")) {
+                showSubscription(message, client);
+
             }else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("Alive!");
             } else {
@@ -72,11 +82,29 @@ public class SimpleServerClass extends AbstractServer {
             }
 
 
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
     }
+
+    private void showSubscription(Message message, ConnectionToClient client) {
+        // TODO: get subscription that has the client id and not all susbcriptions
+        message.setObject(subscriptionHandler.getAll(Subscription.class));
+        try {
+            client.sendToClient(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showOrders(Message message, ConnectionToClient client) throws Exception {
+        // TODO: get order that has the client id and not all orders
+        message.setObject(orderHandler.getAll(Order.class));
+        client.sendToClient(message);
+    }
+
     protected void registerUser(Message message,ConnectionToClient client){
         // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
         String[] mess=message.getMessage().split("&");

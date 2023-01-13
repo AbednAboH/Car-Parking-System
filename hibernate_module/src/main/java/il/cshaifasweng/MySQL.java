@@ -1,8 +1,11 @@
 package il.cshaifasweng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import javax.persistence.Entity;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -63,16 +66,7 @@ public class MySQL
     public static void main( String[] args ) {
         try {
             connectToDB();
-//            RegisteredCustomer customer=new RegisteredCustomer(123456689,"someone@gmail.com","587578");
-//            session.save(customer);
-//            customer=retrieveLastAdded(RegisteredCustomer.class);
-//            customer.getCars().get(0).setCustomer(customer);
-//            session.update(customer);
-//            RegisteredCustomer customer=retrieveLastAdded(RegisteredCustomer.class);
-
-
-//            initiatePricingChart();
-//            deleteEntity(1,200,ParkingLot.class);
+            initiatePricingChart();
             printAllEntities();
 
             session.getTransaction().commit(); // Save everything.
