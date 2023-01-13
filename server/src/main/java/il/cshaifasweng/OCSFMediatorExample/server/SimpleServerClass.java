@@ -102,17 +102,19 @@ public class SimpleServerClass extends AbstractServer {
         int clientType=0;
         clientType=AuthenticationService.checkAuthintecatedEntityType(email,password);
         if(clientType<=0)
-            message.setMessage("authintication failed!");
+            message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
             clientsEmployeeMap.put( user.getId(), user);
             client.setInfo("userId",user.getId());
+            message.setMessage("#authintication successful!");
             message.setObject(user);
             userName=user.getFirstName()+user.getLastName();
         }
         else if(clientType<=5){
             System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
+            message.setMessage("#authintication successful!");
             message.setObject(user);
             clientsCustomersMap.put( user.getId(), user);
             client.setInfo("userId",user.getId());

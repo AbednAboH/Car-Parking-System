@@ -2,13 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import javafx.scene.control.Alert;
@@ -53,10 +55,12 @@ public class LogInController{
     ToggleGroup toggleGroup = new ToggleGroup();
     private Object user;
     public final int SECOND = 6000;
-
+    private CountDownLatch latch;
+    String authintication="#null";
     @FXML
     void initialize(){
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
+
         try {
             // Check if the connection with the server is alive.
             Message message = new Message("#ConnectionAlive");
@@ -73,65 +77,67 @@ public class LogInController{
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
-    @FXML
-    protected void onLoginButtonClick() {
-        try {
-            System.out.println("mhmod");
-            if (loginUsernameTextField.getText().isBlank() || loginPasswordPasswordField.getText().isBlank()) {
-                invalidLoginCredentials.setText("The Login fields are required!");
-                invalidLoginCredentials.setStyle(errorMessage);
-                invalidSignupCredentials.setText("");
-
-                if (loginUsernameTextField.getText().isBlank()) {
-                    loginUsernameTextField.setStyle(errorStyle);
-                } else if (loginPasswordPasswordField.getText().isBlank()) {
-                    loginPasswordPasswordField.setStyle(errorStyle);
-                }
-                return;
-            }
-            askForUser(loginUsernameTextField.getText(), loginPasswordPasswordField.getText());
-            if (validateCredentials()) {
-                invalidLoginCredentials.setText("Login Successful!");
-// TODO: 10/01/2023 Add root for the next screen.
-                SimpleChatClient.setRoot("primary");
-                invalidLoginCredentials.setStyle(successMessage);
-                loginUsernameTextField.setStyle(successStyle);
-                loginPasswordPasswordField.setStyle(successStyle);
-                invalidSignupCredentials.setText("");
-            } else {
-                invalidLoginCredentials.setText("Invalid data");
-                loginUsernameTextField.setStyle(errorStyle);
-                loginPasswordPasswordField.setStyle(errorStyle);
-                loginUsernameTextField.setText("");
-                loginPasswordPasswordField.setText("");
-            }
-        }catch (Exception e){
-            if(e instanceof IOException || e instanceof InterruptedException) {
-                showErrorMessage(Constants.INTERNAL_ERROR);
-            }
-            e.printStackTrace();
-        }
-    }
-
-    private void askForUser(String email,String password){
-        try {
-            Message message = new Message("#LogIn&"+ email + "&"+password);
-            SimpleClient.getClient().sendToServer(message);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            showErrorMessage(Constants.INTERNAL_ERROR);
-            e.printStackTrace();
-        }
-    }
 
     @Subscribe
     public void getUser(LogInSubscriber event) {
         System.out.println("get user method event");
+        authintication=event.getMessage().toString();
         this.user =  event.getMessage().getObject();
-        System.out.println(event.getMessage());
-        System.out.println(user);
 
     }
+    @FXML
+    protected void onLoginButtonClick() {
+        //validation
+        Task<Void> eventTask = new Task<Void>() {
+            @Override
+            protected Void call() {
+                askForUser(loginUsernameTextField.getText(), loginPasswordPasswordField.getText());
+                EventBus.getDefault().register(LogInController.this);
+                while (authintication.startsWith("#null")) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // Handle exception
+                    }
+                }
+                Platform.runLater(() -> {
+                    if (validateCredentials()) {
+                        //login success
+                        invalidLoginCredentials.setText("Login Successful!");
+                        invalidLoginCredentials.setStyle(successMessage);
+                        loginUsernameTextField.setStyle(successStyle);
+                        try {
+                            SimpleChatClient.setRoot("primary");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        invalidLoginCredentials.setText("Invalid data");
+                        loginUsernameTextField.setStyle(errorStyle);
+                        loginPasswordPasswordField.setStyle(errorStyle);
+                        loginUsernameTextField.setText("");
+                        loginPasswordPasswordField.setText("");
+                        authintication="null";
+                    }
+                });
+                EventBus.getDefault().unregister(LogInController.this);
+                return null;
+            }
+        };
+        new Thread(eventTask).start();
+    }
+
+private void askForUser(String email,String password){
+    try {
+        Message message = new Message("#LogIn&"+ email + "&"+password);
+        SimpleClient.getClient().sendToServer(message);
+    } catch (IOException e) {
+        // TODO Auto-generated catch block
+        showErrorMessage(Constants.INTERNAL_ERROR);
+        e.printStackTrace();
+    }
+}
 
     @FXML
     protected void onSignUpButtonClick() {
@@ -231,8 +237,11 @@ public class LogInController{
     }
 
     private boolean validateCredentials() {
-        // TODO: 10/01/2023 Create a validation method which ask the server for the credentials of the user.
-        return user != null;
+        if (authintication.startsWith("#authintication failed!"))
+            return false;
+        else if(authintication.startsWith("#authintication successful!"))
+            return true;
+        return false;
     }
 
     private boolean validateEmail(String mail){

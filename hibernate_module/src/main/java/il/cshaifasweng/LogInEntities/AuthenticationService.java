@@ -1,5 +1,7 @@
 package il.cshaifasweng.LogInEntities;
 
+import il.cshaifasweng.DataManipulationThroughDB.DAO;
+import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
@@ -20,13 +22,14 @@ public class AuthenticationService {
             Map.entry(6,OneTimeCustomer.class),
             Map.entry(5,RegisteredCustomer.class));
     public static <T> T getAuthenticatedEntity(String email, String password) {
-        SessionFactory factory = MySQL.getSessionFactory();
-        Session session = factory.openSession();
+        SessionFactory factory = DAO.factory;
+        Session session;
+        session= factory.openSession();
+
         T entity;
         for (int i=1;i<7;i++){
             entity=retrieveUser(i,email,password,session);
             if (entity!=null){
-                session.close();
                 return entity;
             }
 
@@ -35,28 +38,24 @@ public class AuthenticationService {
 
     }
     public static int checkAuthintecatedEntityType(String email,String password){
-        SessionFactory factory = MySQL.getSessionFactory();
+        SessionFactory factory = DAO.factory;
         Session session = factory.openSession();
         for (int i=1;i<7;i++){
             if (retrieveUser(i,email,password,session)!=null){
-                session.close();
                 return i;
             }
         }
-        session.close();
         return 0;
 
     }
     public static boolean checkEmailExistance(String email){
-        SessionFactory factory = MySQL.getSessionFactory();
+        SessionFactory factory =DAO.factory;
         Session session = factory.openSession();
         for (int i=1;i<7;i++){
             if (emailQuery(i,email,session)!=null){
-                session.close();
                 return true;
             }
         }
-        session.close();
         return false;
 
     }
@@ -73,7 +72,6 @@ public class AuthenticationService {
 
     private static <T> T retrieveUser(int classNum,String email,String password,Session session){
         try {
-
             Class<T> entitiesClass = mappedClasses.get(classNum);
             String hql = new StringBuilder().append("SELECT c FROM ").append(entitiesClass.getName()).append(" c WHERE c.email = :email and c.password = :password").toString();
             return session.createQuery(hql, entitiesClass).setParameter("email", email)
