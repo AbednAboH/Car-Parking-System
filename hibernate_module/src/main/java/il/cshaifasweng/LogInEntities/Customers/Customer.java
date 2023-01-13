@@ -17,8 +17,14 @@ import java.util.List;
 public abstract class Customer implements Serializable {
     @Id
     private int id;
-    @Column(name="Email")
+    @Column(name="email")
     private String email;
+    @Column(name="firstName")
+    private String firstName;
+    @Column(name="lastName")
+    private String lastName;
+    @Column(name="password")
+    private String  password;
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> cars = new ArrayList<>();
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
@@ -26,6 +32,12 @@ public abstract class Customer implements Serializable {
     public Customer() {
     }
 
+    public Customer (int id,String email,String firstName,String password){
+        this.id=id;
+        this.email=email;
+        this.firstName=firstName;
+        this.password=password;
+    }
     public Customer(int id,String email,List<Car> cars) {
         this.id=id;
         this.email=email;
