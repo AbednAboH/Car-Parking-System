@@ -11,6 +11,7 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
+import il.cshaifasweng.customerCatalogEntities.Order;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,8 +20,9 @@ import java.util.Map;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-    private static DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
-    private static DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
+    private static DataBaseManipulation<PricingChart> pChart=new DataBaseManipulation<PricingChart>();
+    private static DataBaseManipulation<ParkingLot> pLot= new DataBaseManipulation<ParkingLot>();
+    private static DataBaseManipulation<Order> orderHandler= new DataBaseManipulation<Order>();
     private static DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
@@ -51,7 +53,10 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
-            } else if (request.startsWith("#getPricingChart")) {
+            }else if (request.startsWith("#placeOrder")) {
+                placeOrder(message, client);
+            }
+            else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
 
             } else if (request.startsWith("#updatePrice")) {
@@ -148,7 +153,6 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void sendPricesChart(Message message, ConnectionToClient client) throws IOException, Exception {
-
         message.setObject(pChart.getAll(PricingChart.class));
         client.sendToClient(message);
     }
@@ -170,5 +174,10 @@ public class SimpleServerClass extends AbstractServer {
         PricingChart chartObject = pChart.get(Integer.parseInt(subID), PricingChart.class);
         chartObject.setRate((Integer) message.getObject());
         pChart.update(chartObject);
+    }
+
+    public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
+        orderHandler.save((Order)message.getObject(), Order.class);
+        client.sendToClient(message);
     }
 }
