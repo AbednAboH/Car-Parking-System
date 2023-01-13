@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ComplaintController">
+   <children>
+      <ToolBar layoutX="4.0" layoutY="345.0" prefHeight="40.0" prefWidth="200.0">
+        <items>
+          <Button mnemonicParsing="false" text="Submit" />
+        </items>
+      </ToolBar>
+      <ComboBox layoutX="430.0" layoutY="40.0" prefWidth="150.0" promptText="Complaint subject" />
+      <Accordion layoutX="62.0" layoutY="15.0" />
+      <ScrollBar layoutX="7.0" layoutY="331.0" prefHeight="14.0" prefWidth="587.0" />
+      <ScrollBar layoutX="579.0" layoutY="147.0" orientation="VERTICAL" prefHeight="181.0" prefWidth="14.0" />
+      <TextField layoutX="130.0" layoutY="15.0" prefHeight="49.0" prefWidth="217.0" promptText="Complaint " />
+      <TextArea layoutX="14.0" layoutY="76.0" prefHeight="253.0" prefWidth="568.0" />
+   </children>
+</AnchorPane>

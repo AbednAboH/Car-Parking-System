@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import il.cshaifasweng.Message;
@@ -16,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 public class LogInController{
@@ -56,10 +58,11 @@ public class LogInController{
     private Object user;
     public final int SECOND = 6000;
     private CountDownLatch latch;
-    String authintication="#null";
+    public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
     void initialize(){
 //        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(LogInController.this);
 
         try {
             // Check if the connection with the server is alive.
@@ -79,9 +82,15 @@ public class LogInController{
     }
 
     @Subscribe
+//    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void getUser(LogInSubscriber event) {
         System.out.println("get user method event");
-        authintication=event.getMessage().toString();
+        if(event.getMessage().getMessage().startsWith("#authintication"))
+              if (event.getMessage().getMessage().startsWith("#authintication successful!"))
+                  authintication.set(1);
+              else
+                  authintication.set(2);
+//            EventBus.getDefault().unregister(this);
         this.user =  event.getMessage().getObject();
 
     }
@@ -91,9 +100,9 @@ public class LogInController{
         Task<Void> eventTask = new Task<Void>() {
             @Override
             protected Void call() {
+                System.out.println("send to server");
                 askForUser(loginUsernameTextField.getText(), loginPasswordPasswordField.getText());
-                EventBus.getDefault().register(LogInController.this);
-                while (authintication.startsWith("#null")) {
+                while (authintication.get()==0) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -107,6 +116,7 @@ public class LogInController{
                         invalidLoginCredentials.setStyle(successMessage);
                         loginUsernameTextField.setStyle(successStyle);
                         try {
+//                            EventBus.getDefault().unregister(LogInController.this);
                             SimpleChatClient.setRoot("primary");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -118,26 +128,26 @@ public class LogInController{
                         loginPasswordPasswordField.setStyle(errorStyle);
                         loginUsernameTextField.setText("");
                         loginPasswordPasswordField.setText("");
-                        authintication="null";
+                        authintication.set(0);
                     }
+
                 });
-                EventBus.getDefault().unregister(LogInController.this);
                 return null;
             }
         };
         new Thread(eventTask).start();
     }
 
-private void askForUser(String email,String password){
-    try {
-        Message message = new Message("#LogIn&"+ email + "&"+password);
-        SimpleClient.getClient().sendToServer(message);
-    } catch (IOException e) {
-        // TODO Auto-generated catch block
-        showErrorMessage(Constants.INTERNAL_ERROR);
-        e.printStackTrace();
+    private void askForUser(String email,String password){
+        try {
+            Message message = new Message("#LogIn&"+ email + "&"+password);
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            showErrorMessage(Constants.INTERNAL_ERROR);
+            e.printStackTrace();
+        }
     }
-}
 
     @FXML
     protected void onSignUpButtonClick() {
@@ -237,9 +247,9 @@ private void askForUser(String email,String password){
     }
 
     private boolean validateCredentials() {
-        if (authintication.startsWith("#authintication failed!"))
+        if (authintication.get()==2)
             return false;
-        else if(authintication.startsWith("#authintication successful!"))
+        else if(authintication.get()==1)
             return true;
         return false;
     }
