@@ -23,7 +23,9 @@ public class RegisteredCustomer extends Customer {
     public RegisteredCustomer(){
     }
 
-
+    public RegisteredCustomer(int id,String email,String name,String password){
+        super(id,email,name,password);
+    }
     public RegisteredCustomer(int id, String email, List<Car> cars, List<Subscription> subscriptions) {
         super(id, email, cars);
         Subscriptions = subscriptions;
