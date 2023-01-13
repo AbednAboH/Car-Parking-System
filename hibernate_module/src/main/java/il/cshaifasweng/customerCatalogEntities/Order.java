@@ -56,7 +56,7 @@ public class Order implements Serializable {
         this.email = email;
     }
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="reports_id")
 //    private Reports reports;
     public Order() {
