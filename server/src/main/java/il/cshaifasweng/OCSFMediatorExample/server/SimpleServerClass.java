@@ -92,7 +92,6 @@ public class SimpleServerClass extends AbstractServer {
     }
     protected void Login(Message message,ConnectionToClient client){
 
-        // TODO: 1/11/2023 check errors
         String email,password,userName="";
         String[] mess=message.getMessage().split("&");
         email=mess[1];
@@ -105,22 +104,31 @@ public class SimpleServerClass extends AbstractServer {
             message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
-            clientsEmployeeMap.put( user.getId(), user);
-            client.setInfo("userId",user.getId());
-            message.setMessage("#authintication successful!");
-            message.setObject(user);
-            userName=user.getFirstName()+user.getLastName();
+            if (clientsEmployeeMap.containsKey(user.getId()))
+                message.setMessage("#alreadySignedIn");
+                // TODO: 1/13/2023 add this option in sign in screen !!
+            else {
+
+                clientsEmployeeMap.put(user.getId(), user);
+                client.setInfo("userId", user.getId());
+                message.setMessage("#authintication successful!");
+                message.setObject(user);
+            }
         }
         else if(clientType<=5){
             System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
-            message.setMessage("#authintication successful!");
-            message.setObject(user);
-            clientsCustomersMap.put( user.getId(), user);
-            client.setInfo("userId",user.getId());
-            userName=user.getFirstName()+user.getLastName();
-        }
+            if (clientsCustomersMap.containsKey(user.getId()))
+                message.setMessage("#alreadySignedIn");
+                // TODO: 1/13/2023 add this option in sign in screen !!
+            else {
+                message.setMessage("#authintication successful!");
+                message.setObject(user);
+                clientsCustomersMap.put( user.getId(), user);
+                client.setInfo("userId",user.getId());
 
+            }
+        }
 
     }
     public void sendToAllClients(Message message) {
