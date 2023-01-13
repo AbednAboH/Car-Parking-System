@@ -25,8 +25,11 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
 		}else if (message.getMessage().equals("#showSubscription")) {
 			EventBus.getDefault().post(new SubscriptionResponse(message));
-		}
-		else if (message.getMessage().equals("Error! we got an empty message")) {
+		}else if(message.getMessage().startsWith("#authintication")){
+			EventBus.getDefault().post(new LogInSubscriber(message));
+		}else if(message.getMessage().equals("#placeOrder")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
+		}else if(message.getMessage().equals("Error! we got an empty message")){
 			EventBus.getDefault().post(new ErrorEvent(message));
 		}else {
 			System.out.println(message.getMessage());

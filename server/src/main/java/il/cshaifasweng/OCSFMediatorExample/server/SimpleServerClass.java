@@ -28,7 +28,6 @@ public class SimpleServerClass extends AbstractServer {
     private static DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
-    private static DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
     private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
 
 
@@ -67,22 +66,21 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#updatePrice")) {
                 System.out.println("Update");
                 updatePriceChart(message, client);
-
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
+
             }else if (request.startsWith("#showOrders")){
                 showOrders(message , client);
             }
-
             else if (request.startsWith("#showSubscription")) {
                 showSubscription(message, client);
-            }else {
+
             }else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("Alive!");
             } else {
                 System.out.println("no selection was done!!!");
-
             }
+
 
 
         } catch (Exception ex) {
@@ -183,7 +181,6 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void sendPricesChart(Message message, ConnectionToClient client) throws IOException, Exception {
-
         message.setObject(pChart.getAll(PricingChart.class));
         client.sendToClient(message);
     }
