@@ -9,7 +9,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>server</module>
-		<module>entities</module>
 		<module>client</module>
         <module>hibernate_module</module>
     </modules>

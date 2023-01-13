@@ -48,7 +48,6 @@ public class MySQL
     public static void main( String[] args ) {
         try {
             connectToDB();
-            initiatePricingChart();
             printAllEntities();
 
             session.getTransaction().commit(); // Save everything.

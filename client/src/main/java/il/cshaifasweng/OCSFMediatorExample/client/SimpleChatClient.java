@@ -23,13 +23,14 @@ public class SimpleChatClient extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-//    	EventBus.getDefault().register(this);
-//    	client = SimpleClient.getClient();
-//    	client.openConnection();
+    	EventBus.getDefault().register(this);
+    	client = SimpleClient.getClient();
+    	client.openConnection();
         scene = new Scene(loadFXML("logInScreen"), 710, 650);
         stage.setScene(scene);
         stage.show();
     }
+
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
