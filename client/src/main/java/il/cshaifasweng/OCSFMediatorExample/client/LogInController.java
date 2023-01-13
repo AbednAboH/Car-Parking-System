@@ -61,7 +61,6 @@ public class LogInController{
     public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
     void initialize(){
-//        EventBus.getDefault().register(this);
         EventBus.getDefault().register(LogInController.this);
 
         try {
@@ -82,7 +81,6 @@ public class LogInController{
     }
 
     @Subscribe
-//    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void getUser(LogInSubscriber event) {
         System.out.println("get user method event");
         if(event.getMessage().getMessage().startsWith("#authintication"))
@@ -90,7 +88,6 @@ public class LogInController{
                   authintication.set(1);
               else
                   authintication.set(2);
-//            EventBus.getDefault().unregister(this);
         this.user =  event.getMessage().getObject();
 
     }

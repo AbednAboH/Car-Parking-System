@@ -75,7 +75,7 @@ public abstract class Subscription implements Serializable {
     }
 
     @Override
-    public static String toString(){
+    public  String toString(){
         return "SubId="+id+", customerId="+registeredCustomer.getId()
                 +", hours_per_month="+hoursPerMonth
                 +", subscriptionDate="+startDate+

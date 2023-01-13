@@ -55,6 +55,7 @@ public class SimpleServerClass extends AbstractServer {
                 client.sendToClient(message);
 
             } else if (request.startsWith("#getAllParkingLots")) {
+                System.out.println("parkingLots Sent");
                 sendParkingLots(message, client);
 
             }else if (request.startsWith("#placeOrder")) {
