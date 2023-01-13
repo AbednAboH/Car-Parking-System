@@ -61,5 +61,6 @@ Date 8.1.2023
  * used threads to ensure that the GUI doesn't freeze using Task Class and a String authentication object to determine the state of the request
  *authentication is null when the request to get the account is still waiting on the server and when its updated we get out of the loop , as the server would surely return an answer . 
  
- 
-  
+ ![image](https://user-images.githubusercontent.com/92520508/212211370-d96bbfeb-e9d8-45df-a5dc-40d8381f4e49.png)
+
+  the final version would be updated for more fields as this is a proof of concept page !
