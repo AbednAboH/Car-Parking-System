@@ -5,6 +5,8 @@ import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.Employee;
+import il.cshaifasweng.MoneyRelatedServices.Penalty;
+import il.cshaifasweng.MySQL;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.Message;
@@ -32,11 +34,9 @@ public class SimpleServerClass extends AbstractServer {
     private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
     private static DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
 
-
     public SimpleServerClass(int port) {
-
         super(port);
-
+        DataBaseManipulation.intiate();
     }
 
 
@@ -61,6 +61,8 @@ public class SimpleServerClass extends AbstractServer {
 
             }else if (request.startsWith("#placeOrder")) {
                 placeOrder(message, client);
+            }else if (request.startsWith("#getRegisteredCustomer")) {
+                getRegisteredCustomer(message, client);
             }
             else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
@@ -177,6 +179,7 @@ public class SimpleServerClass extends AbstractServer {
             message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
+            System.out.println(user);
             if (clientsEmployeeMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
                 // TODO: 1/13/2023 add this option in sign in screen !!
@@ -191,6 +194,8 @@ public class SimpleServerClass extends AbstractServer {
         else if(clientType<=5){
             System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
+            System.out.println(user);
+
             if (clientsCustomersMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
                 // TODO: 1/13/2023 add this option in sign in screen !!
@@ -245,7 +250,23 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
-        orderHandler.save((Order)message.getObject(), Order.class);
+        Order newOrder = (Order)message.getObject();
+        //TODO: change to customerID from client saved info
+        RegisteredCustomer rg = rCustomer.get(1, RegisteredCustomer.class);
+        System.out.println(rg.getId());
+        orderHandler.save(newOrder, Order.class);
+        rg.addOrder(newOrder);
+        rCustomer.update(rg);
+        rg=rCustomer.get(1,RegisteredCustomer.class);
+        rg.getOrders().get(0).setRegisteredCustomer(rg);
         client.sendToClient(message);
     }
+
+    public void getRegisteredCustomer(Message message, ConnectionToClient client) throws IOException,Exception {
+        //TODO: change to customerID from client saved info
+        message.setObject(rCustomer.get(1, RegisteredCustomer.class));
+        client.sendToClient(message);
+    }
+
+
 }
