@@ -86,10 +86,13 @@ public class LogInController{
     public void getUser(LogInSubscriber event) {
         System.out.println("get user method event");
         if(event.getMessage().getMessage().startsWith("#authintication"))
-              if (event.getMessage().getMessage().startsWith("#authintication successful!"))
+              if (event.getMessage().getMessage().startsWith("#authintication successful!")) {
                   authintication.set(1);
-              else
+//                  We  may need to move the assigning of the user to here?
+                  SimpleChatClient.setUser(event.getMessage().getObject());
+              }else {
                   authintication.set(2);
+              }
 //            EventBus.getDefault().unregister(this);
         this.user =  event.getMessage().getObject();
 

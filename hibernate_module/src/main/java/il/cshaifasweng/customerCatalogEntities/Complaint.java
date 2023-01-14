@@ -1,33 +1,34 @@
 package il.cshaifasweng.customerCatalogEntities;
 
+import il.cshaifasweng.LocalDateAttributeConverter;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 // TODO: 1/9/2023 check the date format annotation as it may cause trouble in the table entries ,for now its set to Transient
 @Entity
 @Table(name="complaints")
-public class Complaint {
+public class Complaint implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name="Text")
     private String text;
+    @Convert(converter = LocalDateAttributeConverter.class)
     @Column (name="DateOfSubmission")
-    @Transient
-    private SimpleDateFormat date;
+    private LocalDate date;
+    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name="remainingTimeToAnswer")
-    @Transient
-    private SimpleDateFormat durationToAnswer;
+    private LocalDate durationToAnswer;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="customer_id")
     private Customer customer;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parkingLot_id")
-
-
     private ParkingLot parkingLot;
     @Column(name="Active")
     private boolean active;
@@ -35,7 +36,7 @@ public class Complaint {
     public Complaint() {
     }
 
-    public Complaint(int id, String text, SimpleDateFormat date, SimpleDateFormat durationToAnswer, Customer customer, boolean active) {
+    public Complaint(int id, String text, LocalDate date, LocalDate durationToAnswer, Customer customer, boolean active) {
         this.id = id;
         this.text = text;
         this.date = date;
@@ -43,7 +44,7 @@ public class Complaint {
         this.customer = customer;
         this.active = active;
     }
-    public Complaint(int id, String text, SimpleDateFormat date, SimpleDateFormat durationToAnswer, Customer customer, boolean active, ParkingLot pl) {
+    public Complaint(int id, String text, LocalDate date, LocalDate durationToAnswer, Customer customer, boolean active, ParkingLot pl) {
         this.id = id;
         this.text = text;
         this.date = date;
@@ -52,10 +53,10 @@ public class Complaint {
         this.active = active;
         parkingLot=pl;
     }
-    @Override
-    public String toString(){
-     return "id="+id+", date="+date+", customer="+customer.getId()+", active="+active+", text="+text;
-    }
+//    @Override
+//    public String toString(){
+//     return "id="+id+", date="+date+", ", active="+active+", text="+text;
+//    }
     public int getId() {
         return id;
     }
@@ -72,19 +73,19 @@ public class Complaint {
         this.text = text;
     }
 
-    public SimpleDateFormat getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(SimpleDateFormat date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public SimpleDateFormat getDurationToAnswer() {
+    public LocalDate getDurationToAnswer() {
         return durationToAnswer;
     }
 
-    public void setDurationToAnswer(SimpleDateFormat durationToAnswer) {
+    public void setDurationToAnswer(LocalDate durationToAnswer) {
         this.durationToAnswer = durationToAnswer;
     }
 
@@ -102,5 +103,13 @@ public class Complaint {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public ParkingLot getParkingLot() {
+        return parkingLot;
+    }
+
+    public void setParkingLot(ParkingLot parkingLot) {
+        this.parkingLot = parkingLot;
     }
 }
