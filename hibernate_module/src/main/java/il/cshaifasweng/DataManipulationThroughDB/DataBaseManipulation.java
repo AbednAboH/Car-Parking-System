@@ -58,4 +58,8 @@ public class DataBaseManipulation<T> implements DAO<T>{
         session.flush();
         session.close();
     }
+    public void deleteById(int id,Class<T> type){
+        T object= get(id,type);
+        delete(object,type);
+    }
 }

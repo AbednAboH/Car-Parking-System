@@ -20,13 +20,14 @@ public class SimpleChatClient extends Application {
 
     private static Scene scene;
     private SimpleClient client;
+    private static Object user;
 
     @Override
     public void start(Stage stage) throws IOException {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 710, 650);
+        scene = new Scene(loadFXML("CompliantsListScreen"), 710, 650);
         stage.setScene(scene);
         stage.show();
     }
@@ -41,7 +42,13 @@ public class SimpleChatClient extends Application {
         return fxmlLoader.load();
     }
     
-    
+    public static Object getUser(){
+        return user;
+    }
+
+    public static void setUser(Object user){
+        SimpleChatClient.user = user;
+    }
 
     @Override
 	public void stop() throws Exception {
