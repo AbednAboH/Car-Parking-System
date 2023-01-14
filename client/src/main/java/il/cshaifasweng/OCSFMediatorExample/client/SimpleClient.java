@@ -35,7 +35,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
-		}else if(message.getMessage().equals("#GetAllCompliants")) {
+		}else if(message.getMessage().startsWith("#GetAllCompliants")) {
 			EventBus.getDefault().post(new CompliantsSubscriber(message));
 		}else if(message.getMessage().startsWith("#CloseComplaint")){
 			EventBus.getDefault().post(new CompliantsSubscriber(message));

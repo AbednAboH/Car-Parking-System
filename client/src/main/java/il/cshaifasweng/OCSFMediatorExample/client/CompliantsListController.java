@@ -3,6 +3,7 @@ import il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -261,31 +262,42 @@ public class CompliantsListController {
     }
 
     @FXML
-    void showClosedCompliants(ActionEvent event){
-        handleComplaint.setDisable(!handleComplaint.isDisabled());
-        if(closedCompliants.getText().equals("Closed Complaint")){
-            updateTable(false);
-            closedCompliants.setText("Opened Complaints");
-        }else{
-            updateTable(true);
-            closedCompliants.setText("Closed Complaint");
-        }
+    void showClosedCompliants(ActionEvent event) throws InterruptedException {
+        sendMessagesToServer("#GetAllCompliantsForClose");
+
     }
 
     @Subscribe
-    public void getCompliants(CompliantsSubscriber event){
+    public void getCompliants(CompliantsSubscriber event) throws InterruptedException {
         System.out.println("Was here");
         String messegeContent = event.getMessage().getMessage();
         if(messegeContent.startsWith("#GetAllCompliants")){
             System.out.println(event.getMessage().getObject());
             observableList = FXCollections.observableArrayList((ArrayList<Complaint>)event.getMessage().getObject());
-            updateTable(true);
+            if(messegeContent.contains("Close")){
+                updateTheTable();
+            }else {
+                updateTable(true);
+            }
             return;
         }
         if(messegeContent.startsWith("#CloseComplaint")){
             isRemoved = true;
         }
 
+    }
+    private void updateTheTable() throws InterruptedException {
+        Platform.runLater(() -> {
+            handleComplaint.setDisable(!handleComplaint.isDisabled());
+            if(closedCompliants.getText().equals("Closed Complaint")){
+                System.out.println("here1");
+                closedCompliants.setText("Opened Complaints");
+                updateTable(false);
+            }else{
+                closedCompliants.setText("Closed Complaint");
+                updateTable(true);
+            }
+        });
     }
 
     /**
