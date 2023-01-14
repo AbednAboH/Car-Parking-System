@@ -65,7 +65,10 @@ public class Order implements Serializable {
         this.plateNum = plateNum;
         this.email = email;
     }
-
+    @Override
+    public String toString(){
+        return "order id: "+id+" at"+date;
+    }
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="reports_id")
 //    private Reports reports;

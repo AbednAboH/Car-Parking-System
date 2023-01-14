@@ -5,7 +5,7 @@ import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
-import il.cshaifasweng.LogInEntities.Employees.Employee;
+import il.cshaifasweng.LogInEntities.Employees.*;
 import il.cshaifasweng.MoneyRelatedServices.Penalty;
 import il.cshaifasweng.MySQL;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -17,6 +17,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
+import org.hibernate.Session;
 
 
 import java.io.IOException;
@@ -34,6 +35,10 @@ public class SimpleServerClass extends AbstractServer {
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
     private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
     private static DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
+    private static DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
+    private static DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
+    private static DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
+    private static DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
 
     public SimpleServerClass(int port) {
         super(port);
@@ -80,8 +85,12 @@ public class SimpleServerClass extends AbstractServer {
             }
             else if (request.startsWith("#showSubscription")) {
                 showSubscription(message, client);
-
-            }else if (request.startsWith("#ConnectionAlive")) {
+            }
+            else if(request.startsWith("#getAllOrders")) {
+                System.out.println("get all orders");
+                getCustomersOrders(message,client);
+            }
+            else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("Alive!");
             }else if(request.startsWith("#GetAllCompliants")){
                 System.out.println("Got the message");
@@ -161,7 +170,7 @@ public class SimpleServerClass extends AbstractServer {
         //TODO:1/11/23 might need to update the fields later on , for now this is the current format
         RegisteredCustomer customer=new RegisteredCustomer(2003,email,name,password);
         rCustomer.save(customer,RegisteredCustomer.class);
-        customer=rCustomer.getLastAdded(RegisteredCustomer.class);
+        customer=(RegisteredCustomer)rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put( customer.getId(), customer);
         client.setInfo("userId",customer.getId());
         System.out.println(customer);
@@ -271,15 +280,41 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(rCustomer.get(1, RegisteredCustomer.class));
         client.sendToClient(message);
     }
+    public void getCustomersOrders(Message message,ConnectionToClient client) throws IOException,Exception{
+        Session session=DataBaseManipulation.getSession();
+        session.beginTransaction();
+        RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        message.setObject(regCostumer.getOrders());
+        session.getTransaction().commit();
+        System.out.println("got to Customer orders");
+        System.out.println(regCostumer.getOrders());
+        client.sendToClient(message);
 
+    }
     public void getUser(Message message,ConnectionToClient client)throws IOException,Exception{
         int id=(Integer) client.getInfo("userId");
         String type=(String) client.getInfo("userType");
         if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
-            message.setObject(clientsCustomersMap.get(id));
-        else
-            message.setObject(clientsEmployeeMap.get(id));
+            message.setObject(rCustomer.get(id,RegisteredCustomer.class));
+        else {
+             message.setObject(getEmployee(id));
+        }
         client.sendToClient(message);
 
+    }
+
+    private Employee getEmployee(int id) {
+        Employee user=clientsEmployeeMap.get(id);
+        if (user.getClass()==ParkingLotEmployee.class){
+            user=plEmployee.get(id,ParkingLotEmployee.class);
+        }
+        else if (user.getClass()==ParkingLotManager.class){
+            user=plManager.get(id,ParkingLotManager.class);
+        }else if (user.getClass()==CustomerServiceEmployee.class){
+            user=csEmployee.get(id,CustomerServiceEmployee.class);
+        }else if (user.getClass()==GlobalManager.class){
+            user=globalManager.get(id,GlobalManager.class);
+        }
+        return user;
     }
 }
