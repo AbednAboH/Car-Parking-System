@@ -118,7 +118,7 @@ public class LogInController{
                         loginUsernameTextField.setStyle(successStyle);
                         try {
 //                            EventBus.getDefault().unregister(LogInController.this);
-                            SimpleChatClient.setRoot("primary");
+                            SimpleChatClient.setRoot("complaint");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

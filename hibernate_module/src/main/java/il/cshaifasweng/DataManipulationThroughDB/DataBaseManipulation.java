@@ -27,6 +27,24 @@ public class DataBaseManipulation<T> implements DAO<T>{
         return query.getSingleResult();
     }
     @Override
+    public List<T> listQuery(Class<T> Type, String hql) {
+        session.beginTransaction();
+        TypedQuery<T> query = session.createQuery(hql, Type).setMaxResults(1);
+        List<T> entities=query.getResultList();
+        session.getTransaction().commit();
+        return entities;
+    }
+
+    @Override
+    public T query(Class<T> Type, String hql) {
+        session.beginTransaction();
+        TypedQuery<T> query = session.createQuery(hql, Type).setMaxResults(1);
+        T entities=(T)query.getSingleResult();
+        session.getTransaction().commit();
+        return entities;
+    }
+
+    @Override
     public List<T> getAll(Class<T> type) {
         session.beginTransaction();
         CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -34,8 +52,6 @@ public class DataBaseManipulation<T> implements DAO<T>{
         query.from(type);
         List<T> entities=session.createQuery(query).getResultList();
         session.getTransaction().commit();
-
-
         return entities;
     }
 

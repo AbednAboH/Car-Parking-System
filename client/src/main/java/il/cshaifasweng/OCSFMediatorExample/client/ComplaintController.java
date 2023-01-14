@@ -1,5 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -62,7 +64,6 @@ public class ComplaintController {
     void submitComplaintAction(ActionEvent event) {
 
     }
-    Object Plots;
     @FXML
     void initialize(){
         EventBus.getDefault().register(this);
@@ -71,6 +72,13 @@ public class ComplaintController {
             // Check if the connection with the server is alive.
             Message message = new Message("#getAllParkingLots");
             SimpleClient.getClient().sendToServer(message);
+            RegisteredCustomer user=(RegisteredCustomer) SimpleChatClient.getUser();
+            if (user!=null){
+                firstName.setText(user.getFirstName());
+                LastName.setText(user.getLastName());
+                email.setText(user.getEmail());
+                customerID.setText(Integer.toString(user.getId()));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -80,6 +88,6 @@ public class ComplaintController {
         List<ParkingLot> PLresults = (List<ParkingLot>) event.getMessage().getObject();
         for (ParkingLot PL :PLresults)
             parkingLot.getItems().add(PL.getId());
-
     }
+
 }

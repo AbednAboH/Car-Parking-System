@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.Employee;
 import il.cshaifasweng.MoneyRelatedServices.Penalty;
@@ -188,6 +189,7 @@ public class SimpleServerClass extends AbstractServer {
 
                 clientsEmployeeMap.put(user.getId(), user);
                 client.setInfo("userId", user.getId());
+                client.setInfo("userType",user.getClass().getName());
                 message.setMessage("#authintication successful!");
                 message.setObject(user);
             }
@@ -205,6 +207,7 @@ public class SimpleServerClass extends AbstractServer {
                 message.setObject(user);
                 clientsCustomersMap.put( user.getId(), user);
                 client.setInfo("userId",user.getId());
+                client.setInfo("userType",user.getClass().getName());
 
             }
         }
@@ -269,5 +272,14 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
     }
 
+    public void getUser(Message message,ConnectionToClient client)throws IOException,Exception{
+        int id=(Integer) client.getInfo("userId");
+        String type=(String) client.getInfo("userType");
+        if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
+            message.setObject(clientsCustomersMap.get(id));
+        else
+            message.setObject(clientsEmployeeMap.get(id));
+        client.sendToClient(message);
 
+    }
 }

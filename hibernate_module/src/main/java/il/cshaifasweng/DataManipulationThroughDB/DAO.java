@@ -12,6 +12,9 @@ public interface DAO<T> {
     void save(T t,Class<T> type);
     void update(T t);
     void delete(T t,Class<T> type);
+    List<T> listQuery(Class<T> Type, String hql);
+    T query(Class<T> Type, String hql);
+
 //    T Query(String query,Class<T>);
 
 }
