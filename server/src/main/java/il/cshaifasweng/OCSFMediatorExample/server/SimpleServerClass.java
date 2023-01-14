@@ -34,8 +34,7 @@ public class SimpleServerClass extends AbstractServer {
 
     public SimpleServerClass(int port) {
         super(port);
-        pChart=new DataBaseManipulation<PricingChart>();
-        pChart.intiate();
+        DataBaseManipulation.intiate();
     }
 
 

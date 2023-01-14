@@ -6,6 +6,7 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
+import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MySQL;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 
 public class AuthenticationService {
+    static Session session=DataBaseManipulation.getSession();
     private static final Map<Integer,Class> mappedClasses=Map.ofEntries(Map.entry(1,ParkingLotManager.class),
             Map.entry(2,ParkingLotEmployee.class),
             Map.entry(4,GlobalManager.class),
@@ -22,8 +24,7 @@ public class AuthenticationService {
             Map.entry(6,OneTimeCustomer.class),
             Map.entry(5,RegisteredCustomer.class));
     public static <T> T getAuthenticatedEntity(String email, String password) {
-        SessionFactory factory = DAO.factory;
-        Session session=factory.getCurrentSession();
+
         session.beginTransaction();
         T entity;
         for (int i=1;i<7;i++){
@@ -40,8 +41,7 @@ public class AuthenticationService {
 
     }
     public static int checkAuthintecatedEntityType(String email,String password){
-        SessionFactory factory = DAO.factory;
-        Session session = factory.getCurrentSession();
+
         session.beginTransaction();
 
         for (int i=1;i<7;i++){
@@ -57,8 +57,7 @@ public class AuthenticationService {
 
     }
     public static boolean checkEmailExistance(String email){
-        SessionFactory factory =DAO.factory;
-        Session session = factory.getCurrentSession();
+
         session.beginTransaction();
         for (int i=1;i<7;i++){
             if (emailQuery(i,email,session)!=null){
