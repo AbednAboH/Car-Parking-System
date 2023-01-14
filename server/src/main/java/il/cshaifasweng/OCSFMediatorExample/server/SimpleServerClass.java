@@ -13,6 +13,7 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
+import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 
@@ -31,6 +32,7 @@ public class SimpleServerClass extends AbstractServer {
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
     private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
+    private static DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
 
     public SimpleServerClass(int port) {
         super(port);
@@ -80,7 +82,13 @@ public class SimpleServerClass extends AbstractServer {
 
             }else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("Alive!");
-            } else {
+            }else if(request.startsWith("#GetAllCompliants")){
+                System.out.println("Got the message");
+                showComplaints(message, client);
+            }else if(request.startsWith("#CloseComplaint")) {
+                System.out.println("ClosingCompliant");
+                    closeCompliants(message, client);
+            }else {
                 System.out.println("no selection was done!!!");
             }
 
@@ -90,6 +98,38 @@ public class SimpleServerClass extends AbstractServer {
             ex.printStackTrace();
         }
 
+    }
+
+    private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
+        String request = message.getMessage();
+        int complaintId;
+        int userId;
+        double refundAmount;
+        String[] args;
+        args = request.split("&");
+        userId = Integer.parseInt(args[2]);
+        System.out.println((args[1]));
+        complaintId = Integer.parseInt(args[1]);
+        Complaint complaint = complaintHandler.get(complaintId,Complaint.class);
+        complaint.setActive(false);
+        if(request.contains("With")){
+            refundAmount = Double.parseDouble(args[3]);
+        }else if(request.contains("Full")){
+//                Need to return the full refund but how to know if we don't have the order that was made?
+        }else{
+//            complaintHandler.delete(complaintHandler.get(complaintId,Complaint.class),Complaint.class);
+        }
+        complaintHandler.update(complaint);
+        client.sendToClient(message);
+    }
+
+    private void showComplaints(Message message, ConnectionToClient client) {
+        message.setObject(complaintHandler.getAll(Complaint.class));
+        try {
+            client.sendToClient(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showSubscription(Message message, ConnectionToClient client) {

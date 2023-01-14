@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
 import org.greenrobot.eventbus.EventBus;
@@ -32,8 +33,12 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().equals("#getRegisteredCustomer")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
-		}else if(message.getMessage().equals("Error! we got an empty message")){
+		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
+		}else if(message.getMessage().equals("#GetAllCompliants")) {
+			EventBus.getDefault().post(new CompliantsSubscriber(message));
+		}else if(message.getMessage().startsWith("#CloseComplaint")){
+			EventBus.getDefault().post(new CompliantsSubscriber(message));
 		}else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
