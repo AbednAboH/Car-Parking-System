@@ -55,8 +55,18 @@ public class Order implements Serializable {
         this.plateNum = plateNum;
         this.email = email;
     }
+    public Order(ParkingLot parkingLotID, LocalDate date,
+                 String entering, String exiting, String plateNum, String email) {
+//        this.registeredCustomer = registeredCustomer;
+        this.parkingLotID = parkingLotID;
+        this.date = date;
+        this.entering = entering;
+        this.exiting = exiting;
+        this.plateNum = plateNum;
+        this.email = email;
+    }
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="reports_id")
 //    private Reports reports;
     public Order() {
