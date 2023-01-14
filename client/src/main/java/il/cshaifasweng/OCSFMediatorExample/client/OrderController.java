@@ -108,9 +108,12 @@ public class OrderController {
         try {
             if (orderInfoValidation()) {
                 int idx = plChoice.getSelectionModel().getSelectedItem();
-                Order newOrder = new Order(rg, PLresults.get(idx), dateChoice.getValue(),
+                Order newOrder = new Order( PLresults.get(idx), dateChoice.getValue(),
                         arrivalTime.getValue().toString(), exitTime.getValue().toString()
                         ,plateNum.getText(), emailInput.getText());
+//                Order newOrder = new Order(rg, PLresults.get(idx), dateChoice.getValue(),
+//                        arrivalTime.getValue().toString(), exitTime.getValue().toString()
+//                        ,plateNum.getText(), emailInput.getText());
                 Message message = new Message("#placeOrder", newOrder);
                 SimpleClient.getClient().sendToServer(message);
             } else {

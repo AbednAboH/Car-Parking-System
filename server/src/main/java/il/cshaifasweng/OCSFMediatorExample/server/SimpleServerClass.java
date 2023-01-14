@@ -6,6 +6,7 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.Employee;
 import il.cshaifasweng.MoneyRelatedServices.Penalty;
+import il.cshaifasweng.MySQL;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.Message;
@@ -32,9 +33,9 @@ public class SimpleServerClass extends AbstractServer {
     private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
 
     public SimpleServerClass(int port) {
-
         super(port);
-
+        pChart=new DataBaseManipulation<PricingChart>();
+        pChart.intiate();
     }
 
 
@@ -139,6 +140,7 @@ public class SimpleServerClass extends AbstractServer {
             message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
+            System.out.println(user);
             if (clientsEmployeeMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
                 // TODO: 1/13/2023 add this option in sign in screen !!
@@ -153,6 +155,8 @@ public class SimpleServerClass extends AbstractServer {
         else if(clientType<=5){
             System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
+            System.out.println(user);
+
             if (clientsCustomersMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
                 // TODO: 1/13/2023 add this option in sign in screen !!
@@ -211,10 +215,11 @@ public class SimpleServerClass extends AbstractServer {
         //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get(1, RegisteredCustomer.class);
         System.out.println(rg.getId());
+        orderHandler.save(newOrder, Order.class);
         rg.addOrder(newOrder);
         rCustomer.update(rg);
-        orderHandler.save(newOrder, Order.class);
-        orderHandler.getLastAdded(Order.class).setRegisteredCustomer(rg);
+        rg=rCustomer.get(1,RegisteredCustomer.class);
+        rg.getOrders().get(0).setRegisteredCustomer(rg);
         client.sendToClient(message);
     }
 
