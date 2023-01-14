@@ -26,7 +26,7 @@
       <ChoiceBox fx:id="plChoice" layoutX="395.0" layoutY="69.0" prefHeight="25.0" prefWidth="176.0" />
       <Spinner fx:id="arrivalTime" editable="true" layoutX="108.0" layoutY="169.0" prefHeight="25.0" prefWidth="57.0" />
       <Spinner fx:id="exitTime" layoutX="315.0" layoutY="169.0" prefHeight="25.0" prefWidth="57.0" />
-      <TextField fx:id="plateNum" layoutX="121.0" layoutY="258.0" />
+      <TextField fx:id="plateNum" layoutX="121.0" layoutY="258.0" onInputMethodTextChanged="#plateNumTxtChange" />
       <TextField fx:id="emailInput" layoutX="363.0" layoutY="258.0" />
       <Button fx:id="submit" layoutX="243.0" layoutY="360.0" mnemonicParsing="false" onAction="#goToPayment" text="Continue to payment" />
       <Label disable="true" layoutX="399.0" layoutY="173.0" text="*Format: HH:00 (00-23)" />
@@ -36,6 +36,11 @@
       <Label disable="true" layoutX="55.0" layoutY="200.0" prefHeight="28.0" prefWidth="477.0" text="*In case of arrival at 23:00, The reservation will be from 23:00 untill 23:59." wrapText="true">
          <font>
             <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="warningMsg" layoutX="201.0" layoutY="297.0" text="Please fill in all fields correctly" textFill="RED" visible="false">
+         <font>
+            <Font size="15.0" />
          </font>
       </Label>
    </children>

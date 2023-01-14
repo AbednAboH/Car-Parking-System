@@ -64,4 +64,8 @@ public class DataBaseManipulation<T> implements DAO<T>{
         session.getTransaction().commit();
 
     }
+    public void deleteById(int id,Class<T> type){
+        T object= get(id,type);
+        delete(object,type);
+    }
 }

@@ -30,6 +30,9 @@ public class Order implements Serializable {
 //    @JoinColumn(name="parkingSpot_id")
 //    private ParkingLot parkingSpotID;
 
+    @Column(name="active")
+    private boolean active;
+
     @Column(name="orderDate")
     private LocalDate date;
 
@@ -54,6 +57,7 @@ public class Order implements Serializable {
         this.exiting = exiting;
         this.plateNum = plateNum;
         this.email = email;
+        this.active = true;
     }
     public Order(ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
@@ -64,6 +68,7 @@ public class Order implements Serializable {
         this.exiting = exiting;
         this.plateNum = plateNum;
         this.email = email;
+        this.active = true;
     }
 
 //    @ManyToOne(fetch = FetchType.LAZY)
