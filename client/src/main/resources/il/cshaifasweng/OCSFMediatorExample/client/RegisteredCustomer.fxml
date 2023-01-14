@@ -16,6 +16,7 @@
                   <Button fx:id="orderbutton" layoutX="35.0" layoutY="44.0" mnemonicParsing="false" onAction="#showOrders" prefHeight="25.0" prefWidth="121.0" text="Show Orders" />
                   <Button fx:id="subscriptionbutton" layoutX="35.0" layoutY="94.0" mnemonicParsing="false" onAction="#showSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Show Subscriptions" />
                   <Button fx:id="addsubscriptionbutton1" layoutX="34.0" layoutY="145.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Add Subscriptions" />
+                  <Button fx:id="placeOrder" layoutX="33.0" layoutY="194.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Place new order" />
                </children></AnchorPane>
          </content>
       </Tab>
@@ -27,7 +28,7 @@
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="121.0" layoutY="24.0" prefHeight="261.0" prefWidth="279.0">
+                  <TableView fx:id="allOrders" layoutX="121.0" layoutY="24.0" onSort="#showOrders" prefHeight="261.0" prefWidth="279.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Order id" />
                     </columns>
