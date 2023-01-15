@@ -16,6 +16,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
+import org.hibernate.Session;
 
 
 import java.io.IOException;
@@ -250,18 +251,16 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
-        System.out.println("ord2er");
+        Session session=DataBaseManipulation.getSession();
         Order newOrder = (Order)message.getObject();
-        //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get(1, RegisteredCustomer.class);
-        System.out.println(rg.getId());
-        orderHandler.save(newOrder, Order.class);
+        session.save(newOrder);
+        System.out.println(newOrder.getId());
         rg.addOrder(newOrder);
         rCustomer.update(rg);
-        rg=rCustomer.get(1,RegisteredCustomer.class);
-        rg.getOrders().get(0).setRegisteredCustomer(rg);
-        System.out.println("ord3er");
+        session.getTransaction().commit();
         client.sendToClient(message);
+//
     }
 
     public void getRegisteredCustomer(Message message, ConnectionToClient client) throws IOException,Exception {
