@@ -35,6 +35,12 @@ public class OrderPaymentController {
     private Button done;
 
     @FXML
+    private Label successLbl;
+
+    @FXML
+    private Button homeBtn;
+
+    @FXML
     private AnchorPane paymentWindow;
 
     @FXML
@@ -87,6 +93,11 @@ public class OrderPaymentController {
     }
 
     @FXML
+    void goToHome(ActionEvent event) {
+
+    }
+
+    @FXML
     void cvvTxtChange(ActionEvent event) {
         String txt = cvvInput.getText();
         if (!txt.matches("-?([1-9][0-9]*)?")
@@ -127,7 +138,10 @@ public class OrderPaymentController {
         orderIDTxt.setVisible(true);
         done.setDisable(false);
         back.setDisable(false);
-        //orderIDTxt.setText(event.getMessage().getObject() + "");
+        homeBtn.setVisible(true);
+        successLbl.setVisible(true);
+        System.out.println(event.getMessage().getObject());
+        orderIDTxt.setText(event.getMessage().getObject() + "");
     }
 
     private void initPaymentControls() {

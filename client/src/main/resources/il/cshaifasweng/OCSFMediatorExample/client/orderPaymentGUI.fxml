@@ -31,10 +31,10 @@
       <Label layoutX="262.0" layoutY="50.0" text="Parking Hours:" />
       <AnchorPane fx:id="paymentWindow" layoutX="-1.0" layoutY="184.0" prefHeight="215.0" prefWidth="600.0">
          <children>
-            <TextField fx:id="numberInput" layoutX="50.0" layoutY="68.0" onInputMethodTextChanged="#cardNumTxtChange" prefHeight="25.0" prefWidth="141.0" />
+            <TextField fx:id="numberInput" layoutX="50.0" layoutY="68.0" prefHeight="25.0" prefWidth="141.0" />
             <ChoiceBox fx:id="monthInput" layoutX="239.0" layoutY="69.0" prefHeight="25.0" prefWidth="45.0" />
             <ChoiceBox fx:id="yearInput" layoutX="315.0" layoutY="69.0" prefHeight="25.0" prefWidth="73.0" />
-            <TextField fx:id="cvvInput" layoutX="456.0" layoutY="69.0" onInputMethodTextChanged="#cvvTxtChange" prefHeight="25.0" prefWidth="58.0" />
+            <TextField fx:id="cvvInput" layoutX="456.0" layoutY="69.0" onKeyPressed="#cvvTxtChange" prefHeight="25.0" prefWidth="58.0" />
             <Button fx:id="done" layoutX="321.0" layoutY="165.0" mnemonicParsing="false" onAction="#saveOrder" text="Done" />
             <Button fx:id="back" layoutX="217.0" layoutY="165.0" mnemonicParsing="false" onAction="#backToOrder" text="Back" />
             <Label layoutX="262.0" text="Payment">
@@ -60,5 +60,7 @@
       </AnchorPane>
       <Label fx:id="orderLbl" layoutX="62.0" layoutY="175.0" text="OrderID:" visible="false" />
       <TextField fx:id="orderIDTxt" disable="true" layoutX="121.0" layoutY="171.0" visible="false" />
+      <Button fx:id="homeBtn" layoutX="361.0" layoutY="171.0" mnemonicParsing="false" onAction="#goToHome" prefHeight="25.0" prefWidth="149.0" text="Back to home screen" visible="false" />
+      <Label fx:id="successLbl" layoutX="192.0" layoutY="214.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false" />
    </children>
 </AnchorPane>

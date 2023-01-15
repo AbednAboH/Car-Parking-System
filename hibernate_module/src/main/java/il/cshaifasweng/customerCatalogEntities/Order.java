@@ -59,6 +59,19 @@ public class Order implements Serializable {
         this.email = email;
         this.active = true;
     }
+    public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
+                 String entering, String exiting, String plateNum, String email,boolean localBuilder) {
+        this.registeredCustomer = registeredCustomer;
+        this.parkingLotID = parkingLotID;
+        this.date = date;
+        this.entering = entering;
+        this.exiting = exiting;
+        this.plateNum = plateNum;
+        this.email = email;
+        this.active = true;
+        if (!localBuilder)
+        this.registeredCustomer.addOrder(this);
+    }
     public Order(ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
 //        this.registeredCustomer = registeredCustomer;

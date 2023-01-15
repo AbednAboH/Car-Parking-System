@@ -41,7 +41,6 @@ public class AuthenticationService {
 
     }
     public static int checkAuthintecatedEntityType(String email,String password){
-
         session.beginTransaction();
 
         for (int i=1;i<7;i++){
@@ -57,7 +56,6 @@ public class AuthenticationService {
 
     }
     public static boolean checkEmailExistance(String email){
-
         session.beginTransaction();
         for (int i=1;i<7;i++){
             if (emailQuery(i,email,session)!=null){
