@@ -26,7 +26,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new ParkingLotResults(message));
 		} else if (message.getMessage().equals("#showOrders")) {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
-		}else if (message.getMessage().equals("#showSubscription")) {
+		}else if (message.getMessage().equals("#showSubscription")||message.getMessage().equals("#showSubscription")) {
 			EventBus.getDefault().post(new SubscriptionResponse(message));
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
@@ -36,9 +36,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
-		}else if(message.getMessage().equals("#GetAllCompliants")) {
-			EventBus.getDefault().post(new CompliantsSubscriber(message));
-		}else if(message.getMessage().startsWith("#CloseComplaint")){
+		}else if(message.getMessage().equals("#GetAllCompliants")||message.getMessage().startsWith("#CloseComplaint")) {
 			EventBus.getDefault().post(new CompliantsSubscriber(message));
 		}else if(message.getMessage().startsWith("#getAllOrders")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));

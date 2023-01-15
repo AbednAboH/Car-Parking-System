@@ -114,6 +114,9 @@ public class ComplaintController {
                 message.setMessage("#getAllOrders");
                 SimpleClient.getClient().sendToServer(message);
 
+                message.setMessage("#showSubscription");
+                    SimpleClient.getClient().sendToServer(message);
+
             }
             ComplaintSubject.getItems().add("Complaint about an employee");
             ComplaintSubject.getItems().add("Complaint about costumer service");

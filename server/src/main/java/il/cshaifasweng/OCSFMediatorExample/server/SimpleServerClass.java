@@ -39,10 +39,12 @@ public class SimpleServerClass extends AbstractServer {
     private static DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
     private static DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
     private static DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
-
+    private static  Session session;
     public SimpleServerClass(int port) {
         super(port);
         DataBaseManipulation.intiate();
+        session=DataBaseManipulation.getSession();
+        session.beginTransaction();
     }
 
 
@@ -281,7 +283,7 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
     }
     public void getCustomersOrders(Message message,ConnectionToClient client) throws IOException,Exception{
-        Session session=DataBaseManipulation.getSession();
+
         session.beginTransaction();
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         message.setObject(regCostumer.getOrders());
