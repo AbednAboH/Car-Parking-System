@@ -56,6 +56,13 @@ public abstract class Subscription implements Serializable {
         this.isActive = isActive;
         this.allowedDays = allowedDays;
     }
+    public Subscription(int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
+        this.hoursPerMonth = hoursPerMonth;
+        this.startDate = startDate;
+        this.expirationDate = expirationDate;
+        this.isActive = isActive;
+        this.allowedDays = allowedDays;
+    }
 
     public Subscription() {
 
@@ -83,7 +90,7 @@ public abstract class Subscription implements Serializable {
 
     @Override
     public  String toString(){
-        return "SubId="+id+", customerId="+registeredCustomer.getId()
+        return "SubId="+id
                 +", hours_per_month="+hoursPerMonth
                 +", subscriptionDate="+startDate+
                 ", experation="+expirationDate
