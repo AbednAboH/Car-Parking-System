@@ -68,7 +68,6 @@ public class SimpleServerClass extends AbstractServer {
                 client.sendToClient(message);
 
             } else if (request.startsWith("#getAllParkingLots")) {
-                System.out.println("parkingLots Sent");
                 sendParkingLots(message, client);
 
             }else if (request.startsWith("#placeOrder")) {
@@ -169,7 +168,6 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void showSubscription(Message message, ConnectionToClient client) {
-
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         Object subscription=regCostumer.getSubscriptions();
         Hibernate.initialize(subscription);
@@ -180,7 +178,6 @@ public class SimpleServerClass extends AbstractServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
@@ -297,12 +294,11 @@ public class SimpleServerClass extends AbstractServer {
         Order newOrder = (Order)message.getObject();
         //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get(1, RegisteredCustomer.class);
-        System.out.println(rg.getId());
         orderHandler.save(newOrder, Order.class);
+        message.setObject(newOrder.getId());
+        System.out.println(message.getObject());
         rg.addOrder(newOrder);
         rCustomer.update(rg);
-        rg=rCustomer.get(1,RegisteredCustomer.class);
-        rg.getOrders().get(0).setRegisteredCustomer(rg);
         client.sendToClient(message);
     }
 
