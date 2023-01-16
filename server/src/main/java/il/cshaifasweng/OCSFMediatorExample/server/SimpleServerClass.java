@@ -72,8 +72,8 @@ public class SimpleServerClass extends AbstractServer {
 
             }else if (request.startsWith("#placeOrder")) {
                 placeOrder(message, client);
-            }else if (request.startsWith("#getRegisteredCustomer")) {
-                getRegisteredCustomer(message, client);
+            }else if (request.startsWith("#getUser")) {
+                getUser(message, client);
             }
             else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
@@ -196,7 +196,7 @@ public class SimpleServerClass extends AbstractServer {
             return;
         }
         //TODO:1/11/23 might need to update the fields later on , for now this is the current format
-        RegisteredCustomer customer=new RegisteredCustomer(2003,email,name,lastName,password);
+        RegisteredCustomer customer=new RegisteredCustomer(1,email,name,lastName,password);
         rCustomer.save(customer,RegisteredCustomer.class);
         customer=(RegisteredCustomer)rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put( customer.getId(), customer);
@@ -293,7 +293,7 @@ public class SimpleServerClass extends AbstractServer {
     public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
         Order newOrder = (Order)message.getObject();
         //TODO: change to customerID from client saved info
-        RegisteredCustomer rg = rCustomer.get(1, RegisteredCustomer.class);
+        RegisteredCustomer rg = rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
         orderHandler.save(newOrder, Order.class);
         message.setObject(newOrder.getId());
         System.out.println(message.getObject());
@@ -302,11 +302,6 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
     }
 
-    public void getRegisteredCustomer(Message message, ConnectionToClient client) throws IOException,Exception {
-        //TODO: change to customerID from client saved info
-        message.setObject(rCustomer.get(1, RegisteredCustomer.class));
-        client.sendToClient(message);
-    }
     public void getCustomersOrders(Message message,ConnectionToClient client) throws IOException,Exception{
 
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
