@@ -14,54 +14,70 @@ public class DataBaseManipulation<T> implements DAO<T>{
     }
     @Override
     public T get(int id,Class<T> type) {
-       session.beginTransaction();
+       
        T object=session.get(type,id);
-        session.getTransaction().commit();
+       
         return object;
     }
     @Override
     public T getLastAdded(Class<T> Type) {
-        session.beginTransaction();
+        
         String hql ="FROM "+Type.getName()+" e ORDER BY e.id DESC";
         TypedQuery<T> query = session.createQuery(hql, Type).setMaxResults(1);
         return query.getSingleResult();
     }
     @Override
+    public List<T> listQuery(Class<T> Type, String hql) {
+        
+        TypedQuery<T> query = session.createQuery(hql, Type).setMaxResults(1);
+        List<T> entities=query.getResultList();
+       
+        return entities;
+    }
+
+    @Override
+    public T query(Class<T> Type, String hql) {
+        
+        TypedQuery<T> query = session.createQuery(hql, Type).setMaxResults(1);
+        T entities=(T)query.getSingleResult();
+       
+        return entities;
+    }
+
+    @Override
     public List<T> getAll(Class<T> type) {
-        session.beginTransaction();
+        
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> query = builder.createQuery(type);
         query.from(type);
         List<T> entities=session.createQuery(query).getResultList();
-        session.getTransaction().commit();
-
-
+       
         return entities;
     }
 
     @Override
     public void save(T t,Class<T> type) {
-        session.beginTransaction();
+        
         session.save(t);
         session.flush();
-        session.getTransaction().commit();
+       
 
     }
 
     @Override
     public void update(T t) {
-        session.beginTransaction();
+        
         session.update(t);
         session.flush();
-        session.getTransaction().commit();
+       
 
     }
     @Override
     public void delete(T t,Class<T> type) {
-        session.beginTransaction();
+        
         session.delete(t);
         session.flush();
-        session.getTransaction().commit();
+       
 
     }
     public void deleteById(int id,Class<T> type){

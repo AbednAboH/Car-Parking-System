@@ -6,7 +6,6 @@ import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 // TODO: 1/9/2023 check the date format annotation as it may cause trouble in the table entries ,for now its set to Transient
@@ -16,6 +15,12 @@ public class Complaint implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name="ComplaintDescription")
+    private String complaintDescription;
+    @Column(name="TypeOfOrderSub")
+    private String typeOfOrderSub;
+    @Column(name="orderSubID",nullable = true)
+    private String orderSubKioskID;
     @Column(name="Text")
     private String text;
     @Convert(converter = LocalDateAttributeConverter.class)
@@ -33,19 +38,22 @@ public class Complaint implements Serializable {
     @Column(name="Active")
     private boolean active;
 
+
     public Complaint() {
     }
 
-    public Complaint(int id, String text, LocalDate date, LocalDate durationToAnswer, Customer customer, boolean active) {
-        this.id = id;
+    public Complaint( String complaintDescription, String text, LocalDate date, LocalDate durationToAnswer, Customer customer, boolean active) {
+
+        this.complaintDescription = complaintDescription;
         this.text = text;
         this.date = date;
         this.durationToAnswer = durationToAnswer;
         this.customer = customer;
         this.active = active;
     }
-    public Complaint(int id, String text, LocalDate date, LocalDate durationToAnswer, Customer customer, boolean active, ParkingLot pl) {
-        this.id = id;
+    public Complaint( String complaintDescription, String text, LocalDate date, LocalDate durationToAnswer, Customer customer, boolean active, ParkingLot pl) {
+
+        this.complaintDescription = complaintDescription;
         this.text = text;
         this.date = date;
         this.durationToAnswer = durationToAnswer;
@@ -53,10 +61,21 @@ public class Complaint implements Serializable {
         this.active = active;
         parkingLot=pl;
     }
-//    @Override
-//    public String toString(){
-//     return "id="+id+", date="+date+", ", active="+active+", text="+text;
-//    }
+
+    public Complaint(String complaintDescription, String typeOfOrderSub, String orderSubKioskID, String text, LocalDate date, LocalDate durationToAnswer, boolean active) {
+        this.complaintDescription = complaintDescription;
+        this.typeOfOrderSub = typeOfOrderSub;
+        this.orderSubKioskID = orderSubKioskID;
+        this.text = text;
+        this.date = date;
+        this.durationToAnswer = durationToAnswer;
+        this.active = active;
+    }
+
+    @Override
+    public String toString(){
+     return "id="+id+", date="+date;
+    }
     public int getId() {
         return id;
     }

@@ -26,9 +26,7 @@ public class Order implements Serializable {
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="parkingSpot_id")
-//    private ParkingLot parkingSpotID;
+
 
     @Column(name="active")
     private boolean active;
@@ -83,7 +81,10 @@ public class Order implements Serializable {
         this.email = email;
         this.active = true;
     }
-
+    @Override
+    public String toString(){
+        return "order id: "+id+" at"+date;
+    }
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="reports_id")
 //    private Reports reports;

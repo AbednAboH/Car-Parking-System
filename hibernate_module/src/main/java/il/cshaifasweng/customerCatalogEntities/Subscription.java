@@ -6,6 +6,8 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +16,8 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy =InheritanceType.JOINED)
-@Data
+@Getter
+@Setter
 public abstract class Subscription implements Serializable {
     public final int NUMBER_OF_DAYS = 7;
     @Id
@@ -53,6 +56,13 @@ public abstract class Subscription implements Serializable {
         this.isActive = isActive;
         this.allowedDays = allowedDays;
     }
+    public Subscription(int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
+        this.hoursPerMonth = hoursPerMonth;
+        this.startDate = startDate;
+        this.expirationDate = expirationDate;
+        this.isActive = isActive;
+        this.allowedDays = allowedDays;
+    }
 
     public Subscription() {
 
@@ -75,8 +85,8 @@ public abstract class Subscription implements Serializable {
     }
 
     @Override
-    public String toString(){
-        return "SubId="+id+", customerId="+registeredCustomer.getId()
+    public  String toString(){
+        return "SubId="+id
                 +", hours_per_month="+hoursPerMonth
                 +", subscriptionDate="+startDate+
                 ", experation="+expirationDate

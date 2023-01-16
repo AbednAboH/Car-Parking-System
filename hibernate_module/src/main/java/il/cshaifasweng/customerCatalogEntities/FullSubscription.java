@@ -2,6 +2,8 @@ package il.cshaifasweng.customerCatalogEntities;
 
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +11,8 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "full_subscriptions")
 public class FullSubscription extends Subscription {
 
@@ -22,6 +25,11 @@ public class FullSubscription extends Subscription {
 
     public FullSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays, int consecutiveParkingDays) {
         super(customer, hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
+        this.consecutiveParkingDays = consecutiveParkingDays;
+    }
+
+    public FullSubscription( int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays, int consecutiveParkingDays) {
+        super(hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
         this.consecutiveParkingDays = consecutiveParkingDays;
     }
 

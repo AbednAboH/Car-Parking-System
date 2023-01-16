@@ -24,47 +24,48 @@ public class AuthenticationService {
             Map.entry(6,OneTimeCustomer.class),
             Map.entry(5,RegisteredCustomer.class));
     public static <T> T getAuthenticatedEntity(String email, String password) {
-
-        session.beginTransaction();
+        
         T entity;
         for (int i=1;i<7;i++){
             entity=retrieveUser(i,email,password,session);
             if (entity!=null){
-                session.getTransaction().commit();
+               
                 return entity;
             }
 
         }
-        session.getTransaction().commit();
+       
 
         return null;
 
     }
     public static int checkAuthintecatedEntityType(String email,String password){
-        session.beginTransaction();
+        
+
 
         for (int i=1;i<7;i++){
             if (retrieveUser(i,email,password,session)!=null){
-                session.getTransaction().commit();
+               
 
                 return i;
             }
         }
-        session.getTransaction().commit();
+       
 
         return 0;
 
     }
     public static boolean checkEmailExistance(String email){
-        session.beginTransaction();
+        
+
         for (int i=1;i<7;i++){
             if (emailQuery(i,email,session)!=null){
-                session.getTransaction().commit();
+               
 
                 return true;
             }
         }
-        session.getTransaction().commit();
+       
 
         return false;
 

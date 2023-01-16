@@ -1,8 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.collections.FXCollections;
@@ -11,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
