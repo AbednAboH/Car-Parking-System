@@ -38,6 +38,7 @@ public class SimpleClient extends AbstractClient {
 		}else if(message.getMessage().startsWith("#getAllOrders")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
 		}else if (message.getMessage().startsWith("#applyComplaint")){
+			System.out.println("here");
 			EventBus.getDefault().post(new ComplaintSubscriber(message));
 		}else {
 			System.out.println(message.getMessage());

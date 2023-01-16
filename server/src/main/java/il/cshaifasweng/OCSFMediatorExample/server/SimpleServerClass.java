@@ -19,6 +19,7 @@ import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.cfg.BaselineSessionEventsListenerBuilder;
 
 
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class SimpleServerClass extends AbstractServer {
     private static DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
     private static DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
     private static DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
+    private static DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
     private static  Session session;
     public SimpleServerClass(int port) {
         super(port);
@@ -107,19 +109,31 @@ public class SimpleServerClass extends AbstractServer {
             }else {
                 System.out.println("no selection was done!!!");
             }
-            session.getTransaction().commit();
 
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        finally{
+            session.getTransaction().commit();
+        }
 
     }
-    private void applyCompaint(Message message,ConnectionToClient client){
+    private void applyCompaint(Message message,ConnectionToClient client)throws IOException{
         Complaint complaint=(Complaint) message.getObject();
 //        "#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot
         String[] lazyElements=message.getMessage().split("&");
-        complaint.setParkingLot(pLot.get(Integer.parseInt(lazyElements[5]), ParkingLot.class));
+        if (!lazyElements[5].startsWith("null"))
+            complaint.setParkingLot(pLot.get(Integer.parseInt(lazyElements[5]), ParkingLot.class));
+        Customer customer=customerHandler.get(Integer.parseInt(lazyElements[3]),Customer.class);
+        if (customer==null){
+            customer=new OneTimeCustomer(Integer.parseInt(lazyElements[3]),lazyElements[1],lazyElements[2],lazyElements[4],"");
+            session.save(customer);}
+        complaint.setCustomer(customer);
+        session.save(complaint);
+        session.update(customer);
+        session.flush();
+        client.sendToClient(message);
 
     }
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
@@ -155,6 +169,7 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void showSubscription(Message message, ConnectionToClient client) {
+
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         Object subscription=regCostumer.getSubscriptions();
         Hibernate.initialize(subscription);
@@ -165,6 +180,7 @@ public class SimpleServerClass extends AbstractServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
@@ -183,7 +199,7 @@ public class SimpleServerClass extends AbstractServer {
             return;
         }
         //TODO:1/11/23 might need to update the fields later on , for now this is the current format
-        RegisteredCustomer customer=new RegisteredCustomer(2003,email,name,password);
+        RegisteredCustomer customer=new RegisteredCustomer(2003,email,name,lastName,password);
         rCustomer.save(customer,RegisteredCustomer.class);
         customer=(RegisteredCustomer)rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put( customer.getId(), customer);
