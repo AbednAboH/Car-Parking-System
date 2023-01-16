@@ -167,7 +167,7 @@
 //		final ArrayList<PricingChart> data = (ArrayList<PricingChart>)(ArrayList) SimpleServerClass.session.createQuery(query).getResultList();
 //		for(PricingChart oldChart : data){
 //			if(oldChart.getId() == newChart.getId()){
-//				SimpleServerClass.session.beginTransaction();
+//				SimpleServerClass.
 //				oldChart.setFullSubscription(newChart.getFullSubscription());
 //				oldChart.setOneTimePurchasedAhead(newChart.getOneTimePurchasedAhead());
 //				oldChart.setParkViaKiosk(newChart.getParkViaKiosk());
