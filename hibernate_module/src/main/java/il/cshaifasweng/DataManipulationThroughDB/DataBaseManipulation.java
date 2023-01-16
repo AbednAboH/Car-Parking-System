@@ -1,9 +1,13 @@
 package il.cshaifasweng.DataManipulationThroughDB;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
+import java.util.Map;
+
 public class DataBaseManipulation<T> implements DAO<T>{
     static Session session;
     public static void intiate(){
@@ -29,7 +33,7 @@ public class DataBaseManipulation<T> implements DAO<T>{
     @Override
     public List<T> listQuery(Class<T> Type, String hql) {
         session.beginTransaction();
-        TypedQuery<T> query = session.createQuery(hql, Type).setMaxResults(1);
+        TypedQuery<T> query = session.createQuery(hql, Type);
         List<T> entities=query.getResultList();
         session.getTransaction().commit();
         return entities;
@@ -80,8 +84,20 @@ public class DataBaseManipulation<T> implements DAO<T>{
         session.getTransaction().commit();
 
     }
+
     public void deleteById(int id,Class<T> type){
         T object= get(id,type);
         delete(object,type);
     }
+
+    public <T> List<T> executeQuery(Class<T> Type, String hql, Map<String,Object> params){
+        session.beginTransaction();
+        Query query = session.createQuery(hql, Type).setMaxResults(1); // Can be changed to more than one.
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        session.getTransaction().commit();
+        return query.list();
+    }
+
 }

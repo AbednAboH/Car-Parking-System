@@ -6,6 +6,8 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +16,8 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy =InheritanceType.JOINED)
-@Data
+@Getter
+@Setter
 public abstract class Subscription implements Serializable {
     public final int NUMBER_OF_DAYS = 7;
     @Id
@@ -72,6 +75,10 @@ public abstract class Subscription implements Serializable {
             array[i] = s.charAt(i) == '1';
         }
         return array;
+    }
+
+    public RegisteredCustomer getRegisteredCustomer() {
+        return registeredCustomer;
     }
 
     @Override

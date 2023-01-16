@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.KioskSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
 import org.greenrobot.eventbus.EventBus;
@@ -39,7 +40,13 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new CompliantsSubscriber(message));
 		}else if(message.getMessage().startsWith("#CloseComplaint")){
 			EventBus.getDefault().post(new CompliantsSubscriber(message));
-		}else {
+		}else if(message.getMessage().startsWith("#verifySubscription")){
+			EventBus.getDefault().post(new KioskSubscriber(message));
+		}else if(message.getMessage().startsWith("#verifyOrder")){
+			System.out.println("We got a message");
+			EventBus.getDefault().post(new KioskSubscriber(message));
+		}
+		else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
 		}

@@ -20,9 +20,7 @@ import il.cshaifasweng.customerCatalogEntities.Subscription;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
@@ -89,6 +87,10 @@ public class SimpleServerClass extends AbstractServer {
             }else if(request.startsWith("#CloseComplaint")) {
                 System.out.println("ClosingCompliant");
                     closeCompliants(message, client);
+            }else if(request.startsWith("#verifySubscription")){
+                    verifySubscription(message, client);
+            }else if(request.startsWith("#verifyOrder")){
+                verifyOrder(message, client);
             }else {
                 System.out.println("no selection was done!!!");
             }
@@ -99,6 +101,74 @@ public class SimpleServerClass extends AbstractServer {
             ex.printStackTrace();
         }
 
+    }
+
+    private void verifyOrder(Message message, ConnectionToClient client) throws IOException {
+        String request = message.getMessage();
+        String[] args;
+        args = request.split("&");
+        int parkingLotId;
+        int customerID;
+        int orderID;
+
+        parkingLotId = Integer.parseInt(args[1]);
+        customerID = Integer.parseInt(args[2]);
+        orderID = Integer.parseInt(args[3]);
+        String queryOnOrder = "SELECT registeredCustomer FROM Order o "
+                + "WHERE o.id = :orderID "
+                + "AND o.registeredCustomer.id = :customerId "
+                + "AND o.parkingLotID.id = :parkingLotId "
+                + "AND o.date = CURDATE()";
+        HashMap<String,Object> params = new HashMap<>();
+        params.put("subscriptionId", orderID);
+        params.put("customerId",customerID);
+        params.put("parkingLotId", parkingLotId);
+        List<Object> lst = rCustomer.executeQuery(Object.class,queryOnOrder,params);
+        if(lst != null && lst.size() > 0) {
+            message.setObject(lst.get(0));
+        }else {
+            message.setObject(null);
+        }
+        client.sendToClient(message);
+    }
+
+    private void verifySubscription(Message message, ConnectionToClient client) throws IOException {
+        String request = message.getMessage();
+        String[] args;
+        args = request.split("&");
+        int parkingLotId;
+        int customerID;
+        int subscriptionID;
+
+        parkingLotId = Integer.parseInt(args[1]);
+        customerID = Integer.parseInt(args[2]);
+        subscriptionID = Integer.parseInt(args[3]);
+        String queryOnRegular = "SELECT registeredCustomer FROM RegularSubscription s "
+                + "WHERE s.id = :subscriptionId "
+                + "AND s.registeredCustomer.id = :customerId "
+                + "AND s.desegnatedParkingLot.id = :parkingLotId "
+                + "AND s.isActive = true";
+        String queryOnFull = "SELECT registeredCustomer FROM FullSubscription s "
+                + "WHERE s.id = :subscriptionId "
+                + "AND s.registeredCustomer.id = :customerId "
+                + "AND s.isActive = true";
+        HashMap<String,Object> params = new HashMap<>();
+        params.put("subscriptionId", subscriptionID);
+        params.put("customerId",customerID);
+        List<Object> lst = rCustomer.executeQuery(Object.class,queryOnFull,params);
+        System.out.println(lst != null);
+        if(lst != null && lst.size() > 0) {
+            ((RegisteredCustomer)lst.get(0)).toString();
+            message.setObject(lst.get(0));
+        }else {
+            params.put("parkingLotId", parkingLotId);
+            rCustomer.executeQuery(RegisteredCustomer.class,queryOnRegular,params);
+            if(lst != null && lst.size() > 0) {
+                message.setObject(lst.get(0));
+            }else {message.setObject(null);}
+        }
+
+        client.sendToClient(message);
     }
 
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
