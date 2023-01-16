@@ -67,7 +67,7 @@ public class MySQL
             initiatePricingChart();
 //            printAllEntities();
 
-            session.getTransaction().commit(); // Save everything.
+            // Save everything.
         } catch (Exception exception) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -85,10 +85,10 @@ public class MySQL
     public static void connectToDB()throws Exception{
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        session.beginTransaction();
+        
     }
     public static void commitToDB()throws Exception{
-        session.getTransaction().commit();
+       
     }
     public static void handleException(Exception e){
         if (session != null) {

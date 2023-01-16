@@ -3,10 +3,13 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ComplaintSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,11 +25,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 
 public class ComplaintController {
-
+    private List<Order> orders;
+    private List<Subscription> subscriptions;
     @FXML
     private Label ComplaintID;
 
@@ -63,37 +68,62 @@ public class ComplaintController {
     @FXML
     private Button submitComplaint;
     @FXML
-    @Subscribe
-    void getOrder(ActionEvent event) {
+    void getOrderSub(ActionEvent event) {
 
     }
-
-
+    @FXML
+    @Subscribe
+    void checkSubmit(ComplaintSubscriber event){
+        System.out.println("yes");
+    }
     @FXML
     void submitComplaintAction(ActionEvent event) {
-
+        // TODO: 1/16/2023 check viability :
+        Message requist_submition=new Message();
+        String order_subOrKiosk;
+        if (Ordersubscription.getValue()!=null){
+            if (Ordersubscription.getValue().startsWith("Kiosk"))
+                order_subOrKiosk=orderSubIdText.getText();
+            else
+                order_subOrKiosk=orderSubscriptionBox.getValue();
+        }
+        else
+            order_subOrKiosk=null;
+        Complaint complaintRequest=new Complaint(ComplaintSubject.getValue(),Ordersubscription.getValue(), order_subOrKiosk,complaintBody.getText(), LocalDate.now(),LocalDate.now(),true);
+        requist_submition.setMessage("#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot);
+        requist_submition.setObject(complaintRequest);
+        try {
+            SimpleClient.getClient().sendToServer(requist_submition);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        submitComplaint.setDisable(true);
     }
 
     @FXML
     void typeOfSubscription(ActionEvent event) {
-        if (Ordersubscription.getValue()!=null&&Ordersubscription.getValue().equals("Kiosk")){
-            orderSubIdText.setDisable(true);
-            orderSubscriptionBox.setDisable(true);
-        }
-        else{
-            if (SimpleChatClient.getUser() != null) {
-                orderSubIdText.setDisable(true);
-                orderSubscriptionBox.setDisable(false);
-            } else {
+        if(Ordersubscription.getValue()!=null){
+            if (Ordersubscription.getValue().startsWith("Order")){
+                orderSubscriptionBox.getItems().clear();
+                for (Order or :orders)
+                    orderSubscriptionBox.getItems().add(or.toString());
+            }
+            else if (Ordersubscription.getValue().startsWith("Subscription")){
+                orderSubscriptionBox.getItems().clear();
+                for (Subscription subscription : subscriptions)
+                    orderSubscriptionBox.getItems().add(subscription.toString());
+            }
+            else if (Ordersubscription.getValue().equals("Kiosk")){
                 orderSubIdText.setDisable(false);
                 orderSubscriptionBox.setDisable(true);
             }
+//
+
         }
 
 
+
     }
-
-
 
     @FXML
     void initialize(){
@@ -104,6 +134,12 @@ public class ComplaintController {
             Message message = new Message("#getAllParkingLots");
             SimpleClient.getClient().sendToServer(message);
             RegisteredCustomer user=(RegisteredCustomer) SimpleChatClient.getUser();
+            ComplaintSubject.getItems().add("Complaint about an employee");
+            ComplaintSubject.getItems().add("Complaint about costumer service");
+            ComplaintSubject.getItems().add("Complaint about a parking lot");
+            ComplaintSubject.getItems().add("I can't get my car out/in the parking lot");
+            Ordersubscription.getItems().add("Kiosk");
+
             if (user!=null){
 
                 firstName.setText(user.getFirstName());
@@ -117,18 +153,16 @@ public class ComplaintController {
                 message.setMessage("#showSubscription");
                     SimpleClient.getClient().sendToServer(message);
 
+                ComplaintSubject.getItems().add("Problem with my order");
+                ComplaintSubject.getItems().add("Problem with my subscription");
+                Ordersubscription.getItems().add("Order");
+                Ordersubscription.getItems().add("Subscription");
+
             }
-            ComplaintSubject.getItems().add("Complaint about an employee");
-            ComplaintSubject.getItems().add("Complaint about costumer service");
-            ComplaintSubject.getItems().add("Complaint about a parking lot");
-            ComplaintSubject.getItems().add("I can't get my car out/in the parking lot");
-            ComplaintSubject.getItems().add("Problem with my order");
-            ComplaintSubject.getItems().add("Problem with my subscription");
             ComplaintSubject.getItems().add("Other");
 
-            Ordersubscription.getItems().add("Kiosk");
-            Ordersubscription.getItems().add("Order");
-            Ordersubscription.getItems().add("Subscription");
+
+
             Ordersubscription.setDisable(true);
             orderSubIdText.setDisable(true);
             orderSubscriptionBox.setDisable(true);
@@ -156,7 +190,6 @@ public class ComplaintController {
                 orderSubscriptionBox.setDisable(true);
                 break;
             case  "I can't get my car out/in the parking lot":
-            case  "Problem with my subscription":
                 parkingLot.setDisable(false);
                 Ordersubscription.setDisable(false);
                 if (SimpleChatClient.getUser() != null) {
@@ -168,10 +201,23 @@ public class ComplaintController {
                 }
 
                 break;
+            case  "Problem with my subscription":
+                parkingLot.setDisable(false);
+                Ordersubscription.setDisable(true);
+                Ordersubscription.setValue("Subscription");
+                if (SimpleChatClient.getUser() != null) {
+                    orderSubIdText.setDisable(true);
+                    orderSubscriptionBox.setDisable(false);
+                } else {
+                    orderSubIdText.setDisable(false);
+                    orderSubscriptionBox.setDisable(true);
+                }
+
+                break;
             case "Problem with my order":
                 parkingLot.setDisable(false);
-                Ordersubscription.setDisable(false);
                 Ordersubscription.setValue("Order");
+                Ordersubscription.setDisable(true);
                 if (SimpleChatClient.getUser() != null) {
                     orderSubIdText.setDisable(true);
                     orderSubscriptionBox.setDisable(false);
@@ -188,7 +234,7 @@ public class ComplaintController {
                     orderSubscriptionBox.setDisable(false);
                 } else {
                     orderSubIdText.setDisable(false);
-                    orderSubscriptionBox.setDisable(true);
+                    orderSubscriptionBox.setDisable(false);
                 }
                 break;
 
@@ -214,10 +260,13 @@ public class ComplaintController {
     @FXML
     @Subscribe
     public void getAllOrders(OrderHistoryResponse event) {
-        List<Order> orders = (List<Order>) event.getMessage().getObject();
-        System.out.println("Washere");
-        for (Order or :orders)
-            orderSubscriptionBox.getItems().add(or.toString());
+        orders = (List<Order>) event.getMessage().getObject();
+
+    }
+    @FXML
+    @Subscribe
+    public void getAllSubscriptions(SubscriptionResponse event){
+        subscriptions=(List<Subscription>) event.getMessage().getObject();
     }
 
 }

@@ -17,6 +17,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 
@@ -44,7 +45,6 @@ public class SimpleServerClass extends AbstractServer {
         super(port);
         DataBaseManipulation.intiate();
         session=DataBaseManipulation.getSession();
-        session.beginTransaction();
     }
 
 
@@ -53,6 +53,7 @@ public class SimpleServerClass extends AbstractServer {
         Message message = (Message) msg;
         String request = message.getMessage();
         try {
+            session.beginTransaction();
             if (request.isBlank()) {
                 message.setMessage("Error! we got an empty message");
                 client.sendToClient(message);
@@ -92,6 +93,9 @@ public class SimpleServerClass extends AbstractServer {
                 System.out.println("get all orders");
                 getCustomersOrders(message,client);
             }
+            else if (request.startsWith("#applyComplaint")){
+                applyCompaint(message,client);
+            }
             else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("Alive!");
             }else if(request.startsWith("#GetAllCompliants")){
@@ -103,7 +107,7 @@ public class SimpleServerClass extends AbstractServer {
             }else {
                 System.out.println("no selection was done!!!");
             }
-
+            session.getTransaction().commit();
 
 
         } catch (Exception ex) {
@@ -111,7 +115,13 @@ public class SimpleServerClass extends AbstractServer {
         }
 
     }
+    private void applyCompaint(Message message,ConnectionToClient client){
+        Complaint complaint=(Complaint) message.getObject();
+//        "#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot
+        String[] lazyElements=message.getMessage().split("&");
+        complaint.setParkingLot(pLot.get(Integer.parseInt(lazyElements[5]), ParkingLot.class));
 
+    }
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
         String request = message.getMessage();
         int complaintId;
@@ -145,8 +155,11 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void showSubscription(Message message, ConnectionToClient client) {
-        // TODO: get subscription that has the client id and not all susbcriptions
-        message.setObject(subscriptionHandler.getAll(Subscription.class));
+        RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        Object subscription=regCostumer.getSubscriptions();
+        Hibernate.initialize(subscription);
+        session.flush();
+        message.setObject(subscription);
         try {
             client.sendToClient(message);
         } catch (IOException e) {
@@ -284,10 +297,8 @@ public class SimpleServerClass extends AbstractServer {
     }
     public void getCustomersOrders(Message message,ConnectionToClient client) throws IOException,Exception{
 
-        session.beginTransaction();
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         message.setObject(regCostumer.getOrders());
-        session.getTransaction().commit();
         System.out.println("got to Customer orders");
         System.out.println(regCostumer.getOrders());
         client.sendToClient(message);

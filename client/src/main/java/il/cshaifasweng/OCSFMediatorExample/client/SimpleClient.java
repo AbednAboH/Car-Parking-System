@@ -1,10 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.*;
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
@@ -26,7 +23,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new ParkingLotResults(message));
 		} else if (message.getMessage().equals("#showOrders")) {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
-		}else if (message.getMessage().equals("#showSubscription")||message.getMessage().equals("#showSubscription")) {
+		}else if (message.getMessage().equals("#showSubscription")) {
 			EventBus.getDefault().post(new SubscriptionResponse(message));
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
@@ -40,6 +37,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new CompliantsSubscriber(message));
 		}else if(message.getMessage().startsWith("#getAllOrders")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if (message.getMessage().startsWith("#applyComplaint")){
+			EventBus.getDefault().post(new ComplaintSubscriber(message));
 		}else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));

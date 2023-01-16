@@ -26,9 +26,7 @@ public class Order implements Serializable {
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="parkingSpot_id")
-//    private ParkingLot parkingSpotID;
+
 
     @Column(name="orderDate")
     private LocalDate date;
