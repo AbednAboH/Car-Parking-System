@@ -1,8 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
 import il.cshaifasweng.customerCatalogEntities.FullSubscription;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
@@ -14,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
@@ -88,9 +86,9 @@ public class RegisteredCustomerController {
 
         try {
             Subscription subscription;
-            if(subType.getValue()==2){
+            if (subType.getValue() == 2) {
                 subscription = new FullSubscription();
-            }else{
+            } else {
                 subscription = new RegularSubscription();
             }
             Message message = new Message("#addSubscription", subscription);
@@ -144,10 +142,12 @@ public class RegisteredCustomerController {
     public void addSubscriptionResponse(UpdateMessageEvent event) {
 
     }
+
     @Subscribe
     public void cancelOrderResponse(UpdateMessageEvent event) {
 
     }
+
     @Subscribe
     public void cancelSubscriptionResponse(UpdateMessageEvent event) {
 

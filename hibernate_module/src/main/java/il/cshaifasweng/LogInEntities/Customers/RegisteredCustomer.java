@@ -16,8 +16,8 @@ import java.util.List;
 @Setter
 public class RegisteredCustomer extends Customer {
 
-//    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-//    private  List<Order> orders;
+    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
+    private  List<Order> orders;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Subscription>  Subscriptions;
     public RegisteredCustomer(){
@@ -39,5 +39,9 @@ public class RegisteredCustomer extends Customer {
         super(id, email, cars);
         Subscriptions=new ArrayList<>() ;
 
+    }
+
+    public void addOrder(Order newOrder){
+        orders.add(newOrder);
     }
 }

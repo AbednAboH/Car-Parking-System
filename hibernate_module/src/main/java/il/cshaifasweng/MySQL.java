@@ -39,7 +39,7 @@ public class MySQL
 {
     public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
-            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Customer.class};
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),
@@ -48,7 +48,8 @@ public class MySQL
             ,Map.entry("Sub",Subscription.class),Map.entry("Car",Car.class)
             ,Map.entry("Complaint",Complaint.class),Map.entry("OneTime",OneTimeCustomer.class),Map.entry("Registered",RegisteredCustomer.class)
             ,Map.entry("Penalty",Penalty.class),Map.entry("Refund",Refund.class)
-            ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class));
+            ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class)
+            ,Map.entry("Orders", Order.class));;
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session
@@ -67,9 +68,9 @@ public class MySQL
         try {
             connectToDB();
             //initiatePricingChart();
-            printAllEntities();
+//            printAllEntities();
 
-            session.getTransaction().commit(); // Save everything.
+            // Save everything.
         } catch (Exception exception) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -87,10 +88,10 @@ public class MySQL
     public static void connectToDB()throws Exception{
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        session.beginTransaction();
+
     }
     public static void commitToDB()throws Exception{
-        session.getTransaction().commit();
+
     }
     public static void handleException(Exception e){
         if (session != null) {

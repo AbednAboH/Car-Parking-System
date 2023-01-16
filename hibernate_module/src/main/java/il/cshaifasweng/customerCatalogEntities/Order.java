@@ -26,9 +26,7 @@ public class Order implements Serializable {
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="parkingSpot_id")
-//    private ParkingLot parkingSpotID;
+
 
     @Column(name="orderDate")
     private LocalDate date;
@@ -55,8 +53,21 @@ public class Order implements Serializable {
         this.plateNum = plateNum;
         this.email = email;
     }
-
-    //    @ManyToOne(fetch = FetchType.LAZY)
+    public Order(ParkingLot parkingLotID, LocalDate date,
+                 String entering, String exiting, String plateNum, String email) {
+//        this.registeredCustomer = registeredCustomer;
+        this.parkingLotID = parkingLotID;
+        this.date = date;
+        this.entering = entering;
+        this.exiting = exiting;
+        this.plateNum = plateNum;
+        this.email = email;
+    }
+    @Override
+    public String toString(){
+        return "order id: "+id+" at"+date;
+    }
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="reports_id")
 //    private Reports reports;
     public Order() {

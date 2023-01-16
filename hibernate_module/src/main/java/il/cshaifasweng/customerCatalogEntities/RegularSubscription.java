@@ -4,12 +4,15 @@ package il.cshaifasweng.customerCatalogEntities;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "regular_subscriptions")
 public class RegularSubscription extends Subscription {
 
@@ -29,12 +32,17 @@ public class RegularSubscription extends Subscription {
         this.desegnatedParkingLot = desegnatedParkingLot;
         this.extractionDate = extractionDate;
     }
+  public RegularSubscription(int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays, ParkingLot desegnatedParkingLot, LocalDate extractionDate) {
+        super( hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
+        this.desegnatedParkingLot = desegnatedParkingLot;
+        this.extractionDate = extractionDate;
+    }
 
     public RegularSubscription() {
         super();
     }
     @Override
     public String toString(){
-        return super.toString()+", parkingLot="+desegnatedParkingLot.getId()+", extractionDate="+extractionDate;
+        return super.toString()+ extractionDate+"=+extractionDate";
     }
 }
