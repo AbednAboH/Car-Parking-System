@@ -19,6 +19,7 @@ import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.Session;
 
 
 import java.io.IOException;
@@ -66,7 +67,6 @@ public class SimpleServerClass extends AbstractServer {
                 client.sendToClient(message);
 
             } else if (request.startsWith("#getAllParkingLots")) {
-                System.out.println("parkingLots Sent");
                 sendParkingLots(message, client);
 
             }else if (request.startsWith("#placeOrder")) {
@@ -279,14 +279,12 @@ public class SimpleServerClass extends AbstractServer {
 
     public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
         Order newOrder = (Order)message.getObject();
-        //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get(1, RegisteredCustomer.class);
-        System.out.println(rg.getId());
         orderHandler.save(newOrder, Order.class);
+        message.setObject(newOrder.getId());
+        System.out.println(message.getObject());
         rg.addOrder(newOrder);
         rCustomer.update(rg);
-        rg=rCustomer.get(1,RegisteredCustomer.class);
-        rg.getOrders().get(0).setRegisteredCustomer(rg);
         client.sendToClient(message);
     }
 
