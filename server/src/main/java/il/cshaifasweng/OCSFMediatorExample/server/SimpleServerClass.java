@@ -109,11 +109,14 @@ public class SimpleServerClass extends AbstractServer {
             }else {
                 System.out.println("no selection was done!!!");
             }
-            session.getTransaction().commit();
+
 
 
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+        finally {
+            session.getTransaction().commit();
         }
 
     }
@@ -141,7 +144,7 @@ public class SimpleServerClass extends AbstractServer {
                 + "AND o.parkingLotID.id = :parkingLotId "
                 + "AND o.date = CURDATE()";
         HashMap<String,Object> params = new HashMap<>();
-        params.put("subscriptionId", orderID);
+        params.put("orderID", orderID);
         params.put("customerId",customerID);
         params.put("parkingLotId", parkingLotId);
         List<Object> lst = rCustomer.executeQuery(Object.class,queryOnOrder,params);
