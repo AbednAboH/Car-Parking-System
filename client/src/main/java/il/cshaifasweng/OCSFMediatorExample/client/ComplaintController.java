@@ -68,19 +68,18 @@ public class ComplaintController {
     @FXML
     private Button submitComplaint;
     @FXML
+    private Label status;
+    @FXML
     void getOrderSub(ActionEvent event) {
 
     }
-    @FXML
-    @Subscribe
-    void checkSubmit(ComplaintSubscriber event){
-        System.out.println("yes");
-    }
+
     @FXML
     void submitComplaintAction(ActionEvent event) {
-        // TODO: 1/16/2023 check viability :
+        // TODO: 1/16/2023 check viability of input!:
         Message requist_submition=new Message();
-        String order_subOrKiosk;
+        String order_subOrKiosk,pLotId="null";
+
         if (Ordersubscription.getValue()!=null){
             if (Ordersubscription.getValue().startsWith("Kiosk"))
                 order_subOrKiosk=orderSubIdText.getText();
@@ -89,8 +88,14 @@ public class ComplaintController {
         }
         else
             order_subOrKiosk=null;
-        Complaint complaintRequest=new Complaint(ComplaintSubject.getValue(),Ordersubscription.getValue(), order_subOrKiosk,complaintBody.getText(), LocalDate.now(),LocalDate.now(),true);
-        requist_submition.setMessage("#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot);
+        if (parkingLot.getValue()!=null)
+            pLotId=parkingLot.getValue().toString();
+        Complaint complaintRequest=new Complaint(ComplaintSubject.getValue()
+                ,Ordersubscription.getValue(), order_subOrKiosk,complaintBody.getText()
+                , LocalDate.now(),LocalDate.now(),true);
+        requist_submition.setMessage("#applyComplaint&"+firstName.getText()+
+                "&"+LastName.getText()+"&"+customerID.getText()+"&"+email.getText()+"&"
+                +pLotId);
         requist_submition.setObject(complaintRequest);
         try {
             SimpleClient.getClient().sendToServer(requist_submition);
@@ -130,6 +135,7 @@ public class ComplaintController {
         EventBus.getDefault().register(this);
 
         try {
+            status.setVisible(false);
             // Check if the connection with the server is alive.
             Message message = new Message("#getAllParkingLots");
             SimpleClient.getClient().sendToServer(message);
@@ -268,5 +274,14 @@ public class ComplaintController {
     public void getAllSubscriptions(SubscriptionResponse event){
         subscriptions=(List<Subscription>) event.getMessage().getObject();
     }
+    @FXML
+    @Subscribe
+    public void checkSubmit(ComplaintSubscriber event){
+        System.out.println("Complaint Was Sent Successfuly");
+        status.setVisible(true);
 
+
+
+        // TODO: 1/17/2023   go to next screen+
+    }
 }

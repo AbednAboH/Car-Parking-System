@@ -99,6 +99,7 @@ public class OrderController {
                 int idx = plChoice.getSelectionModel().getSelectedItem();
                 String start = arrivalTime.getValue() + "";
                 String end = exitTime.getValue() + "";
+                // TODO: 1/17/2023 get might get us in trouble , indexes of parking lots aren't linear and don't always start with 1  
                 ParkingLot pl = PLresults.get(idx - 1);
                 Order newOrder = new Order(rg, pl, dateChoice.getValue(), start, end,
                         plateNum.getText(), emailInput.getText());
@@ -177,7 +178,7 @@ public class OrderController {
         SimpleClient.getClient().sendToServer(message);
 
         //RegisteredCustomer user=(RegisteredCustomer) SimpleChatClient.getUser();
-        message.setMessage("#getRegisteredCustomer");
+        message.setMessage("#getUser");
         SimpleClient.getClient().sendToServer(message);
 
         initInfoControls();

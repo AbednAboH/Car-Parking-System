@@ -29,7 +29,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new LogInSubscriber(message));
 		}else if(message.getMessage().equals("#placeOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}else if(message.getMessage().equals("#getRegisteredCustomer")){
+		}else if(message.getMessage().equals("#getUser")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
@@ -38,6 +38,7 @@ public class SimpleClient extends AbstractClient {
 		}else if(message.getMessage().startsWith("#getAllOrders")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
 		}else if (message.getMessage().startsWith("#applyComplaint")){
+			System.out.println("here");
 			EventBus.getDefault().post(new ComplaintSubscriber(message));
 		}else {
 			System.out.println(message.getMessage());
