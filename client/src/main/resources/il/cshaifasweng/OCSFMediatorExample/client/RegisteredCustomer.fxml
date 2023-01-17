@@ -9,58 +9,57 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.RegisteredCustomerController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.RegisteredCustomerController">
   <tabs>
       <Tab text="Profile">
          <content>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="logoutbutton" layoutX="513.0" layoutY="308.0" mnemonicParsing="false" onAction="#logOut" text="Log out" />
-                  <Label layoutX="152.0" layoutY="76.0" text="First name:" />
-                  <Label layoutX="153.0" layoutY="138.0" text="Last name:" />
-                  <Label layoutX="181.0" layoutY="205.0" text="Email:" />
-                  <Label layoutX="202.0" layoutY="21.0" text="ID:" />
-                  <TextField fx:id="idtxt" editable="false" layoutX="225.0" layoutY="17.0" />
-                  <TextField fx:id="fnametxt" editable="false" layoutX="225.0" layoutY="72.0" />
-                  <TextField fx:id="lnametxt" editable="false" layoutX="225.0" layoutY="134.0" />
-                  <TextField fx:id="emailtxt" editable="false" layoutX="225.0" layoutY="201.0" />
-                  <Button fx:id="editbutton" layoutX="225.0" layoutY="282.0" mnemonicParsing="false" onAction="#editInfo" text="Edit" />
+                  <Button fx:id="logoutbutton" layoutX="36.0" layoutY="38.0" mnemonicParsing="false" onAction="#logOut" text="Log out" />
+                  <Label layoutX="11.0" layoutY="145.0" text="First name:" />
+                  <Label layoutX="11.0" layoutY="187.0" text="Last name:" />
+                  <Label layoutX="33.0" layoutY="234.0" text="Email:" />
+                  <Label layoutX="26.0" layoutY="99.0" text="ID:" />
+                  <TextField fx:id="idtxt" editable="false" layoutX="79.0" layoutY="95.0" />
+                  <TextField fx:id="fnametxt" editable="false" layoutX="79.0" layoutY="141.0" />
+                  <TextField fx:id="lnametxt" editable="false" layoutX="79.0" layoutY="183.0" />
+                  <TextField fx:id="emailtxt" editable="false" layoutX="79.0" layoutY="230.0" />
+                  <Button fx:id="editbutton" layoutX="76.0" layoutY="324.0" mnemonicParsing="false" onAction="#editInfo" prefHeight="25.0" prefWidth="71.0" text="Edit" />
                   <Button fx:id="savebutton" layoutX="331.0" layoutY="282.0" mnemonicParsing="false" onAction="#saveInfo" prefHeight="25.0" prefWidth="43.0" text="Save" visible="false" />
-                  <Button fx:id="complaintbutton" layoutX="262.0" layoutY="321.0" mnemonicParsing="false" onAction="#addComplaint" text="Add complaint" />
-                  <Label layoutX="170.0" layoutY="247.0" text="Password:" />
-                  <TextField fx:id="passwordtxt" editable="false" layoutX="226.0" layoutY="243.0" />
-               </children></AnchorPane>
-         </content>
-      </Tab>
-    <Tab text="Subscriptions">
-         <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <TableView layoutX="170.0" layoutY="44.0" prefHeight="200.0" prefWidth="200.0">
+                  <Button fx:id="complaintbutton" layoutX="112.0" layoutY="38.0" mnemonicParsing="false" onAction="#addComplaint" text="Add complaint" />
+                  <Label layoutX="13.0" layoutY="286.0" text="Password:" />
+                  <TextField fx:id="passwordtxt" editable="false" layoutX="79.0" layoutY="282.0" />
+                  <TableView layoutX="662.0" layoutY="415.0" prefHeight="200.0" prefWidth="586.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="C1" />
                       <TableColumn prefWidth="75.0" text="C2" />
                     </columns>
                   </TableView>
-                  <Button fx:id="addsubscriptionbutton1" layoutX="339.0" layoutY="267.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Add Subscriptions" />
-                  <ChoiceBox fx:id="subType" layoutX="481.0" layoutY="267.0" prefHeight="25.0" prefWidth="64.0" />
-                  <Button fx:id="cancelsubsbutton1" layoutX="99.0" layoutY="267.0" mnemonicParsing="false" onAction="#cancelSubscription" prefHeight="25.0" prefWidth="121.0" text="Cancel Subscription" />
-               </children></AnchorPane>
-         </content></Tab>
-    <Tab text="Orders">
-         <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <TableView layoutX="121.0" layoutY="24.0" prefHeight="89.0" prefWidth="279.0">
+                  <TableView layoutX="331.0" layoutY="63.0" prefHeight="223.0" prefWidth="893.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Order id" />
                     </columns>
                   </TableView>
-                  <Button fx:id="placebutton" layoutX="121.0" layoutY="204.0" mnemonicParsing="false" onAction="#placeOrder" prefHeight="25.0" prefWidth="121.0" text="Place Order" />
-                  <Button fx:id="cancelorderbutton" layoutX="278.0" layoutY="204.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="121.0" text="Cancel Order" />
-               </children>
-            </AnchorPane>
-         </content></Tab>
+                  <Button fx:id="addsubscriptionbutton1" layoutX="832.0" layoutY="622.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Add Subscriptions" />
+                  <Button fx:id="cancelsubsbutton1" layoutX="984.0" layoutY="622.0" mnemonicParsing="false" onAction="#cancelSubscription" prefHeight="25.0" prefWidth="121.0" text="Cancel Subscription" />
+                  <Button fx:id="placebutton" layoutX="572.0" layoutY="303.0" mnemonicParsing="false" onAction="#placeOrder" prefHeight="25.0" prefWidth="121.0" text="Place Order" />
+                  <Button fx:id="cancelorderbutton" layoutX="751.0" layoutY="303.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="121.0" text="Cancel Order" />
+                  <TableView fx:id="car" layoutX="51.0" layoutY="415.0" prefHeight="197.0" prefWidth="124.0">
+                     <columns>
+                        <TableColumn fx:id="cars" prefWidth="123.0" text="Car Plate Number" />
+                     </columns>
+                  </TableView>
+                  <Text layoutX="632.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Online Orders" wrappingWidth="119.13671875" />
+                  <TableView fx:id="KioskParchases" layoutX="228.0" layoutY="415.0" prefHeight="197.0" prefWidth="380.0">
+                     <columns>
+                        <TableColumn fx:id="cars1" prefWidth="123.0" text="Kiosk ID" />
+                     </columns>
+                  </TableView>
+                  <ChoiceBox fx:id="subType" layoutX="909.0" layoutY="303.0" prefHeight="25.0" prefWidth="64.0" />
+               </children></AnchorPane>
+         </content>
+      </Tab>
   </tabs>
 </TabPane>
