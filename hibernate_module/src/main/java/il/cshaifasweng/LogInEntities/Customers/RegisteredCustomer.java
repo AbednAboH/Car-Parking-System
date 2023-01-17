@@ -22,9 +22,11 @@ public class RegisteredCustomer extends Customer {
     private List<Subscription>  Subscriptions;
     public RegisteredCustomer(){
     }
-
-    public RegisteredCustomer(int id,String email,String name,String password){
-        super(id,email,name,password);
+    public RegisteredCustomer(int id,String email,String name,String lastName,String password){
+        super(id,email,name,lastName,password);
+    }
+    public RegisteredCustomer(int id,String email,String name,String lastName){
+        super(id,email,name,lastName);
     }
     public RegisteredCustomer(int id, String email, List<Car> cars, List<Subscription> subscriptions) {
         super(id, email, cars);
