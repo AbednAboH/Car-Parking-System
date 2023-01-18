@@ -67,7 +67,15 @@ public class SubscriptionController {
 
     @FXML
     private Label timeFormat;
-    
+
+    @FXML
+    private Label rePrice;
+
+    @FXML
+    private Label multiPrice;
+
+    @FXML
+    private Label fullPrice;
 
 
     private ObservableList<PricingChart> pricingChartsList = FXCollections.observableArrayList();
@@ -92,13 +100,14 @@ public class SubscriptionController {
 
         // Enable disable the according to the selected subscription type.
         subType.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updatePrice();
             if (newValue.equals(Constants.FULL_SUBSCRIPTION.getMessage())) {
-                disableTime(true);
+                disableTime(false);
                 ParkingLotList.setDisable(true);
                 plateNumSec.setDisable(true);
                 plateNumTwo.setDisable(true);
             } else {
-                disableTime(false);
+                disableTime(true);
                 ParkingLotList.setDisable(false);
                 if(newValue.equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage())){
                     plateNumTwo.setDisable(false);
@@ -110,15 +119,18 @@ public class SubscriptionController {
             }
         });
 
+    }
 
-
-
+    private void updatePrice() {
+        totalPrice.setVisible(true);
+        totalPrice.setText("200");
     }
 
     private void disableTime(boolean flag) {
         expectedTime.setVisible(flag);
         minFormat.setVisible(flag);
         exitTime.setVisible(flag);
+        timeFormat.setVisible(flag);
     }
 
 
@@ -153,7 +165,6 @@ public class SubscriptionController {
                 pricingChartsList.addAll((ArrayList<PricingChart>) event.getMessage().getObject());
                 pricingChart.setItems(pricingChartsList);
             }
-
         }
     }
 

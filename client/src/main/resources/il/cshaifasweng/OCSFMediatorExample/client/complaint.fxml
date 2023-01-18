@@ -24,7 +24,7 @@
       <TextField fx:id="LastName" layoutX="421.0" layoutY="167.0" />
       <Text layoutX="347.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID:" wrappingWidth="66.5078125" />
       <TextField fx:id="customerID" layoutX="421.0" layoutY="223.0" />
-      <Label fx:id="ComplaintID" layoutX="662.0" layoutY="48.0" prefHeight="17.0" prefWidth="93.0" text="complaintID:" />
+      <Label fx:id="ComplaintID" layoutX="99.0" layoutY="73.0" prefHeight="17.0" prefWidth="93.0" text="complaintID:" />
       <Text layoutX="343.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Complaint" wrappingWidth="135.0">
          <font>
             <Font size="24.0" />
@@ -39,5 +39,6 @@
       <Text layoutX="601.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a type of Order: " wrappingWidth="161.0" />
       <Text layoutX="601.0" layoutY="261.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a Parking Lot" wrappingWidth="161.0" />
       <Text layoutX="601.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Complaint Subject" wrappingWidth="161.0" />
+      <Label fx:id="status" layoutX="592.0" layoutY="468.0" prefHeight="34.0" prefWidth="234.0" text="Complaint Was sent Succesfully" textFill="#009e08" textOverrun="CENTER_ELLIPSIS" wrapText="true" />
    </children>
 </AnchorPane>

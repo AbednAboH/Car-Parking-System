@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SubscriptionController">
@@ -62,21 +63,40 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="678.0" layoutY="294.0" prefHeight="45.0" prefWidth="257.0" text="Regualr subscription:                     50">
+      <Label layoutX="678.0" layoutY="294.0" prefHeight="45.0" prefWidth="170.0" text="Regualr subscription:   ">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="678.0" layoutY="329.0" prefHeight="45.0" prefWidth="257.0" text="Regualr multiple subscription:   60">
+      <Label layoutX="678.0" layoutY="329.0" prefHeight="45.0" prefWidth="225.0" text="Regualr multiple subscription:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="678.0" layoutY="367.0" prefHeight="45.0" prefWidth="257.0" text="Full subscription:                             80">
+      <Label layoutX="678.0" layoutY="367.0" prefHeight="45.0" prefWidth="170.0" text="Full subscription: ">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
+      <VBox layoutX="922.0" layoutY="300.0" prefHeight="125.0" prefWidth="57.0" spacing="5.0">
+         <children>
+            <Label fx:id="rePrice" alignment="CENTER" prefHeight="14.0" prefWidth="57.0" text="20">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="multiPrice" alignment="CENTER" prefHeight="46.0" prefWidth="57.0" text="30">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="fullPrice" alignment="CENTER" prefHeight="28.0" prefWidth="57.0" text="50">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
     </children>
 
 
