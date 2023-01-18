@@ -12,8 +12,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SubscriptionController {
@@ -57,11 +59,23 @@ public class SubscriptionController {
     @FXML
     private Label plateNumSec;
 
+    @FXML
+    private Label expectedTime;
+
+    @FXML
+    private Label minFormat;
+
+    @FXML
+    private Label timeFormat;
+    
+
+
     private ObservableList<PricingChart> pricingChartsList = FXCollections.observableArrayList();
     private ObservableList<Integer> parkingLotsIds = FXCollections.observableArrayList();
     private ObservableList<String> subBoxData = FXCollections.observableArrayList(Constants.REGULAR_SUBSCRIPTION.getMessage(),Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage(),Constants.FULL_SUBSCRIPTION.getMessage());
     private List<ParkingLot> parkingLots;
     private ParkingLot currParkingLot;
+    private HashMap<Integer,ParkingLot> pLotsMap = new HashMap<>();
 
     @FXML
     void initialize(){
@@ -79,10 +93,12 @@ public class SubscriptionController {
         // Enable disable the according to the selected subscription type.
         subType.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(Constants.FULL_SUBSCRIPTION.getMessage())) {
+                disableTime(true);
                 ParkingLotList.setDisable(true);
                 plateNumSec.setDisable(true);
                 plateNumTwo.setDisable(true);
             } else {
+                disableTime(false);
                 ParkingLotList.setDisable(false);
                 if(newValue.equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage())){
                     plateNumTwo.setDisable(false);
@@ -99,6 +115,13 @@ public class SubscriptionController {
 
     }
 
+    private void disableTime(boolean flag) {
+        expectedTime.setVisible(flag);
+        minFormat.setVisible(flag);
+        exitTime.setVisible(flag);
+    }
+
+
     @Subscribe
     public void SubscriptionEvents(ParkingLotResults event){
         if(event.getMessage() != null) {
@@ -109,7 +132,6 @@ public class SubscriptionController {
             System.out.println("Hello Parkings");
             if(event.getMessage().getMessage().startsWith("#getAllParkingLots")){
                 parkingLots = (ArrayList<ParkingLot>) event.getMessage().getObject();
-                System.out.println(parkingLots.size());
                 addParkingLotsNames();
 
             }
@@ -117,19 +139,21 @@ public class SubscriptionController {
     }
 
     private void addParkingLotsNames() {
-        for(ParkingLot plot : parkingLots)
+        for(ParkingLot plot : parkingLots) {
             parkingLotsIds.add(plot.getId());
+            pLotsMap.put(plot.getId(),plot);
+        }
         ParkingLotList.setItems(parkingLotsIds);
     }
 
     @Subscribe
     public void SubscriptionEvents(SubscriptionsChartResults event){
-        System.out.println("Hello");
         if(event.getMessage() != null) {
             if (event.getMessage().getMessage().startsWith("#getPricingChart")) {
                 pricingChartsList.addAll((ArrayList<PricingChart>) event.getMessage().getObject());
                 pricingChart.setItems(pricingChartsList);
             }
+
         }
     }
 
@@ -137,18 +161,27 @@ public class SubscriptionController {
 
 
     @FXML
-    void goToPayment(ActionEvent event) {
+    void goToPayment(ActionEvent event) throws IOException {
+
         if(!subType.getValue().equals(Constants.FULL_SUBSCRIPTION.getMessage())){
-            for(ParkingLot plot : parkingLots){
-                if(plot.getId() == ParkingLotList.getValue())
-                    currParkingLot = plot;
-            }
+            currParkingLot = pLotsMap.get(ParkingLotList.getValue());
+        }
+        if(validateInfo()) {
+            SimpleChatClient.setRoot("orderPaymentGUI");
+        }else{
+
         }
     }
 
-    @FXML
-    void goBack(ActionEvent event) {
+    private boolean validateInfo() {
+        String email = emailInput.getText();
+        // TODO: 17/01/2023 Abo Abied car plate validator.
+        return InputValidator.isValidEmail(email);
+    }
 
+    @FXML
+    void goBack(ActionEvent event) throws IOException {
+        SimpleChatClient.setRoot("registeredCustomer");
     }
 
     void sendMessagesToServer(String request){
