@@ -32,11 +32,18 @@ public abstract class Customer implements Serializable {
     public Customer() {
     }
 
-    public Customer (int id,String email,String firstName,String password){
+    public Customer (int id,String email,String firstName,String lastName,String password){
         this.id=id;
         this.email=email;
         this.firstName=firstName;
+        this.lastName=lastName;
         this.password=password;
+    }
+    public Customer (int id,String email,String firstName,String lastName){
+        this.id=id;
+        this.email=email;
+        this.firstName=firstName;
+        this.lastName=lastName;
     }
     public Customer(int id,String email,List<Car> cars) {
         this.id=id;
@@ -52,5 +59,8 @@ public abstract class Customer implements Serializable {
         this.id=id;
         this.email=email;
         this.cars.add(new Car(car));
+    }
+    public void addComplaint(Complaint complaint){
+        this.complaint.add(complaint);
     }
 }

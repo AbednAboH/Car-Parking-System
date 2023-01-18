@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
+import javafx.util.converter.IntegerStringConverter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.event.ActionEvent;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 public class OrderController {
     RegisteredCustomer rg = new RegisteredCustomer();
@@ -45,6 +47,9 @@ public class OrderController {
 
     @FXML
     private ChoiceBox<Integer> monthInput;
+
+    @FXML
+    private Label warningMsg;
 
     @FXML
     private TextField numberInput;
@@ -80,59 +85,35 @@ public class OrderController {
     private Button submit;
 
     private boolean orderInfoValidation() {
-
+        if (exitTime.getValue() < arrivalTime.getValue())
+            return false;
+        if (plateNum.getText().length() < 6)
+            return false;
         return true;
     }
 
     @FXML
-    void saveOrder(ActionEvent event) {
-        try {
-            if (orderInfoValidation()) {
-                int idx = plChoice.getSelectionModel().getSelectedItem();
-                Order newOrder = new Order(rg, PLresults.get(idx), dateChoice.getValue(),
-                        arrivalTime.getValue().toString(), exitTime.getValue().toString()
-                ,plateNum.getText(), emailInput.getText());
-                Message message = new Message("#placeOrder", newOrder);
-                SimpleClient.getClient().sendToServer(message);
-            } else {
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     void goToPayment(ActionEvent event) throws Exception {
-       // SimpleChatClient.setRoot("orderPaymentGUI");
         try {
             if (orderInfoValidation()) {
                 int idx = plChoice.getSelectionModel().getSelectedItem();
-                Order newOrder = new Order( PLresults.get(idx), dateChoice.getValue(),
-                        arrivalTime.getValue().toString(), exitTime.getValue().toString()
-                        ,plateNum.getText(), emailInput.getText());
-//                Order newOrder = new Order(rg, PLresults.get(idx), dateChoice.getValue(),
-//                        arrivalTime.getValue().toString(), exitTime.getValue().toString()
-//                        ,plateNum.getText(), emailInput.getText());
-                Message message = new Message("#placeOrder", newOrder);
-                SimpleClient.getClient().sendToServer(message);
+                String start = arrivalTime.getValue() + "";
+                String end = exitTime.getValue() + "";
+                // TODO: 1/17/2023 get might get us in trouble , indexes of parking lots aren't linear and don't always start with 1  
+                ParkingLot pl = PLresults.get(idx - 1);
+                Order newOrder = new Order(rg, pl, dateChoice.getValue(), start, end,
+                        plateNum.getText(), emailInput.getText());
+                System.out.println(newOrder.getPlateNum());
+                SimpleChatClient.setCurrentOrder(newOrder);
+                SimpleChatClient.setRoot("orderPaymentGUI");
             } else {
-
+                warningMsg.setVisible(true);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    void backToOrder(ActionEvent event) throws IOException {
-
-    }
-
-    @Subscribe
-    public void placeOrderResponse(UpdateMessageEvent event) {
-        emailInput.setText("done");
-    }
 
     @Subscribe
     public void setParkingLotDataFromServer(ParkingLotResults event) {
@@ -155,35 +136,54 @@ public class OrderController {
         rg.setLastName(result.getLastName());
         rg.setPassword(result.getPassword());
         rg.setCars(result.getCars());
+
+        emailInput.setText(result.getEmail());
+    }
+
+
+    @FXML
+    void plateNumTxtChange(ActionEvent event) {
+        String txt = plateNum.getText();
+        if (!txt.matches("-?([1-9][0-9]*)?")
+                || txt.length() > 10){
+            plateNum.setText(txt.substring(0, txt.length() - 1));
+        }
     }
 
     @FXML
     void initialize() {
         try {
             EventBus.getDefault().register(this);
+            Order myOrder = SimpleChatClient.getCurrentOrder();
             initInfoView();
+            if (myOrder != null)
+                fillOrderDetails(myOrder);
 
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void fillOrderDetails(Order order) {
+        emailInput.setText(order.getEmail());
+        plateNum.setText(order.getPlateNum());
+        dateChoice.setValue(order.getDate());
+        exitTime.getValueFactory().setValue(Integer.parseInt(order.getExiting()));
+        arrivalTime.getValueFactory().setValue(Integer.parseInt(order.getEntering()));
+        plChoice.setValue(order.getParkingLotID().getId());
     }
 
     private void initInfoView() throws IOException {
         Message message = new Message("#getAllParkingLots");
         SimpleClient.getClient().sendToServer(message);
 
-        message.setMessage("#getRegisteredCustomer");
-        //TODO: customerID
-        //message.setObject(1);
+        //RegisteredCustomer user=(RegisteredCustomer) SimpleChatClient.getUser();
+        message.setMessage("#getUser");
         SimpleClient.getClient().sendToServer(message);
-
-        emailInput.setText(rg.getEmail());
 
         initInfoControls();
     }
 
-    private void initPaymentView(){}
 
     private void initInfoControls() {
         LocalDate minDate = LocalDate.now();
@@ -201,6 +201,7 @@ public class OrderController {
                     }
                 };
             }
+
         };
 
         dateChoice.setDayCellFactory(dayCellFactory);
@@ -215,20 +216,8 @@ public class OrderController {
             else
                 exitTime.getValueFactory().setValue(newValue + 1);
         }));
-
     }
 
-    private void initPaymentControls(){
-        ArrayList<Integer> months = new ArrayList<>();
-        ArrayList<Integer> years = new ArrayList<>();
-        int curYear = LocalDate.now().getYear();
-        for(int i = 1; i < 13; i++){
-            months.add(i);
-            years.add(curYear + i);
-        }
-        monthInput.getItems().setAll(months);
-        yearInput.getItems().setAll(years);
-    }
 }
 
 
