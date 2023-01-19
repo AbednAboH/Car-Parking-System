@@ -199,7 +199,7 @@ public class MySQL
         initiateParkingLot();
         session.flush();
     }
-    private static void initiateParkingLot() throws Exception {
+    public static void initiateParkingLot() throws Exception {
         intiateParkingLotManagers();
         List<ParkingLotManager> managers=getAllEntities(ParkingLotManager.class);
         for(ParkingLotManager manager: managers)

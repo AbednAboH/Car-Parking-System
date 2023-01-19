@@ -47,9 +47,11 @@ public class SimpleServerClass extends AbstractServer {
                 client.sendToClient(message);
 
             }else if (request.startsWith("#Register")) {
-                registerUser(message,client);
+                registerUser(message, client);
                 client.sendToClient(message);
 
+            }else if (request.startsWith("#DirectToAvailblePark")) {
+                diretToParkingLots(message,client);
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
@@ -180,4 +182,14 @@ public class SimpleServerClass extends AbstractServer {
         orderHandler.save((Order)message.getObject(), Order.class);
         client.sendToClient(message);
     }
-}
+
+    // need to fix it!!!!!!!
+    public void  diretToParkingLots(Message message, ConnectionToClient client) throws IOException,Exception {
+        // get all parkinglots
+
+
+    }
+
+
+    }
+
