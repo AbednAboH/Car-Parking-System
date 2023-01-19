@@ -61,7 +61,6 @@ public class LogInController{
     public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
     void initialize(){
-//        EventBus.getDefault().register(this);
         EventBus.getDefault().register(LogInController.this);
 
         try {
@@ -82,14 +81,16 @@ public class LogInController{
     }
 
     @Subscribe
-//    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void getUser(LogInSubscriber event) {
         System.out.println("get user method event");
         if(event.getMessage().getMessage().startsWith("#authintication"))
-              if (event.getMessage().getMessage().startsWith("#authintication successful!"))
+              if (event.getMessage().getMessage().startsWith("#authintication successful!")) {
                   authintication.set(1);
-              else
+//                  We  may need to move the assigning of the user to here?
+                  SimpleChatClient.setUser(event.getMessage().getObject());
+              }else {
                   authintication.set(2);
+              }
 //            EventBus.getDefault().unregister(this);
         this.user =  event.getMessage().getObject();
 
@@ -117,7 +118,7 @@ public class LogInController{
                         loginUsernameTextField.setStyle(successStyle);
                         try {
 //                            EventBus.getDefault().unregister(LogInController.this);
-                            SimpleChatClient.setRoot("primary");
+                            SimpleChatClient.setRoot("complaint");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

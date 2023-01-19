@@ -1,7 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.KioskSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.*;
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
@@ -21,12 +25,30 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new SubscriptionsChartResults(message));
 		}else if(message.getMessage().equals("#getAllParkingLots")){
 			EventBus.getDefault().post(new ParkingLotResults(message));
+		} else if (message.getMessage().equals("#showOrders")) {
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if (message.getMessage().equals("#showSubscription")) {
+			EventBus.getDefault().post(new SubscriptionResponse(message));
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
 		}else if(message.getMessage().equals("#placeOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}else if(message.getMessage().equals("Error! we got an empty message")){
+		}else if(message.getMessage().equals("#getUser")){
+			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
+		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
+		}else if(message.getMessage().startsWith("#GetAllCompliants")||message.getMessage().startsWith("#CloseComplaint")) {
+			EventBus.getDefault().post(new CompliantsSubscriber(message));
+		}else if(message.getMessage().startsWith("#verifySubscription")){
+			EventBus.getDefault().post(new KioskSubscriber(message));
+		}else if(message.getMessage().startsWith("#verifyOrder")){
+			System.out.println("We got a message");
+			EventBus.getDefault().post(new KioskSubscriber(message));
+		}else if(message.getMessage().startsWith("#getAllOrders")){
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if (message.getMessage().startsWith("#applyComplaint")){
+			System.out.println("here");
+			EventBus.getDefault().post(new ComplaintSubscriber(message));
 		}else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));

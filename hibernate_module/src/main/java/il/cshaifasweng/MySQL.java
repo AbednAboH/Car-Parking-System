@@ -1,8 +1,11 @@
 package il.cshaifasweng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import javax.persistence.Entity;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,10 +24,7 @@ import il.cshaifasweng.MoneyRelatedServices.Reports;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
-import il.cshaifasweng.customerCatalogEntities.Complaint;
-import il.cshaifasweng.customerCatalogEntities.FullSubscription;
-import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
-import il.cshaifasweng.customerCatalogEntities.Subscription;
+import il.cshaifasweng.customerCatalogEntities.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -36,7 +36,7 @@ public class MySQL
 {
     public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
-            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Customer.class};
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),
@@ -45,7 +45,8 @@ public class MySQL
             ,Map.entry("Sub",Subscription.class),Map.entry("Car",Car.class)
             ,Map.entry("Complaint",Complaint.class),Map.entry("OneTime",OneTimeCustomer.class),Map.entry("Registered",RegisteredCustomer.class)
             ,Map.entry("Penalty",Penalty.class),Map.entry("Refund",Refund.class)
-            ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class));
+            ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class)
+            ,Map.entry("Orders", Order.class));;
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session
@@ -63,19 +64,10 @@ public class MySQL
     public static void main( String[] args ) {
         try {
             connectToDB();
-//            RegisteredCustomer customer=new RegisteredCustomer(123456689,"someone@gmail.com","587578");
-//            session.save(customer);
-//            customer=retrieveLastAdded(RegisteredCustomer.class);
-//            customer.getCars().get(0).setCustomer(customer);
-//            session.update(customer);
-//            RegisteredCustomer customer=retrieveLastAdded(RegisteredCustomer.class);
-
-
 //            initiatePricingChart();
-//            deleteEntity(1,200,ParkingLot.class);
-            printAllEntities();
+////            printAllEntities();
 
-            session.getTransaction().commit(); // Save everything.
+            // Save everything.
         } catch (Exception exception) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -93,10 +85,10 @@ public class MySQL
     public static void connectToDB()throws Exception{
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        session.beginTransaction();
+        
     }
     public static void commitToDB()throws Exception{
-        session.getTransaction().commit();
+       
     }
     public static void handleException(Exception e){
         if (session != null) {

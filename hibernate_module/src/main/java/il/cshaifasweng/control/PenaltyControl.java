@@ -12,23 +12,23 @@ public class PenaltyControl {
     public void createPenalty(Penalty penalty){
 
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
+        
 
         session.save(penalty);
 
-        session.getTransaction().commit();
+       //
 
     }
     public Penalty getPenalty(int id) {
         // create a session and begin a transaction
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
+        
 
         // retrieve the Penalty from the database
         Penalty Penalty = session.get(Penalty.class, id);
 
         // commit the transaction
-        session.getTransaction().commit();
+       
 
         return Penalty;
     }
@@ -36,25 +36,25 @@ public class PenaltyControl {
     public void updatePenalty(Penalty Penalty) {
         // create a session and begin a transaction
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
+        
 
         // update the Penalty object in the database
         session.update(Penalty);
 
         // commit the transaction
-        session.getTransaction().commit();
+       
     }
 
     public boolean deletePenalty(Penalty Penalty) {
         // create a session and begin a transaction
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
+        
 
         // delete the Penalty object from the database
         session.delete(Penalty);
 
         // commit the transaction
-        session.getTransaction().commit();
+       
         return true;
     }
 

@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.customerCatalogEntities.Order;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,13 +21,25 @@ public class SimpleChatClient extends Application {
 
     private static Scene scene;
     private SimpleClient client;
+    private static Object user;
+    private static Order currentOrder;
+
+    public static Order getCurrentOrder() {
+        return currentOrder;
+    }
+
+    public static void setCurrentOrder(Order currentOrder) {
+        SimpleChatClient.currentOrder = null;
+        SimpleChatClient.currentOrder = currentOrder;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 710, 650);
+        scene = new Scene(loadFXML("SubscriptionScreen"), 710, 650);
+
         stage.setScene(scene);
         stage.show();
     }
@@ -41,7 +54,13 @@ public class SimpleChatClient extends Application {
         return fxmlLoader.load();
     }
     
-    
+    public static Object getUser(){
+        return user;
+    }
+
+    public static void setUser(Object user){
+        SimpleChatClient.user = user;
+    }
 
     @Override
 	public void stop() throws Exception {

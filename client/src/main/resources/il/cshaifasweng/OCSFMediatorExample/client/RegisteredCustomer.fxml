@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.RegisteredCustomerController">
+  <tabs>
+      <Tab text="Home">
+         <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="orderbutton" layoutX="35.0" layoutY="44.0" mnemonicParsing="false" onAction="#showOrders" prefHeight="25.0" prefWidth="121.0" text="Show Orders" />
+                  <Button fx:id="subscriptionbutton" layoutX="35.0" layoutY="94.0" mnemonicParsing="false" onAction="#showSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Show Subscriptions" />
+                  <Button fx:id="addsubscriptionbutton1" layoutX="34.0" layoutY="145.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Add Subscriptions" />
+                  <Button fx:id="placeOrder" layoutX="33.0" layoutY="194.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Place new order" />
+               </children></AnchorPane>
+         </content>
+      </Tab>
+    <Tab onSelectionChanged="#getAllSubscriptions" text="Subscriptions">
+         <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+         </content></Tab>
+    <Tab text="Orders history">
+         <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="allOrders" layoutX="121.0" layoutY="24.0" onSort="#showOrders" prefHeight="261.0" prefWidth="279.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="Order id" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+         </content></Tab>
+  </tabs>
+</TabPane>

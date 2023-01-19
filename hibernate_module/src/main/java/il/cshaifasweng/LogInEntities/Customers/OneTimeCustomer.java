@@ -22,4 +22,7 @@ public class OneTimeCustomer extends Customer {
         super(id, email, cars);
         this.exitTime = exitTime;
     }
+    public OneTimeCustomer(int id,String email,String firstName,String lastName,String password) {
+        super(id,email,firstName,lastName, password);
+    }
 }
