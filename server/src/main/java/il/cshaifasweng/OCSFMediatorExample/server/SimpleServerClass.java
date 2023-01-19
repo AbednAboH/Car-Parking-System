@@ -58,22 +58,21 @@ public class SimpleServerClass extends AbstractServer {
                 message.setMessage("Error! we got an empty message");
                 client.sendToClient(message);
             } else if (request.startsWith("#LogIn")) {
-                Login(message,client);
+                Login(message, client);
                 client.sendToClient(message);
 
-            }else if (request.startsWith("#Register")) {
-                registerUser(message,client);
+            } else if (request.startsWith("#Register")) {
+                registerUser(message, client);
                 client.sendToClient(message);
 
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
-            }else if (request.startsWith("#placeOrder")) {
+            } else if (request.startsWith("#placeOrder")) {
                 placeOrder(message, client);
-            }else if (request.startsWith("#getUser")) {
+            } else if (request.startsWith("#getUser")) {
                 getUser(message, client);
-            }
-            else if (request.startsWith("#getPricingChart")) {
+            } else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
 
             } else if (request.startsWith("#updatePrice")) {
@@ -82,44 +81,38 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
 
-            }else if (request.startsWith("#showOrders")){
-                showOrders(message , client);
-            }
-            else if (request.startsWith("#showSubscription")) {
+            } else if (request.startsWith("#showOrders")) {
+                showOrders(message, client);
+            } else if (request.startsWith("#showSubscription")) {
                 showSubscription(message, client);
-            }
-            else if(request.startsWith("#getAllOrders")) {
+            } else if (request.startsWith("#getAllOrders")) {
                 System.out.println("get all orders");
-                getCustomersOrders(message,client);
-            }
-            else if (request.startsWith("#applyComplaint")){
-                applyCompaint(message,client);
-            }
-            else if (request.startsWith("#ConnectionAlive")) {
+                getCustomersOrders(message, client);
+            } else if (request.startsWith("#applyComplaint")) {
+                applyCompaint(message, client);
+            } else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("Alive!");
-            }else if(request.startsWith("#GetAllCompliants")){
+            } else if (request.startsWith("#GetAllCompliants")) {
                 System.out.println("Got the message");
                 showComplaints(message, client);
-            }else if(request.startsWith("#CloseComplaint")) {
+            } else if (request.startsWith("#CloseComplaint")) {
                 System.out.println("ClosingCompliant");
-                    closeCompliants(message, client);
-            }else if(request.startsWith("#verifySubscription")){
-                    verifySubscription(message, client);
-            }else if(request.startsWith("#verifyOrder")){
+                closeCompliants(message, client);
+            } else if (request.startsWith("#verifySubscription")) {
+                verifySubscription(message, client);
+            } else if (request.startsWith("#verifyOrder")) {
                 verifyOrder(message, client);
-            }else {
+            } else {
                 System.out.println("no selection was done!!!");
             }
 
 
-
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            session.getTransaction().commit();
+
         }
-
-        finally {
-
-
     }
     private void applyCompaint(Message message,ConnectionToClient client)throws IOException{
         Complaint complaint=(Complaint) message.getObject();
