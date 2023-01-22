@@ -6,8 +6,6 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
-import il.cshaifasweng.MoneyRelatedServices.Penalty;
-import il.cshaifasweng.MySQL;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.Message;
@@ -19,7 +17,7 @@ import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.cfg.BaselineSessionEventsListenerBuilder;
+
 
 
 import java.io.IOException;
@@ -27,19 +25,19 @@ import java.util.*;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-    private static DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<PricingChart>();
-    private static DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<ParkingLot>();
-    private static DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<Order>();
-    private static DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<PricingChart>();
+    private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<ParkingLot>();
+    private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<Order>();
+    private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
-    private static DataBaseManipulation<Subscription> subscriptionHandler = new DataBaseManipulation<>();
-    private static DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
-    private static DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
-    private static DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
-    private static DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
-    private static DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
-    private static DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Subscription> subscriptionHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
+    private static  final  DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
     private static Session session;
 
     public SimpleServerClass(int port) {
