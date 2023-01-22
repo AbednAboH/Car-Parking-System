@@ -6,47 +6,62 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
-import il.cshaifasweng.MoneyRelatedServices.Penalty;
-import il.cshaifasweng.MySQL;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
-import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
+import il.cshaifasweng.customerCatalogEntities.FullSubscription;
 import il.cshaifasweng.customerCatalogEntities.Order;
-import il.cshaifasweng.customerCatalogEntities.Subscription;
+import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
+import lombok.Data;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.cfg.BaselineSessionEventsListenerBuilder;
-
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-    private static DataBaseManipulation<PricingChart> pChart=new DataBaseManipulation<PricingChart>();
-    private static DataBaseManipulation<ParkingLot> pLot= new DataBaseManipulation<ParkingLot>();
-    private static DataBaseManipulation<Order> orderHandler= new DataBaseManipulation<Order>();
-    private static DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
-    private static DataBaseManipulation<Subscription> subscriptionHandler= new DataBaseManipulation<>();
-    private static DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
-    private static DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
-    private static DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
-    private static DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
-    private static DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
-    private static DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
-    private static  Session session;
+    private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
+    private static  final  DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
+    private static Session session;
+
     public SimpleServerClass(int port) {
         super(port);
         DataBaseManipulation.intiate();
         session=DataBaseManipulation.getSession();
     }
 
+    @Override
+    synchronized protected void clientDisconnected(ConnectionToClient client) {
+        int id = (Integer) client.getInfo("userId");
+        String type = (String) client.getInfo("userType");
+        if (type.startsWith(RegisteredCustomer.class.getName()) || type.startsWith(OneTimeCustomer.class.getName()))
+            clientsCustomersMap.remove(id);
+        else {
+            clientsEmployeeMap.remove(id);
+        }
+
+    }
 
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
@@ -82,32 +97,39 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
 
-            }else if (request.startsWith("#showOrders")){
-                showOrders(message , client);
-            }
-            else if (request.startsWith("#showSubscription")) {
+            } else if (request.startsWith("#showOrders")) {
+                showOrders(message, client);
+            } else if (request.startsWith("#showSubscription")) {
                 showSubscription(message, client);
-            }
-            else if(request.startsWith("#getAllOrders")) {
-                System.out.println("get all orders");
-                getCustomersOrders(message,client);
-            }
-            else if (request.startsWith("#applyComplaint")){
-                applyCompaint(message,client);
+
+            }else if (request.startsWith("#addSubscription")) {
+                addSubscription(message, client);
+
+            } else if (request.startsWith("#cancelOrder")) {
+                cancelOrder(message, client);
+
+            } else if (request.startsWith("#cancelSubscription")) {
+                cancelSubscription(message, client);
+
             }
             else if (request.startsWith("#ConnectionAlive")) {
-                System.out.println("Alive!");
-            }else if(request.startsWith("#GetAllCompliants")){
+                System.out.println("connection alive");
+            } else if (request.startsWith("#getAllOrders")) {
+                System.out.println("get all orders");
+                getCustomersOrders(message, client);
+            } else if (request.startsWith("#applyComplaint")) {
+                applyCompaint(message, client);
+            } else if (request.startsWith("#GetAllCompliants")) {
                 System.out.println("Got the message");
                 showComplaints(message, client);
-            }else if(request.startsWith("#CloseComplaint")) {
+            } else if (request.startsWith("#CloseComplaint")) {
                 System.out.println("ClosingCompliant");
-                    closeCompliants(message, client);
-            }else if(request.startsWith("#verifySubscription")){
-                    verifySubscription(message, client);
-            }else if(request.startsWith("#verifyOrder")){
+                closeCompliants(message, client);
+            } else if (request.startsWith("#verifySubscription")) {
+                verifySubscription(message, client);
+            } else if (request.startsWith("#verifyOrder")) {
                 verifyOrder(message, client);
-            }else {
+            } else {
                 System.out.println("no selection was done!!!");
             }
 
@@ -118,18 +140,19 @@ public class SimpleServerClass extends AbstractServer {
         finally{
             session.getTransaction().commit();
         }
-
     }
-    private void applyCompaint(Message message,ConnectionToClient client)throws IOException{
-        Complaint complaint=(Complaint) message.getObject();
+
+    private void applyCompaint(Message message, ConnectionToClient client) throws IOException {
+        Complaint complaint = (Complaint) message.getObject();
 //        "#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot
         String[] lazyElements=message.getMessage().split("&");
         if (!lazyElements[5].startsWith("null"))
             complaint.setParkingLot(pLot.get(Integer.parseInt(lazyElements[5]), ParkingLot.class));
-        Customer customer=customerHandler.get(Integer.parseInt(lazyElements[3]),Customer.class);
-        if (customer==null){
-            customer=new OneTimeCustomer(Integer.parseInt(lazyElements[3]),lazyElements[1],lazyElements[2],lazyElements[4],"");
-            session.save(customer);}
+        Customer customer = customerHandler.get(Integer.parseInt(lazyElements[3]), Customer.class);
+        if (customer == null) {
+            customer = new OneTimeCustomer(Integer.parseInt(lazyElements[3]), lazyElements[1], lazyElements[2], lazyElements[4], "");
+            session.save(customer);
+        }
         complaint.setCustomer(customer);
         session.save(complaint);
         session.update(customer);
@@ -137,6 +160,7 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
 
     }
+
     private void verifyOrder(Message message, ConnectionToClient client) throws IOException {
         String request = message.getMessage();
         String[] args;
@@ -153,14 +177,14 @@ public class SimpleServerClass extends AbstractServer {
                 + "AND o.registeredCustomer.id = :customerId "
                 + "AND o.parkingLotID.id = :parkingLotId "
                 + "AND o.date = CURDATE()";
-        HashMap<String,Object> params = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("orderID", orderID);
-        params.put("customerId",customerID);
+        params.put("customerId", customerID);
         params.put("parkingLotId", parkingLotId);
-        List<Object> lst = rCustomer.executeQuery(Object.class,queryOnOrder,params);
-        if(lst != null && lst.size() > 0) {
+        List<Object> lst = rCustomer.executeQuery(Object.class, queryOnOrder, params);
+        if (lst != null && lst.size() > 0) {
             message.setObject(lst.get(0));
-        }else {
+        } else {
             message.setObject(null);
         }
         client.sendToClient(message);
@@ -186,25 +210,25 @@ public class SimpleServerClass extends AbstractServer {
                 + "WHERE s.id = :subscriptionId "
                 + "AND s.registeredCustomer.id = :customerId "
                 + "AND s.isActive = true";
-        HashMap<String,Object> params = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("subscriptionId", subscriptionID);
-        params.put("customerId",customerID);
-        List<Object> lst = rCustomer.executeQuery(Object.class,queryOnFull,params);
+        params.put("customerId", customerID);
+        List<Object> lst = rCustomer.executeQuery(Object.class, queryOnFull, params);
         System.out.println(lst != null);
-        if(lst != null && lst.size() > 0) {
-            ((RegisteredCustomer)lst.get(0)).toString();
+        if (lst != null && lst.size() > 0) {
             message.setObject(lst.get(0));
-        }else {
+        } else {
             params.put("parkingLotId", parkingLotId);
-            rCustomer.executeQuery(RegisteredCustomer.class,queryOnRegular,params);
-            if(lst != null && lst.size() > 0) {
+            rCustomer.executeQuery(RegisteredCustomer.class, queryOnRegular, params);
+            if (lst != null && lst.size() > 0) {
                 message.setObject(lst.get(0));
-            }else {message.setObject(null);}
+            } else {
+                message.setObject(null);
+            }
         }
 
         client.sendToClient(message);
     }
-
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
         String request = message.getMessage();
         int complaintId;
@@ -212,6 +236,7 @@ public class SimpleServerClass extends AbstractServer {
         double refundAmount;
         String[] args;
         args = request.split("&");
+
         userId = Integer.parseInt(args[2]);
         System.out.println((args[1]));
         complaintId = Integer.parseInt(args[1]);
@@ -220,9 +245,9 @@ public class SimpleServerClass extends AbstractServer {
         if(request.contains("With")){
             refundAmount = Double.parseDouble(args[3]);
         }else if(request.contains("Full")){
-//                Need to return the full refund but how to know if we don't have the order that was made?
+//                TODO:Need to return the full refund but how to know if we don't have the order that was made?
         }else{
-//            complaintHandler.delete(complaintHandler.get(complaintId,Complaint.class),Complaint.class);
+//            todo: complaintHandler.delete(complaintHandler.get(complaintId,Complaint.class),Complaint.class);
         }
         complaintHandler.update(complaint);
         client.sendToClient(message);
@@ -236,6 +261,26 @@ public class SimpleServerClass extends AbstractServer {
             e.printStackTrace();
         }
     }
+
+    private void cancelOrder(Message message, ConnectionToClient client) {
+
+    }
+
+    private void cancelSubscription(Message message, ConnectionToClient client) {
+
+    }
+
+    private void addSubscription(Message message, ConnectionToClient client) throws IOException {
+
+        if(message.getObject().getClass().getSimpleName().compareTo("FullSubscription") == 0)
+            fullSubHandler.save((FullSubscription) message.getObject(), FullSubscription.class);
+        else
+            regularSubHandler.save((RegularSubscription) message.getObject(), RegularSubscription.class);
+
+        client.sendToClient(message);
+    }
+
+
 
     private void showSubscription(Message message, ConnectionToClient client) {
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
@@ -258,25 +303,25 @@ public class SimpleServerClass extends AbstractServer {
 
     protected void registerUser(Message message,ConnectionToClient client){
         // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
-        String[] mess=message.getMessage().split("&");
-        String name=mess[3],email=mess[1],password=mess[2],lastName=mess[4];
-        if (AuthenticationService.checkEmailExistance(email)){
-            // TODO: 1/11/2023 use a username instead more secure
+        String[] mess = message.getMessage().split("&");
+        String name = mess[4], email = mess[2], password = mess[3], lastName = mess[5], iD = mess[1];
+        if (AuthenticationService.checkEmailExistance(email)) {
+            // TODO: 1/11/2023 use id as it makes for a better solution , maybe create conditions and send appropriate messages
             message.setMessage("email already exists");
             return;
         }
         //TODO:1/11/23 might need to update the fields later on , for now this is the current format
-        RegisteredCustomer customer=new RegisteredCustomer(1,email,name,lastName,password);
-        rCustomer.save(customer,RegisteredCustomer.class);
-        customer=(RegisteredCustomer)rCustomer.getLastAdded(RegisteredCustomer.class);
-        clientsCustomersMap.put( customer.getId(), customer);
-        client.setInfo("userId",customer.getId());
+        RegisteredCustomer customer = new RegisteredCustomer(Integer.parseInt(iD), email, name, lastName, password);
+        rCustomer.save(customer, RegisteredCustomer.class);
+        customer = rCustomer.getLastAdded(RegisteredCustomer.class);
+        clientsCustomersMap.put(customer.getId(), customer);
+        client.setInfo("userId", customer.getId());
         System.out.println(customer);
         message.setMessage("RegistrationSuccessful");
     }
     protected void Login(Message message,ConnectionToClient client){
 
-        String email,password,userName="";
+        String email,password;
         String[] mess=message.getMessage().split("&");
         email=mess[1];
         password=mess[2];
@@ -289,6 +334,7 @@ public class SimpleServerClass extends AbstractServer {
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
             System.out.println(user);
+            assert user != null;
             if (clientsEmployeeMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
                 // TODO: 1/13/2023 add this option in sign in screen !!
@@ -306,6 +352,7 @@ public class SimpleServerClass extends AbstractServer {
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
             System.out.println(user);
 
+            assert user != null;
             if (clientsCustomersMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
                 // TODO: 1/13/2023 add this option in sign in screen !!
@@ -330,37 +377,43 @@ public class SimpleServerClass extends AbstractServer {
         }
     }
 
-    public void sendParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
+    public void sendParkingLots(Message message, ConnectionToClient client) throws Exception {
         message.setObject(pLot.getAll(ParkingLot.class));
 
         client.sendToClient(message);
     }
 
-    public void sendPricesChart(Message message, ConnectionToClient client) throws IOException, Exception {
-        message.setObject(pChart.getAll(PricingChart.class));
+    public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
+        message.setObject(pChart.getLastAdded(PricingChart.class));
         client.sendToClient(message);
     }
 
-    public void updatePriceChart(Message message, ConnectionToClient client) throws IOException, Exception {
+    public void updatePriceChart(Message message, ConnectionToClient client) {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
-        String subID = msg.substring(idx + 1);
-
-        PricingChart chartObject = pChart.get(Integer.parseInt(subID), PricingChart.class);
-        chartObject.setRate((Double) message.getObject());
+        int subID = Integer.parseInt(msg.substring(idx + 1));
+        PricingChart chartObject = pChart.getLastAdded(PricingChart.class);
+        switch (subID) {
+            case 1 -> chartObject.setKioskPrice((Double) message.getObject());
+            case 2 -> chartObject.setOrderBeforeHandPrice((Double) message.getObject());
+        }
         pChart.update(chartObject);
     }
 
-    public void updateSubscriptionAmount(Message message, ConnectionToClient client) throws IOException, Exception {
+    public void updateSubscriptionAmount(Message message, ConnectionToClient client) throws Exception {
         String msg = message.getMessage().replaceAll(" ", "");
         int idx = msg.indexOf(":");
-        String subID = msg.substring(idx + 1);
-        PricingChart chartObject = pChart.get(Integer.parseInt(subID), PricingChart.class);
-        chartObject.setRate((Integer) message.getObject());
+        int subID = Integer.parseInt(msg.substring(idx + 1));
+        PricingChart chartObject = pChart.getLastAdded(PricingChart.class);
+        switch (subID) {
+            case 3 -> chartObject.setOrderBeforeHandPrice((Double) message.getObject());
+            case 4 -> chartObject.setMultipleCarRegularSubHours((Double) message.getObject());
+            case 5 -> chartObject.setFullSubHours((Double) message.getObject());
+        }
         pChart.update(chartObject);
     }
 
-    public void placeOrder(Message message, ConnectionToClient client) throws IOException,Exception {
+    public void placeOrder(Message message, ConnectionToClient client) throws Exception {
         Order newOrder = (Order)message.getObject();
         //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
@@ -372,16 +425,17 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
     }
 
-    public void getCustomersOrders(Message message,ConnectionToClient client) throws IOException,Exception{
+    public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
 
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
-        message.setObject(regCostumer.getOrders());
-        System.out.println("got to Customer orders");
-        System.out.println(regCostumer.getOrders());
+        Object orders =regCostumer.getOrders();
+        Hibernate.initialize(orders);
+        session.flush();
+        message.setObject(orders);
         client.sendToClient(message);
 
     }
-    public void getUser(Message message,ConnectionToClient client)throws IOException,Exception{
+    public void getUser(Message message,ConnectionToClient client)throws Exception{
         int id=(Integer) client.getInfo("userId");
         String type=(String) client.getInfo("userType");
         if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
