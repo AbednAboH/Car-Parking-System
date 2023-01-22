@@ -6,9 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -16,7 +14,7 @@ import org.greenrobot.eventbus.Subscribe;
 public class SimpleChatClient extends Application {
 
     private static Scene scene;
-    private SimpleClient client;
+    private static SimpleClient client;
     private static Object user;
     private static Order currentOrder;
 
@@ -33,7 +31,7 @@ public class SimpleChatClient extends Application {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 710, 650);
+        scene = new Scene(loadFXML("logInScreen"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }

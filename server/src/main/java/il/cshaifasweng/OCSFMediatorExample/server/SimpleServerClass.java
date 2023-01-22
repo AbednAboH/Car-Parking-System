@@ -12,10 +12,12 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.FullSubscription;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
+import lombok.Data;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -426,8 +428,10 @@ public class SimpleServerClass extends AbstractServer {
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
 
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
-        message.setObject(regCostumer.getOrders());
-
+        Object orders =regCostumer.getOrders();
+        Hibernate.initialize(orders);
+        session.flush();
+        message.setObject(orders);
         client.sendToClient(message);
 
     }
