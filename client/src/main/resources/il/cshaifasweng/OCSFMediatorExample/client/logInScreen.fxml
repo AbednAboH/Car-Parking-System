@@ -10,6 +10,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.effect.Blend?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -29,7 +30,7 @@
             <children>
 
                 <!-- Logo -->
-                <ImageView fitHeight="322.0" fitWidth="350.0" layoutX="39.0" layoutY="248.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="322.0" fitWidth="350.0" layoutX="33.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@parking-car.png" />
                     </image>
@@ -44,8 +45,13 @@
     </left>
     <!-- Ending of the left part of the Borderpane -->
 
-    <!-- Beginning of the right part of the Borderpane -->
-    <right>
+    <!-- Beginning of the bottom part of the Borderpane -->
+    <bottom>
+
+        <!-- Simple Copyright -->
+        <Label prefHeight="16.0" prefWidth="107.0" style="-fx-text-fill: #B9a9a9;" text="CPS © 2023" BorderPane.alignment="CENTER" />
+    </bottom>
+   <center>
         <AnchorPane prefHeight="700.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
                 <!-- The End of Logo -->
@@ -84,7 +90,7 @@
                         <Image url="@lock.png" />
                     </image>
                 </ImageView>
-                <Button layoutX="190.0" layoutY="235.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #A9A9A9;" text="Forgot your Password?" underline="true">
+                <Button layoutX="203.0" layoutY="219.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #A9A9A9;" text="Forgot your Password?" underline="true">
                     <font>
                         <Font size="15.0" />
                     </font>
@@ -94,7 +100,7 @@
                         <Insets />
                     </opaqueInsets>
                 </Label>
-                <Button fx:id="LoginButton" layoutX="215.0" layoutY="192.0" mnemonicParsing="false" onAction="#onLoginButtonClick" prefHeight="33.0" prefWidth="148.0" style="-fx-background-color: #24a0ed; -fx-text-fill: white; -fx-border-radius: 5; -fx-border-width: 2; -fx-border-color: #24a0ed;" text="Login">
+                <Button fx:id="LoginButton" layoutX="215.0" layoutY="184.0" mnemonicParsing="false" onAction="#onLoginButtonClick" prefHeight="33.0" prefWidth="148.0" style="-fx-background-color: #24a0ed; -fx-text-fill: white; -fx-border-radius: 5; -fx-border-width: 2; -fx-border-color: #24a0ed;" text="Login">
                     <font>
                         <Font size="15.0" />
                     </font>
@@ -102,16 +108,16 @@
                 <!-- End of Login Form -->
 
                 <!-- A simple line Separator -->
-                <Line endX="500.0" endY="380.0" fill="DARKGRAY" layoutY="-110.0" opacity="0.5" startX="100.0" startY="380.0" stroke="#a8a8a8ad" strokeLineJoin="BEVEL" strokeWidth="3.0" />
+                <Line endX="500.0" endY="380.0" fill="DARKGRAY" layoutY="-130.0" opacity="0.5" startX="100.0" startY="380.0" stroke="#a8a8a8ad" strokeLineJoin="BEVEL" strokeWidth="3.0" />
 
 
                 <!-- The Beginning of Signup form -->
-                <Label layoutX="230.0" layoutY="275.0" prefHeight="36.0" prefWidth="130.0" style="-fx-text-fill: #A9A9A9;" text="Sign-Up">
+                <Label layoutX="230.0" layoutY="259.0" prefHeight="36.0" prefWidth="130.0" style="-fx-text-fill: #A9A9A9;" text="Sign-Up">
                     <font>
                         <Font name="SansSerif Regular" size="30.0" />
                     </font>
                 </Label>
-                <TextField fx:id="signUpUsernameTextField" layoutX="155.0" layoutY="320.0" prefHeight="30.0" prefWidth="300.0" promptText="Username" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <TextField fx:id="signUpUsernameTextField" layoutX="149.0" layoutY="321.0" prefHeight="30.0" prefWidth="116.0" promptText="First Name" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -119,12 +125,12 @@
                         <Cursor fx:constant="TEXT" />
                     </cursor>
                 </TextField>
-                <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="110.0" layoutY="320.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="110.0" layoutY="318.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@users.png" />
                     </image>
                 </ImageView>
-                <TextField fx:id="signUpEmailTextField" layoutX="155.0" layoutY="360.0" prefHeight="30.0" prefWidth="300.0" promptText="Email" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <TextField fx:id="signUpEmailTextField" layoutX="149.0" layoutY="403.0" prefHeight="30.0" prefWidth="297.0" promptText="Email" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -132,38 +138,38 @@
                         <Cursor fx:constant="TEXT" />
                     </cursor>
                 </TextField>
-                <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="110.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="110.0" layoutY="401.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@email.png" />
                     </image>
                 </ImageView>
-                <PasswordField fx:id="signUpPasswordPasswordField" layoutX="155.0" layoutY="400.0" prefHeight="30.0" prefWidth="300.0" promptText="Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <PasswordField fx:id="signUpPasswordPasswordField" layoutX="150.0" layoutY="442.0" prefHeight="30.0" prefWidth="298.0" promptText="Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
                 </PasswordField>
-                <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="110.0" layoutY="400.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="40.0" fitWidth="35.0" layoutX="110.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@lock.png" />
                     </image>
                 </ImageView>
-                <PasswordField fx:id="signUpRepeatPasswordPasswordField" layoutX="155.0" layoutY="440.0" prefHeight="30.0" prefWidth="300.0" promptText="Repeat Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <PasswordField fx:id="signUpRepeatPasswordPasswordField" layoutX="150.0" layoutY="483.0" prefHeight="30.0" prefWidth="300.0" promptText="Repeat Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
                 </PasswordField>
-                <Label layoutX="130.0" layoutY="480.0" prefHeight="20.0" prefWidth="105.0" style="-fx-text-fill: #A9A9A9;" text="Date of Birth">
+                <Label layoutX="130.0" layoutY="523.0" prefHeight="20.0" prefWidth="105.0" style="-fx-text-fill: #A9A9A9;" text="Date of Birth">
                     <font>
                         <Font name="SansSerif Regular" size="15.0" />
                     </font>
                 </Label>
-                <DatePicker fx:id="signUpDateDatePicker" layoutX="250.0" layoutY="480.0" promptText="mm/dd/yyyy" showWeekNumbers="true" />
-                <Label layoutX="130.0" layoutY="515.0" prefHeight="20.0" prefWidth="90.0" style="-fx-text-fill: #A9A9A9;" text="Gender">
+                <DatePicker fx:id="signUpDateDatePicker" layoutX="247.0" layoutY="521.0" promptText="mm/dd/yyyy" showWeekNumbers="true" />
+                <Label layoutX="130.0" layoutY="560.0" prefHeight="20.0" prefWidth="90.0" style="-fx-text-fill: #A9A9A9;" text="Gender">
                     <font>
                         <Font name="SansSerif Regular" size="15.0" />
                     </font>
                 </Label>
-                <RadioButton layoutX="300.0" layoutY="515.0" mnemonicParsing="false" selected="true" text="Male" textFill="DARKGRAY">
+                <RadioButton layoutX="207.0" layoutY="560.0" mnemonicParsing="false" selected="true" text="Male" textFill="DARKGRAY">
                     <toggleGroup>
                         <ToggleGroup fx:id="Gender" />
                     </toggleGroup>
@@ -171,12 +177,12 @@
                         <Font size="14.0" />
                     </font>
                 </RadioButton>
-                <RadioButton layoutX="390.0" layoutY="515.0" mnemonicParsing="false" text="Female" textFill="DARKGRAY" toggleGroup="$Gender">
+                <RadioButton layoutX="275.0" layoutY="560.0" mnemonicParsing="false" text="Female" textFill="DARKGRAY" toggleGroup="$Gender">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </RadioButton>
-                <CheckBox fx:id="termsConditionsCheckbox" layoutX="160.0" layoutY="545.0" mnemonicParsing="false" selected="true" style="-fx-text-fill: #A9A9A9;" text="I have read the Terms and Conditions">
+                <CheckBox fx:id="termsConditionsCheckbox" layoutX="143.0" layoutY="587.0" mnemonicParsing="false" selected="true" style="-fx-text-fill: #A9A9A9;" text="I have read the Terms and Conditions">
                     <font>
                         <Font name="SansSerif Regular" size="15.0" />
                     </font>
@@ -196,19 +202,38 @@
                         <Font size="15.0" />
                     </font>
                 </Button>
+            <TextField fx:id="signUpLastNameTextField" layoutX="285.0" layoutY="320.0" prefHeight="30.0" prefWidth="130.0" promptText="Last Name" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+               <font>
+                  <Font name="SansSerif Regular" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
+            </TextField>
+            <TextField fx:id="signUpIDTextField" layoutX="151.0" layoutY="363.0" prefHeight="30.0" prefWidth="158.0" promptText="Identification Number" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+               <font>
+                  <Font name="SansSerif Regular" size="14.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
+            </TextField>
+            <ImageView fitHeight="40.0" fitWidth="34.0" layoutX="108.0" layoutY="364.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@user-id-icon_34334.png" />
+               </image>
+               <effect>
+                  <Blend mode="LIGHTEN" />
+               </effect>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ImageView>
                 <!-- The End of Signup form -->
 
             </children>
         </AnchorPane>
-    </right>
-    <!-- Ending of the left part of the Borderpane -->
-
-    <!-- Beginning of the bottom part of the Borderpane -->
-    <bottom>
-
-        <!-- Simple Copyright -->
-        <Label prefHeight="16.0" prefWidth="107.0" style="-fx-text-fill: #B9a9a9;" text="Shop © 2021" BorderPane.alignment="CENTER" />
-    </bottom>
+   </center>
     <!-- Ending of the left part of the Borderpane -->
 
 </BorderPane>

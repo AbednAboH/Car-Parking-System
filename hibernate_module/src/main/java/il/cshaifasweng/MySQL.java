@@ -65,7 +65,7 @@ public class MySQL
         try {
             connectToDB();
             //initiatePricingChart();
-//            printAllEntities();
+////            printAllEntities();
 
             // Save everything.
         } catch (Exception exception) {
@@ -88,7 +88,7 @@ public class MySQL
 
     }
     public static void commitToDB()throws Exception{
-
+       
     }
     public static void handleException(Exception e){
         if (session != null) {
@@ -179,16 +179,9 @@ public class MySQL
         ParkingLot pl=retrieveLastAdded(ParkingLot.class);
     }
     private static void initiatePricingChart()throws Exception{
-        session.save(new PricingChart("parkViaKiosk",true,0,8));
-        PricingChart oneTimePar=retrieveLastAdded(PricingChart.class);
-        oneTimePar.setRateId(oneTimePar.getId());
-        session.save(new PricingChart("OneTimeParchaseAhead",true,0,7));
-        oneTimePar=retrieveLastAdded(PricingChart.class);
-        oneTimePar.setRateId(oneTimePar.getId());
-        session.save(new PricingChart("RegularSubscription",false,oneTimePar.getId(),60));
-        session.save(new PricingChart("RegularSubscriptionMultipleCars",false,oneTimePar.getId(),54));
-        session.save(new PricingChart("FullSubscription",false,oneTimePar.getId(),72));
-        initiateParkingLot();
+        PricingChart pC=new PricingChart();
+        session.save(pC);
+//        initiateParkingLot();
         session.flush();
     }
     private static void initiateParkingLot() throws Exception {

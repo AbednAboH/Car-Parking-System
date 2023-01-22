@@ -84,6 +84,10 @@ public abstract class Subscription implements Serializable {
         return array;
     }
 
+    public RegisteredCustomer getRegisteredCustomer() {
+        return registeredCustomer;
+    }
+
     @Override
     public  String toString(){
         return "SubId="+id
