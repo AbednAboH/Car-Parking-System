@@ -64,7 +64,7 @@ public class MySQL
     public static void main( String[] args ) {
         try {
             connectToDB();
-            initiatePricingChart();
+            //initiatePricingChart();
 ////            printAllEntities();
 
             // Save everything.
@@ -85,8 +85,7 @@ public class MySQL
     public static void connectToDB()throws Exception{
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        session.beginTransaction();
-        
+
     }
     public static void commitToDB()throws Exception{
        
