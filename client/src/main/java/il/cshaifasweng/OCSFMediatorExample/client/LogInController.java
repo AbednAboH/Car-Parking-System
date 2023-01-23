@@ -123,7 +123,7 @@ public class LogInController{
                         loginUsernameTextField.setStyle(successStyle);
                         try {
 //                            EventBus.getDefault().unregister(LogInController.this);
-                            SimpleChatClient.setRoot("complaint");
+                            SimpleChatClient.setRoot("RegisteredCustomer");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

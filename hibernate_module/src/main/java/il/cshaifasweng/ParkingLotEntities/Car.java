@@ -5,10 +5,11 @@ import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class Car {
+public class Car implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -28,7 +29,7 @@ public class Car {
     }
     @Override
     public String toString(){
-        return "Id="+id+", CarID="+carNum;
+        return carNum;
     }
 
 }

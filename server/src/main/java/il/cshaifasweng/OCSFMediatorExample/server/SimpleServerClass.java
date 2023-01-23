@@ -11,13 +11,9 @@ import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
+import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
-import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
-import il.cshaifasweng.customerCatalogEntities.Complaint;
-import il.cshaifasweng.customerCatalogEntities.FullSubscription;
-import il.cshaifasweng.customerCatalogEntities.Order;
-import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
-import lombok.Data;
+import il.cshaifasweng.customerCatalogEntities.*;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -129,6 +125,8 @@ public class SimpleServerClass extends AbstractServer {
                 verifySubscription(message, client);
             } else if (request.startsWith("#verifyOrder")) {
                 verifyOrder(message, client);
+            } else if (request.startsWith("#GetCustomerCars")) {
+                getCustomerCars(message, client);
             } else {
                 System.out.println("no selection was done!!!");
             }
@@ -284,15 +282,21 @@ public class SimpleServerClass extends AbstractServer {
 
     private void showSubscription(Message message, ConnectionToClient client) {
         RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
-        Object subscription=regCostumer.getSubscriptions();
+        List<Subscription> subscription=regCostumer.getSubscriptions();
         Hibernate.initialize(subscription);
-        session.flush();
+        for (Subscription sub:subscription
+             ) {
+            Hibernate.initialize(sub.getCarsList());
+        }
+
         message.setObject(subscription);
         try {
             client.sendToClient(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        session.flush();
+
     }
 
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
@@ -446,7 +450,14 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
 
     }
+    public void getCustomerCars(Message message, ConnectionToClient client) throws IOException {
+        RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        List<Car> cars=regCostumer.getCars();
+        Hibernate.initialize(cars);
+        message.setObject(cars);
+        client.sendToClient(message);
 
+    }
     private Employee getEmployee(int id) {
         Employee user=clientsEmployeeMap.get(id);
         if (user.getClass()==ParkingLotEmployee.class){

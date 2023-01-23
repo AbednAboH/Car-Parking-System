@@ -48,7 +48,21 @@ public abstract class Subscription implements Serializable {
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList;
 //    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
-
+    public  String getParkingLotIdAsString(){
+        return "All";
+    }
+    public String getCarsAsString(){
+        String cars="";
+        int i=0;
+        for (Car car:
+             carsList) {
+            cars=cars.concat(car.toString());
+           if(i>0)
+               cars.concat(", ");
+           i++;
+        }
+        return cars;
+    }
     public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
         this.hoursPerMonth = hoursPerMonth;
         this.startDate = startDate;
@@ -70,9 +84,10 @@ public abstract class Subscription implements Serializable {
 
 
     public boolean[] getAllowedDays(){
-        if(allowedDays.isBlank() || allowedDays.length() < 7 || allowedDays.length() > 7) {
-            throw new IllegalArgumentException("Allowed days string is not valid!");
+        if(allowedDays.isBlank() || allowedDays.length() != 7) {
+            throw new IllegalArgumentException("Allowed days string is not valid!"+allowedDays);
         }
+
         return toBooleanArray(allowedDays);
     }
 
