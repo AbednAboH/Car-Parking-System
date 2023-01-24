@@ -7,45 +7,41 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderPaymentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderPaymentController">
    <children>
-      <Label layoutX="245.0" layoutY="14.0" text="Order details">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Label>
-      <Label layoutX="72.0" layoutY="50.0" text="Order forDate:" />
-      <Label layoutX="34.0" layoutY="136.0" text="Plate number:" />
-      <Label layoutX="315.0" layoutY="136.0" text="Email:" />
-      <Label layoutX="450.0" layoutY="50.0" text="In Parking lot:" />
-      <TextField fx:id="plateNumTxt" disable="true" layoutX="121.0" layoutY="132.0" />
-      <TextField fx:id="emailTxt" disable="true" layoutX="363.0" layoutY="132.0" />
-      <Label disable="true" layoutX="76.0" layoutY="98.0" prefHeight="28.0" prefWidth="477.0" text="*In case of arrival at 23:00, The reservation will be from 23:00 untill 23:59." wrapText="true">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font>
-      </Label>
-      <TextField fx:id="dateTxt" disable="true" layoutX="23.0" layoutY="73.0" prefHeight="25.0" prefWidth="175.0" />
-      <TextField fx:id="parkingHoursTxt" disable="true" layoutX="212.0" layoutY="73.0" prefHeight="25.0" prefWidth="175.0" />
-      <TextField fx:id="PLaddress" disable="true" layoutX="399.0" layoutY="73.0" prefHeight="25.0" prefWidth="175.0" />
-      <Label layoutX="262.0" layoutY="50.0" text="Parking Hours:" />
-      <AnchorPane fx:id="paymentWindow" layoutX="-1.0" layoutY="184.0" prefHeight="215.0" prefWidth="600.0">
+      <AnchorPane fx:id="paymentWindow" layoutX="92.0" layoutY="369.0" prefHeight="329.0" prefWidth="856.0">
          <children>
-            <TextField fx:id="numberInput" layoutX="50.0" layoutY="68.0" prefHeight="25.0" prefWidth="141.0" />
-            <ChoiceBox fx:id="monthInput" layoutX="239.0" layoutY="69.0" prefHeight="25.0" prefWidth="45.0" />
-            <ChoiceBox fx:id="yearInput" layoutX="315.0" layoutY="69.0" prefHeight="25.0" prefWidth="73.0" />
-            <TextField fx:id="cvvInput" layoutX="456.0" layoutY="69.0" onKeyPressed="#cvvTxtChange" prefHeight="25.0" prefWidth="58.0" />
-            <Button fx:id="done" layoutX="321.0" layoutY="165.0" mnemonicParsing="false" onAction="#saveOrder" text="Done" />
-            <Button fx:id="back" layoutX="217.0" layoutY="165.0" mnemonicParsing="false" onAction="#backToOrder" text="Back" />
-            <Label layoutX="262.0" text="Payment">
+            <TextField fx:id="numberInput" layoutX="73.0" layoutY="114.0" prefHeight="31.0" prefWidth="141.0">
                <font>
-                  <Font size="19.0" />
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <ChoiceBox fx:id="monthInput" layoutX="352.0" layoutY="118.0" prefHeight="30.0" prefWidth="45.0" />
+            <ChoiceBox fx:id="yearInput" layoutX="450.0" layoutY="117.0" prefHeight="31.0" prefWidth="73.0" />
+            <TextField fx:id="cvvInput" layoutX="593.0" layoutY="117.0" onKeyPressed="#cvvTxtChange" prefHeight="25.0" prefWidth="58.0">
+               <font>
+                  <Font size="15.0" />
+               </font></TextField>
+            <Button fx:id="done" layoutX="450.0" layoutY="257.0" mnemonicParsing="false" onAction="#saveOrder" text="Done" />
+            <Button fx:id="back" layoutX="280.0" layoutY="257.0" mnemonicParsing="false" onAction="#backToOrder" text="Back" />
+            <Label layoutX="352.0" text="Payment">
+               <font>
+                  <Font size="30.0" />
                </font>
             </Label>
-            <Label layoutX="83.0" layoutY="46.0" text="Card Number:" />
-            <Label layoutX="258.0" layoutY="46.0" text="Expiration Date:" />
-            <Label layoutX="472.0" layoutY="46.0" text="CVV:" />
-            <Label layoutX="296.0" layoutY="67.0" text="/">
+            <Label layoutX="73.0" layoutY="79.0" text="Card Number:">
+               <font>
+                  <Font size="20.0" />
+               </font></Label>
+            <Label layoutX="351.0" layoutY="79.0" text="Expiration Date:">
+               <font>
+                  <Font size="20.0" />
+               </font></Label>
+            <Label layoutX="601.0" layoutY="79.0" text="CVV:">
+               <font>
+                  <Font size="20.0" />
+               </font></Label>
+            <Label layoutX="424.0" layoutY="116.0" text="/">
                <font>
                   <Font size="18.0" />
                </font>
@@ -55,12 +51,95 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="139.0" layoutY="139.0" text="Re-check info! You can click the back button to change it." />
+            <Label layoutX="199.0" layoutY="184.0" text="Re-check info! You can click the back button to change it.">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="73.0" layoutY="51.0" text="Please enter your Credit Card's Info:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <Label fx:id="orderLbl" layoutX="62.0" layoutY="175.0" text="OrderID:" visible="false" />
       <TextField fx:id="orderIDTxt" disable="true" layoutX="121.0" layoutY="171.0" visible="false" />
       <Button fx:id="homeBtn" layoutX="361.0" layoutY="171.0" mnemonicParsing="false" onAction="#goToHome" prefHeight="25.0" prefWidth="149.0" text="Back to home screen" visible="false" />
       <Label fx:id="successLbl" layoutX="192.0" layoutY="214.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false" />
+      <AnchorPane layoutX="46.0" layoutY="-15.0" prefHeight="359.0" prefWidth="928.0">
+         <children>
+            <TextField fx:id="emailTxt" disable="true" layoutX="408.0" layoutY="341.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="475.0" layoutY="302.0" text="Email:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="plateNumTxt" disable="true" layoutX="93.0" layoutY="341.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="125.0" layoutY="302.0" text="Plate number:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label disable="true" layoutX="150.0" layoutY="273.0" prefHeight="28.0" prefWidth="477.0" text="*In case of arrival at 23:00, The reservation will be from 23:00 untill 23:59." wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="PLaddress" disable="true" layoutX="646.0" layoutY="233.0" prefHeight="25.0" prefWidth="175.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="672.0" layoutY="190.0" text="In Parking lot:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="parkingHoursTxt" disable="true" layoutX="377.0" layoutY="233.0" prefHeight="25.0" prefWidth="175.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="389.0" layoutY="190.0" text="Parking Hours:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="dateTxt" disable="true" layoutX="99.0" layoutY="233.0" prefHeight="25.0" prefWidth="175.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="122.0" layoutY="190.0" text="Order forDate:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="368.0" layoutY="118.0" text="Order details">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label layoutX="695.0" layoutY="302.0" text="Ammount to pay:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="ammountToPay" disable="true" layoutX="679.0" layoutY="341.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

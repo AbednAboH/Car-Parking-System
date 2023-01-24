@@ -3,14 +3,18 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
+import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Order;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -81,7 +85,11 @@ public class OrderController {
 
     @FXML
     private Button submit;
-
+    @FXML
+    private Label pricePerHour;
+    @FXML
+    private Label totalPrice;
+    private double perHourPrice;
     private boolean orderInfoValidation() {
         if (exitTime.getValue() < arrivalTime.getValue())
             return false;
@@ -179,9 +187,24 @@ public class OrderController {
         message.setMessage("#getUser");
         SimpleClient.getClient().sendToServer(message);
 
+        message.setMessage("#getPricingChart");
+        SimpleClient.getClient().sendToServer(message);
+
         initInfoControls();
     }
 
+    @Subscribe
+    public void setSubChartDataFromServer(SubscriptionsChartResults event) {
+        PricingChart PCresult = (PricingChart) event.getMessage().getObject();
+        perHourPrice=PCresult.getOrderBeforeHandPrice();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                pricePerHour.setText("Price Per Hour is: "+perHourPrice+" NIS");
+
+            }
+        });
+    }
 
     private void initInfoControls() {
         LocalDate minDate = LocalDate.now();
@@ -213,6 +236,14 @@ public class OrderController {
                 exitTime.getValueFactory().setValue(0);
             else
                 exitTime.getValueFactory().setValue(newValue + 1);
+            totalPrice.setText("Total Price is: "+(exitTime.getValue()-arrivalTime.getValue())*perHourPrice+" NIS");
+        }));
+        exitTime.valueProperty().addListener(((obs, oldValue, newValue) ->
+        {
+            if(arrivalTime.getValue()>=newValue)
+                arrivalTime.getValueFactory().setValue(newValue - 1);
+            // TODO: 24/01/2023 check 24 hour format
+            totalPrice.setText("Total Price is: "+(exitTime.getValue()-arrivalTime.getValue())*perHourPrice+" NIS");
         }));
     }
 
