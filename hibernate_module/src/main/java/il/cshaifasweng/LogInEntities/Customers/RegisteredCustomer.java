@@ -1,5 +1,6 @@
 package il.cshaifasweng.LogInEntities.Customers;
 
+import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
@@ -20,6 +21,8 @@ public class RegisteredCustomer extends Customer {
     private  List<Order> orders;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Subscription> subscriptions;
+    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Refund> refunds;
     public RegisteredCustomer(){
 
     }

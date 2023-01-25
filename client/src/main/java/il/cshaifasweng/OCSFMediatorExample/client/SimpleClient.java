@@ -57,7 +57,10 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new ComplaintSubscriber(message));
 		}else if (message.getMessage().startsWith("#GetCustomerCars")){
 			EventBus.getDefault().post(new CustomerCarsSubscriber(message));
-		}else {
+		}else if(message.getMessage().startsWith("#GetRefundChart")){
+			EventBus.getDefault().post(new RefundChartSubscriber(message));
+		}
+		else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
 		}

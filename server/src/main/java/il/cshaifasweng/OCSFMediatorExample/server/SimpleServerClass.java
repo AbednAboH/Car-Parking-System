@@ -8,6 +8,7 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.MoneyRelatedServices.RefundChart;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
@@ -39,6 +40,7 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
     private static Session session;
 
     public SimpleServerClass(int port) {
@@ -67,15 +69,12 @@ public class SimpleServerClass extends AbstractServer {
             session.beginTransaction();
             if (request.isBlank()) {
                 message.setMessage("Error! we got an empty message");
-                client.sendToClient(message);
             } else if (request.startsWith("#LogIn")) {
                 Login(message,client);
-                client.sendToClient(message);
-
+        
             }else if (request.startsWith("#Register")) {
                 registerUser(message,client);
-                client.sendToClient(message);
-
+        
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
@@ -106,7 +105,9 @@ public class SimpleServerClass extends AbstractServer {
 
             } else if (request.startsWith("#cancelSubscription")) {
                 cancelSubscription(message, client);
-
+            }
+            else if(request.startsWith("#GetRefundChart")){
+                getRefundChart(message,client);
             }
             else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("connection alive");
@@ -128,10 +129,9 @@ public class SimpleServerClass extends AbstractServer {
             } else if (request.startsWith("#GetCustomerCars")) {
                 getCustomerCars(message, client);
             } else {
-                System.out.println("no selection was done!!!");
+                System.out.println("message content doesn't match any request");
             }
-
-
+            client.sendToClient(message);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -139,7 +139,10 @@ public class SimpleServerClass extends AbstractServer {
             session.getTransaction().commit();
         }
     }
-
+    private void getRefundChart(Message message, ConnectionToClient client) throws IOException {
+        message.setObject(refundChartHandler.getAll(RefundChart.class));
+        
+    }
     private void applyCompaint(Message message, ConnectionToClient client) throws IOException {
         Complaint complaint = (Complaint) message.getObject();
 //        "#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot
@@ -155,7 +158,6 @@ public class SimpleServerClass extends AbstractServer {
         session.save(complaint);
         session.update(customer);
         session.flush();
-        client.sendToClient(message);
 
     }
 
@@ -185,7 +187,6 @@ public class SimpleServerClass extends AbstractServer {
         } else {
             message.setObject(null);
         }
-        client.sendToClient(message);
     }
 
     private void verifySubscription(Message message, ConnectionToClient client) throws IOException {
@@ -225,7 +226,6 @@ public class SimpleServerClass extends AbstractServer {
             }
         }
 
-        client.sendToClient(message);
     }
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
         String request = message.getMessage();
@@ -248,16 +248,10 @@ public class SimpleServerClass extends AbstractServer {
 //            todo: complaintHandler.delete(complaintHandler.get(complaintId,Complaint.class),Complaint.class);
         }
         complaintHandler.update(complaint);
-        client.sendToClient(message);
     }
 
     private void showComplaints(Message message, ConnectionToClient client) {
         message.setObject(complaintHandler.getAll(Complaint.class));
-        try {
-            client.sendToClient(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void cancelOrder(Message message, ConnectionToClient client) {
@@ -275,7 +269,6 @@ public class SimpleServerClass extends AbstractServer {
         else
             regularSubHandler.save((RegularSubscription) message.getObject(), RegularSubscription.class);
 
-        client.sendToClient(message);
     }
 
 
@@ -290,11 +283,6 @@ public class SimpleServerClass extends AbstractServer {
         }
 
         message.setObject(subscription);
-        try {
-            client.sendToClient(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         session.flush();
 
     }
@@ -302,7 +290,6 @@ public class SimpleServerClass extends AbstractServer {
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
         // TODO: get order that has the client id and not all orders
         message.setObject(orderHandler.getAll(Order.class));
-        client.sendToClient(message);
     }
 
     protected void registerUser(Message message,ConnectionToClient client){
@@ -319,8 +306,8 @@ public class SimpleServerClass extends AbstractServer {
         rCustomer.save(customer, RegisteredCustomer.class);
         customer = rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put(customer.getId(), customer);
-        client.setInfo("userId", customer.getId());
-        System.out.println(customer);
+//        client.setInfo("userId", customer.getId());
+//        System.out.println(customer);
         message.setMessage("RegistrationSuccessful");
     }
     protected void Login(Message message,ConnectionToClient client){
@@ -384,12 +371,10 @@ public class SimpleServerClass extends AbstractServer {
     public void sendParkingLots(Message message, ConnectionToClient client) throws Exception {
         message.setObject(pLot.getAll(ParkingLot.class));
 
-        client.sendToClient(message);
     }
 
     public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
         message.setObject(pChart.getLastAdded(PricingChart.class));
-        client.sendToClient(message);
     }
 
     public void updatePriceChart(Message message, ConnectionToClient client) {
@@ -426,7 +411,6 @@ public class SimpleServerClass extends AbstractServer {
         System.out.println(message.getObject());
         rg.addOrder(newOrder);
         rCustomer.update(rg);
-        client.sendToClient(message);
     }
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
@@ -436,7 +420,6 @@ public class SimpleServerClass extends AbstractServer {
         Hibernate.initialize(orders);
         session.flush();
         message.setObject(orders);
-        client.sendToClient(message);
 
     }
     public void getUser(Message message,ConnectionToClient client)throws Exception{
@@ -447,7 +430,6 @@ public class SimpleServerClass extends AbstractServer {
         else {
              message.setObject(getEmployee(id));
         }
-        client.sendToClient(message);
 
     }
     public void getCustomerCars(Message message, ConnectionToClient client) throws IOException {
@@ -455,7 +437,6 @@ public class SimpleServerClass extends AbstractServer {
         List<Car> cars=regCostumer.getCars();
         Hibernate.initialize(cars);
         message.setObject(cars);
-        client.sendToClient(message);
 
     }
     private Employee getEmployee(int id) {

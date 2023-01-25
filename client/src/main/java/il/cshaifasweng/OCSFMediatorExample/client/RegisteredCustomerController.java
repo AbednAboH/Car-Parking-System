@@ -179,23 +179,20 @@ public class RegisteredCustomerController {
 
     @FXML
     void logOut(ActionEvent event) throws Exception {
+        EventBus.getDefault().unregister(this);
         SimpleChatClient.setRoot("logInScreen");
     }
 
 
 
     @FXML
-    void cancelOrder(ActionEvent event) {
+    void cancelOrder(ActionEvent event) throws IOException {
         // TODO: 23/01/2023
-        try {
-            Message message = new Message("#cancelOrder");
-            SimpleClient.getClient().sendToServer(message);
+        EventBus.getDefault().unregister(this);
+        SimpleChatClient.setCurrentOrder(ordersTable.getSelectionModel().getSelectedItem());
+        System.out.println(SimpleChatClient.getCurrentOrder());
+        SimpleChatClient.setRoot("CancelOrder");
 
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
 
     }
@@ -203,6 +200,7 @@ public class RegisteredCustomerController {
     @FXML
     void cancelSubscription(ActionEvent event) {
         // TODO: 23/01/2023
+
         try {
             Message message = new Message("#cancelSubscription");
             SimpleClient.getClient().sendToServer(message);
@@ -226,8 +224,8 @@ public class RegisteredCustomerController {
     public void showOrdersFromServer(OrderHistoryResponse event) {
         System.out.println("got here");
 
-        observableOrders = FXCollections.observableArrayList((ArrayList<Order>) event.getMessage().getObject());
-        System.out.println(observableOrders.get(0));
+        observableOrders = FXCollections.observableArrayList((List<Order>) event.getMessage().getObject());
+//        System.out.println(observableOrders.get(0));
         SetOrdersTable();
 
     }
@@ -322,7 +320,7 @@ public class RegisteredCustomerController {
 
 
         SimpleClient.getClient().sendToServer(message);
-        message = new Message("#showOrders");
+        message = new Message("#getAllOrders");
         SimpleClient.getClient().sendToServer(message);
         message = new Message("#showSubscription");
         SimpleClient.getClient().sendToServer(message);

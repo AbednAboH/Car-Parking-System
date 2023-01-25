@@ -1,15 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CancelOrder"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CancelOrderController">
+    <children>
+        <AnchorPane fx:id="paymentWindow" layoutX="85.0" layoutY="377.0" prefHeight="329.0" prefWidth="956.0">
+            <children>
+                <Button fx:id="done" layoutX="281.0" layoutY="270.0" mnemonicParsing="false" onAction="#cancelOrder" text="Cancel Order" />
+                <Button fx:id="back" layoutX="65.0" layoutY="270.0" mnemonicParsing="false" onAction="#backToOrder" text="Back" />
+                <Label layoutX="11.0" text="Order Cancelation">
+                    <font>
+                        <Font size="30.0" />
+                    </font>
+                </Label>
+                <Label fx:id="warningMsg" layoutX="192.0" layoutY="108.0" text="Please fill in all fields correctly" textFill="RED" visible="false">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
+                <Label layoutX="73.0" layoutY="51.0" text="Your order will be Canceled ,with the refund ammount alluded to below:">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
+            <TextField fx:id="refundAmmount" disable="true" layoutX="65.0" layoutY="109.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="65.0" layoutY="81.0" text="Refund ammount:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="65.0" layoutY="154.0" text="*Refund ammount is caculated from the Refund Criteria on your right .">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="723.0" layoutY="23.0" text="Refund Criteria:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TableView layoutX="607.0" layoutY="104.0" prefHeight="100.0" prefWidth="374.0">
+              <columns>
+                <TableColumn prefWidth="158.0" text="Hours Before Parking Time" />
+                <TableColumn prefWidth="215.0" text="Refund Percentage of Paid Ammount" />
+              </columns>
+            </TableView>
+            </children>
+        </AnchorPane>
+        <Label fx:id="orderLbl" layoutX="62.0" layoutY="175.0" text="OrderID:" visible="false" />
+        <TextField fx:id="orderIDTxt" disable="true" layoutX="121.0" layoutY="171.0" visible="false" />
+        <Button fx:id="homeBtn" layoutX="361.0" layoutY="171.0" mnemonicParsing="false" onAction="#goToHome" prefHeight="25.0" prefWidth="149.0" text="Back to home screen" visible="false" />
+        <Label fx:id="successLbl" layoutX="192.0" layoutY="214.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false" />
+        <AnchorPane layoutX="46.0" layoutY="-15.0" prefHeight="359.0" prefWidth="928.0">
+            <children>
+                <TextField fx:id="emailTxt" disable="true" layoutX="382.0" layoutY="343.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+                <Label layoutX="438.0" layoutY="302.0" text="Email:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="plateNumTxt" disable="true" layoutX="93.0" layoutY="341.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+                <Label layoutX="108.0" layoutY="302.0" text="Car plate number:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="PLaddress" disable="true" layoutX="646.0" layoutY="233.0" prefHeight="25.0" prefWidth="175.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+                <Label layoutX="672.0" layoutY="190.0" text="In Parking lot:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="parkingHoursTxt" disable="true" layoutX="377.0" layoutY="233.0" prefHeight="25.0" prefWidth="175.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+                <Label layoutX="389.0" layoutY="190.0" text="Parking Hours:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="dateTxt" disable="true" layoutX="99.0" layoutY="233.0" prefHeight="25.0" prefWidth="175.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+                <Label layoutX="122.0" layoutY="190.0" text="Order for Date:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <Label layoutX="63.0" layoutY="82.0" text="Order details:">
+                    <font>
+                        <Font size="30.0" />
+                    </font>
+                </Label>
+                <Label layoutX="671.0" layoutY="302.0" text="Ammount paid:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="ammountToPay" disable="true" layoutX="646.0" layoutY="341.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+            <Label fx:id="OrderID" layoutX="105.0" layoutY="150.0" prefHeight="30.0" prefWidth="232.0" text="Order number:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

@@ -4,6 +4,7 @@ package il.cshaifasweng.customerCatalogEntities;
 import il.cshaifasweng.LocalDateAttributeConverter;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
 import lombok.Getter;
@@ -15,14 +16,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy =InheritanceType.JOINED)
+//@Inheritance(strategy =InheritanceType.JOINED)
 @Getter
 @Setter
-public abstract class Subscription implements Serializable {
+public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)

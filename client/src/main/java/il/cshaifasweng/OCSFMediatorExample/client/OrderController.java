@@ -109,6 +109,8 @@ public class OrderController {
                 ParkingLot pl = PLresults.get(idx - 1);
                 Order newOrder = new Order(rg, pl, dateChoice.getValue(), start, end,
                         plateNum.getText(), emailInput.getText());
+                System.out.println(dateChoice.getValue());
+                newOrder.setValue((exitTime.getValue()-arrivalTime.getValue())*perHourPrice);
                 System.out.println(newOrder.getPlateNum());
                 SimpleChatClient.setCurrentOrder(newOrder);
                 SimpleChatClient.setRoot("orderPaymentGUI");
