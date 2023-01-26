@@ -39,8 +39,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().equals("cancelOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}
-		else if(message.getMessage().equals("#getUser")){
+		} else if(message.getMessage().equals("#getUser")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
@@ -59,6 +58,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new CustomerCarsSubscriber(message));
 		}else if(message.getMessage().startsWith("#GetRefundChart")){
 			EventBus.getDefault().post(new RefundChartSubscriber(message));
+		}else if(message.getMessage().startsWith("#GetParkingSpots")){
+			EventBus.getDefault().post(new ParkingSpotsSubscriber(message));
 		}
 		else {
 			System.out.println(message.getMessage());

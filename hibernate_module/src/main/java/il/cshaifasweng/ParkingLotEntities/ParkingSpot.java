@@ -36,7 +36,6 @@ public class ParkingSpot implements Serializable {
     public ParkingLot getParkingLot() {
         return parkingLot;
     }
-
     public ParkingSpot(int row, int floor, int depth,ParkingLot parkingLot) {
         this.row = row;
         this.floor = floor;
@@ -129,4 +128,7 @@ public class ParkingSpot implements Serializable {
     }
 
 
+    public int getId() {
+        return id;
+    }
 }

@@ -89,6 +89,12 @@ public class ParkingLot implements Serializable {
             }
         }
     }
+    public void reInitiateParkingSpots(){
+            spots.forEach(spot -> {
+                spot.setSaved(false);
+                spot.setOccupied(false);
+            });
+        }
 
     @Override
     public String toString() {
@@ -166,11 +172,6 @@ public class ParkingLot implements Serializable {
     public void setSpots(List<ParkingSpot> spots) {
         this.spots = spots;
     }
-
-
-
-
-
 
     public int getFloor() {
         return floor;
