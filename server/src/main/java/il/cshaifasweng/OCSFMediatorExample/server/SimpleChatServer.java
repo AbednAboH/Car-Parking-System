@@ -15,6 +15,7 @@ public class SimpleChatServer
             server = new SimpleServerClass(3000);
             System.out.println("server is listening");
                 server.listen();
+                
 
 
     }

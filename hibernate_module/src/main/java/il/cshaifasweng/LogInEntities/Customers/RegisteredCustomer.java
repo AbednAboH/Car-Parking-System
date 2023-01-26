@@ -1,5 +1,6 @@
 package il.cshaifasweng.LogInEntities.Customers;
 
+import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
@@ -19,8 +20,11 @@ public class RegisteredCustomer extends Customer {
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private  List<Order> orders;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<Subscription>  Subscriptions;
+    private List<Subscription> subscriptions;
+    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Refund> refunds;
     public RegisteredCustomer(){
+
     }
     public RegisteredCustomer(int id,String email,String name,String lastName,String password){
         super(id,email,name,lastName,password);
@@ -30,20 +34,33 @@ public class RegisteredCustomer extends Customer {
     }
     public RegisteredCustomer(int id, String email, List<Car> cars, List<Subscription> subscriptions) {
         super(id, email, cars);
-        Subscriptions = subscriptions;
+        this.subscriptions = subscriptions;
     }
     public RegisteredCustomer(int id, String email, Car cars) {
         super(id, email, cars);
-        Subscriptions=new ArrayList<>() ;
+        subscriptions =new ArrayList<>() ;
 
     }
     public RegisteredCustomer(int id, String email, String cars) {
         super(id, email, cars);
-        Subscriptions=new ArrayList<>() ;
+        subscriptions =new ArrayList<>() ;
 
     }
 
     public void addOrder(Order newOrder){
         orders.add(newOrder);
+        Car car=new Car(newOrder.getPlateNum());
+        if (!this.getCars().contains(car))
+            this.getCars().add(car);
+    }
+    public void addSubscription(Subscription sub){
+        subscriptions.add(sub);
+        AddCar(sub.getCarsList());
+    }
+    public void AddCar(List<Car> cars){
+        for (Car car:
+             cars) {if (!this.getCars().contains(car))
+                this.getCars().add(car);
+        }
     }
 }

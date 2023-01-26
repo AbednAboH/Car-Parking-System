@@ -42,6 +42,11 @@ public class LogInController{
     @FXML
     private TextField signUpUsernameTextField;
     @FXML
+    private TextField signUpIDTextField;
+    @FXML
+    private TextField signUpLastNameTextField;
+
+    @FXML
     private TextField signUpEmailTextField;
     @FXML
     private TextField signUpPasswordPasswordField;
@@ -118,7 +123,7 @@ public class LogInController{
                         loginUsernameTextField.setStyle(successStyle);
                         try {
 //                            EventBus.getDefault().unregister(LogInController.this);
-                            SimpleChatClient.setRoot("complaint");
+                            SimpleChatClient.setRoot("RegisteredCustomer");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -163,6 +168,8 @@ public class LogInController{
 //            selected = (RadioButton) newToggle;
 //        });
         String username = signUpUsernameTextField.getText();
+        String lastName = signUpLastNameTextField.getText();
+        String id = signUpIDTextField.getText();
         String password = signUpPasswordPasswordField.getText();
         String repeatPassword = signUpRepeatPasswordPasswordField.getText();
         String email = signUpEmailTextField.getText();
@@ -205,7 +212,7 @@ public class LogInController{
             invalidLoginCredentials.setText("");
             return;
         }
-        if(!addNewUser(username,password,email,signUpDateDatePicker.getValue(),"LastName")) {
+        if(!addNewUser(id,username,password,email,signUpDateDatePicker.getValue(),lastName)) {
             invalidSignupCredentials.setText("Something went wrong in the process, please try again!");
             invalidSignupCredentials.setStyle(errorMessage);
             signUpPasswordPasswordField.setStyle(errorStyle);
@@ -230,9 +237,9 @@ public class LogInController{
         alert.setContentText(message.toString());
         alert.showAndWait();
     }
-    private boolean addNewUser(String username, String password, String email, LocalDate value, String lastName) {
+    private boolean addNewUser(String ID,String username, String password, String email, LocalDate value, String lastName) {
         try {
-            Message message = new Message("#Register&"+ email + "&"+password+"&"+username+"&"+lastName);
+            Message message = new Message("#Register&"+ID+"&"+ email + "&"+password+"&"+username+"&"+lastName);
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             // TODO Auto-generated catch block

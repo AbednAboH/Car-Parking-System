@@ -80,6 +80,7 @@ public class ParkingLot implements Serializable {
     }
 
     public void initiateParkingSpots(){
+        this.spots=new ArrayList<>();
         for(int flor=0;flor<this.floor;flor++){
             for(int row=0;row<this.rowsInEachFloor;row++){
                 for(int depth=0;depth<rowCapacity;depth++){

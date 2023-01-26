@@ -23,7 +23,12 @@
 		<dependencies>
 			<dependency>
 				<groupId>il.cshaifasweng.OCSFMediatorExample</groupId>
-				<artifactId>entities</artifactId>
+				<artifactId>client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>il.cshaifasweng.OCSFMediatorExample</groupId>
+				<artifactId>server</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -33,7 +38,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hello_hibrenate</artifactId>
+				<artifactId>hibernate_module</artifactId>
 				<version>5.4.24.Final</version>
 			</dependency>
 		</dependencies>

@@ -2,13 +2,11 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.converter.IntegerStringConverter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -56,10 +54,13 @@ public class OrderPaymentController {
     private TextField parkingHoursTxt;
 
     @FXML
-    private TextField orderIDTxt;
+    private Label orderIDTxt;
 
     @FXML
     private Label warningMsg;
+
+    @FXML
+    private TextField ammountToPay;
 
     @FXML
     private Label orderLbl;
@@ -81,6 +82,7 @@ public class OrderPaymentController {
         dateTxt.setText(order.getDate().toString());
         PLaddress.setText(order.getParkingLotID().getId()+"");
         parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");
+        ammountToPay.setText(Double.toString(order.getValue()));
     }
 
     @FXML
@@ -121,6 +123,9 @@ public class OrderPaymentController {
                 done.setDisable(true);
                 back.setDisable(true);
                 Order newOrder = SimpleChatClient.getCurrentOrder();
+                newOrder.setTransaction_method("Credit Card");
+                newOrder.setTransactionStatus(true);
+
                 Message message = new Message("#placeOrder", newOrder);
                 SimpleClient.getClient().sendToServer(message);
             } else {

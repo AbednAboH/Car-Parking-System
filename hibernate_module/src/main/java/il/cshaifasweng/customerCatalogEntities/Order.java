@@ -1,6 +1,7 @@
 package il.cshaifasweng.customerCatalogEntities;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,11 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "orders")
-public class Order implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+public class Order extends Transactions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="registeredCustomer_id")
     private RegisteredCustomer registeredCustomer;
@@ -27,12 +24,8 @@ public class Order implements Serializable {
     private ParkingLot parkingLotID;
 
 
-
     @Column(name="active")
     private boolean active;
-
-    @Column(name="orderDate")
-    private LocalDate date;
 
     @Column(name="enteringTime")
     private String entering;
@@ -49,8 +42,8 @@ public class Order implements Serializable {
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
         this.registeredCustomer = registeredCustomer;
+        this.date=date;
         this.parkingLotID = parkingLotID;
-        this.date = date;
         this.entering = entering;
         this.exiting = exiting;
         this.plateNum = plateNum;
@@ -59,9 +52,9 @@ public class Order implements Serializable {
     }
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email,boolean localBuilder) {
+        this.date=date;
         this.registeredCustomer = registeredCustomer;
         this.parkingLotID = parkingLotID;
-        this.date = date;
         this.entering = entering;
         this.exiting = exiting;
         this.plateNum = plateNum;
@@ -73,8 +66,8 @@ public class Order implements Serializable {
     public Order(ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
 //        this.registeredCustomer = registeredCustomer;
+        this.date=date;
         this.parkingLotID = parkingLotID;
-        this.date = date;
         this.entering = entering;
         this.exiting = exiting;
         this.plateNum = plateNum;

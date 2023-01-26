@@ -1,40 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.RegisteredCustomerController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.RegisteredCustomerController">
   <tabs>
-      <Tab text="Home">
+      <Tab text=" Activities">
          <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #9e96c3;">
                <children>
-                  <Button fx:id="orderbutton" layoutX="35.0" layoutY="44.0" mnemonicParsing="false" onAction="#showOrders" prefHeight="25.0" prefWidth="121.0" text="Show Orders" />
-                  <Button fx:id="subscriptionbutton" layoutX="35.0" layoutY="94.0" mnemonicParsing="false" onAction="#showSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Show Subscriptions" />
-                  <Button fx:id="addsubscriptionbutton1" layoutX="34.0" layoutY="145.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Add Subscriptions" />
-                  <Button fx:id="placeOrder" layoutX="33.0" layoutY="194.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="25.0" prefWidth="123.0" text="Place new order" />
+                  <Button fx:id="logoutbutton" layoutX="29.0" layoutY="23.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: transparent;" text="Logout |" textAlignment="CENTER" textFill="#2b0548">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Button>
+                  <Button fx:id="complaintbutton" layoutX="82.0" layoutY="663.0" mnemonicParsing="false" onAction="#addComplaint" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Submit a Complaint" textFill="WHITE" />
+                  <TableView fx:id="subsTable" layoutX="396.0" layoutY="415.0" prefHeight="248.0" prefWidth="869.0" style="-fx-background-color: #b3a7da;">
+                    <columns>
+                      <TableColumn fx:id="subID" prefWidth="48.0" text="ID" />
+                      <TableColumn fx:id="subTypeTable" prefWidth="128.0" text="Subscription Type" />
+                        <TableColumn fx:id="subCars" prefWidth="132.0" text="Cars in Subscription" />
+                        <TableColumn fx:id="subPLot" prefWidth="147.0" text="Designated Parking Lot" />
+                        <TableColumn fx:id="subDaysToPark" prefWidth="90.0" text="Days To Park" />
+                        <TableColumn fx:id="subParchaseDate" prefWidth="104.0" text="Parchase Date" />
+                        <TableColumn fx:id="subExpiration" prefWidth="99.0" text="Expiration Date" />
+                        <TableColumn fx:id="subHoursToPark" prefWidth="120.0" text="Hours Left To Park" />
+                    </columns>
+                  </TableView>
+                  <TableView fx:id="ordersTable" blendMode="SRC_ATOP" cache="true" layoutX="244.0" layoutY="77.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="223.0" prefWidth="1014.0" style="-fx-background-color: #b3a7da;">
+                    <columns>
+                      <TableColumn fx:id="orderID" prefWidth="53.0" text="Order id" />
+                        <TableColumn fx:id="orderParchaseDate" prefWidth="134.0" text="Parchase Date" />
+                        <TableColumn fx:id="orderEntry" prefWidth="133.0" text="Expected Entry Time" />
+                        <TableColumn fx:id="orderExit" prefWidth="121.0" text="Expected Exit time" />
+                        <TableColumn fx:id="orderLicense" prefWidth="85.0" text="License Plate" />
+                        <TableColumn fx:id="orderPLotID" prefWidth="113.0" text="Parking Lot ID" />
+                        <TableColumn fx:id="orderActive" prefWidth="52.0" text="Active" />
+                        <TableColumn fx:id="orderEmail" prefWidth="221.0" text="Email of Parchase" />
+                        <TableColumn fx:id="orderPricePaid" prefWidth="98.0" text="Price Paid" />
+                    </columns>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <effect>
+                        <Blend mode="BLUE" />
+                     </effect>
+                  </TableView>
+                  <Button fx:id="addsubscriptionbutton1" layoutX="700.0" layoutY="666.0" mnemonicParsing="false" onAction="#AddSubscriptions" prefHeight="44.0" prefWidth="260.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Add New Subscription" textFill="WHITE" />
+                  <Button fx:id="cancelsubsbutton1" layoutX="990.0" layoutY="666.0" mnemonicParsing="false" onAction="#cancelSubscription" prefHeight="44.0" prefWidth="227.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Cancel Subscription" textFill="WHITE" />
+                  <Button id="buttonCss" fx:id="placebutton" layoutX="632.0" layoutY="302.0" mnemonicParsing="false" onAction="#placeOrder" prefHeight="44.0" prefWidth="157.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Place Order" textFill="WHITE" />
+                  <Button fx:id="cancelorderbutton" layoutX="1031.0" layoutY="302.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="44.0" prefWidth="198.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Cancel Order" textFill="WHITE" />
+                  <TableView fx:id="car" layoutX="56.0" layoutY="141.0" prefHeight="159.0" prefWidth="124.0" style="-fx-background-color: #b3a7da;">
+                     <columns>
+                        <TableColumn fx:id="cars" prefWidth="123.0" text="Cars" />
+                     </columns>
+                  </TableView>
+                  <Text layoutX="534.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Online Orders" wrappingWidth="368.13671875">
+                     <font>
+                        <Font name="System Italic" size="39.0" />
+                     </font></Text>
+                  <TableView fx:id="KioskParchases" layoutX="12.0" layoutY="415.0" prefHeight="197.0" prefWidth="380.0" style="-fx-background-color: #b3a7da;">
+                     <columns>
+                        <TableColumn fx:id="kioskId" prefWidth="78.0" text="Kiosk ID" />
+                     </columns>
+                  </TableView>
+                  <Button fx:id="userOptBtn" layoutX="89.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Hello Name" textFill="#2b0548">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="180.0" layoutY="20.0" style="-fx-background-color: #b3a7da;">
+                     <image>
+                        <Image url="@User.png" />
+                     </image>
+                  </ImageView>
+                  <Text layoutX="612.0" layoutY="403.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Subscriptions" wrappingWidth="368.13671875">
+                     <font>
+                        <Font name="System Italic" size="39.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="36.0" layoutY="402.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kiosk Parchases" wrappingWidth="368.13671875">
+                     <font>
+                        <Font name="System Italic" size="39.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="36.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Cars" wrappingWidth="184.13671875">
+                     <font>
+                        <Font name="System Italic" size="39.0" />
+                     </font>
+                  </Text>
                </children></AnchorPane>
          </content>
       </Tab>
-    <Tab onSelectionChanged="#getAllSubscriptions" text="Subscriptions">
+      <Tab text="Profile">
          <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-         </content></Tab>
-    <Tab text="Orders history">
-         <content>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #9e96c3;">
                <children>
-                  <TableView fx:id="allOrders" layoutX="121.0" layoutY="24.0" onSort="#showOrders" prefHeight="261.0" prefWidth="279.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="Order id" />
-                    </columns>
-                  </TableView>
+                  <Button fx:id="logoutbutton1" layoutX="29.0" layoutY="23.0" mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: transparent;" text="Logout |" textAlignment="CENTER" textFill="#2b0548">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="591.0" layoutY="115.0" text="First name:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="358.0" layoutY="187.0" text="Last name:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="618.0" layoutY="187.0" text="Email:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="402.0" layoutY="115.0" text="ID:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="idtxt" editable="false" layoutX="342.0" layoutY="154.0" />
+                  <TextField fx:id="fnametxt" editable="false" layoutX="576.0" layoutY="154.0" />
+                  <TextField fx:id="lnametxt" editable="false" layoutX="342.0" layoutY="228.0" />
+                  <TextField fx:id="emailtxt" editable="false" layoutX="576.0" layoutY="228.0" />
+                  <Button fx:id="savebutton" layoutX="31.0" layoutY="212.0" mnemonicParsing="false" onAction="#saveInfo" prefHeight="46.0" prefWidth="265.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Save" visible="false" />
+                  <Label layoutX="508.0" layoutY="293.0" text="Password:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="passwordtxt" editable="false" layoutX="482.0" layoutY="329.0" />
+                  <Button fx:id="userOptBtn1" layoutX="89.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Hello Name" textFill="#2b0548">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="180.0" layoutY="20.0" style="-fx-background-color: #b3a7da;">
+                     <image>
+                        <Image url="@User.png" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="editbutton" layoutX="29.0" layoutY="145.0" mnemonicParsing="false" onAction="#editInfo" prefHeight="44.0" prefWidth="264.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Edit Email Or Password" textFill="WHITE" />
+                  <Text layoutX="373.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Personal information" wrappingWidth="366.13671875">
+                     <font>
+                        <Font name="System Italic" size="39.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
-         </content></Tab>
+         </content>
+      </Tab>
   </tabs>
 </TabPane>

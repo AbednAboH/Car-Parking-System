@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="423.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController" >
    <children>
-      <Label layoutX="250.0" layoutY="14.0" text="Place order">
+      <Label layoutX="285.0" layoutY="42.0" prefHeight="55.0" prefWidth="371.0" text="Order a Parking Spot ">
          <font>
-            <Font size="19.0" />
+            <Font size="38.0" />
          </font>
       </Label>
-      <Label layoutX="34.0" layoutY="73.0" text="Order forDate:" />
-      <Label layoutX="34.0" layoutY="173.0" text="Arrival time:" />
-      <Label layoutX="259.0" layoutY="173.0" text="Exit time:" />
-      <Label layoutX="34.0" layoutY="262.0" text="Plate number:" />
-      <Label layoutX="315.0" layoutY="262.0" text="Email:" />
-      <Label layoutX="315.0" layoutY="73.0" text="In Parking lot:" />
-      <DatePicker fx:id="dateChoice" layoutX="122.0" layoutY="69.0" prefWidth="176.0" />
-      <ChoiceBox fx:id="plChoice" layoutX="395.0" layoutY="69.0" prefHeight="25.0" prefWidth="176.0" />
-      <Spinner fx:id="arrivalTime" editable="true" layoutX="108.0" layoutY="169.0" prefHeight="25.0" prefWidth="57.0" />
-      <Spinner fx:id="exitTime" layoutX="315.0" layoutY="169.0" prefHeight="25.0" prefWidth="57.0" />
-      <TextField fx:id="plateNum" layoutX="121.0" layoutY="258.0" onInputMethodTextChanged="#plateNumTxtChange" />
-      <TextField fx:id="emailInput" layoutX="363.0" layoutY="258.0" />
-      <Button fx:id="submit" layoutX="243.0" layoutY="360.0" mnemonicParsing="false" onAction="#goToPayment" text="Continue to payment" />
-      <Label disable="true" layoutX="399.0" layoutY="173.0" text="*Format: HH:00 (00-23)" />
-      <Label layoutX="129.0" layoutY="327.0" text="*Make sure to insert the right information before going to payment" />
-      <Label layoutX="168.0" layoutY="173.0" text=":00" />
-      <Label layoutX="376.0" layoutY="173.0" text=":00" />
-      <Label disable="true" layoutX="55.0" layoutY="200.0" prefHeight="28.0" prefWidth="477.0" text="*In case of arrival at 23:00, The reservation will be from 23:00 untill 23:59." wrapText="true">
+      <Label layoutX="94.0" layoutY="166.0" text="Order forDate:" />
+      <Label layoutX="100.0" layoutY="346.0" text="Arrival time:" />
+      <Label layoutX="275.0" layoutY="346.0" text="Exit time:" />
+      <Label layoutX="96.0" layoutY="445.0" text="Plate number:" />
+      <Label layoutX="591.0" layoutY="445.0" text="Email:" />
+      <Label layoutX="102.0" layoutY="254.0" text="Parking lot:" />
+      <DatePicker fx:id="dateChoice" layoutX="212.0" layoutY="161.0" prefWidth="176.0" />
+      <ChoiceBox fx:id="plChoice" layoutX="212.0" layoutY="250.0" prefHeight="25.0" prefWidth="176.0" />
+      <Spinner fx:id="arrivalTime" editable="true" layoutX="175.0" layoutY="342.0" prefHeight="25.0" prefWidth="57.0" />
+      <Spinner fx:id="exitTime" layoutX="328.0" layoutY="341.0" prefHeight="25.0" prefWidth="57.0" />
+      <TextField fx:id="plateNum" layoutX="177.0" layoutY="441.0" onInputMethodTextChanged="#plateNumTxtChange" />
+      <TextField fx:id="emailInput" layoutX="631.0" layoutY="441.0" />
+      <Button fx:id="submit" layoutX="886.0" layoutY="656.0" mnemonicParsing="false" onAction="#goToPayment" text="Continue to payment" />
+      <Label disable="true" layoutX="438.0" layoutY="345.0" text="*Format: HH:00 (00-23)" />
+      <Label layoutX="35.0" layoutY="673.0" text="*Make sure to insert the right information before going to payment" />
+      <Label layoutX="235.0" layoutY="346.0" text=":00" />
+      <Label layoutX="390.0" layoutY="346.0" text=":00" />
+      <Label disable="true" layoutX="72.0" layoutY="367.0" prefHeight="28.0" prefWidth="477.0" text="*In case of arrival at 23:00, The reservation will be from 23:00 untill 23:59." wrapText="true">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -36,6 +41,41 @@
       <Label fx:id="warningMsg" layoutX="201.0" layoutY="297.0" text="Please fill in all fields correctly" textFill="RED" visible="false">
          <font>
             <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="61.0" layoutY="95.0" prefHeight="70.0" prefWidth="534.0" text="Select the Date in which you would like to park :">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="69.0" layoutY="262.0" prefHeight="70.0" prefWidth="738.0" text="Select the period of Time you would like to Stay at the parking lot:">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="72.0" layoutY="174.0" prefHeight="70.0" prefWidth="534.0" text="Select a parking lot :">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="72.0" layoutY="375.0" prefHeight="70.0" prefWidth="326.0" text="Enter Viehcle's plate number:">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="438.0" layoutY="375.0" prefHeight="70.0" prefWidth="490.0" text="Change the email that the recipt is sent to:">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="pricePerHour" layoutX="683.0" layoutY="345.0" prefHeight="27.0" prefWidth="176.0" text="Price Per Hour is :" textFill="#d36464">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="totalPrice" layoutX="94.0" layoutY="533.0" prefHeight="55.0" prefWidth="503.0" text="Total Price :" textFill="#0e7c1f">
+         <font>
+            <Font size="38.0" />
          </font>
       </Label>
    </children>

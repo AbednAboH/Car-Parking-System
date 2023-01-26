@@ -206,24 +206,20 @@ public class pricingChartEdit {
 
     @Subscribe
     public void setSubChartDataFromServer(SubscriptionsChartResults event) {
-        List<PricingChart> PCresult = (ArrayList<PricingChart>) event.getMessage().getObject();
+        PricingChart PCresult = (PricingChart) event.getMessage().getObject();
         ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
-        int i=0,hours;
         double rate;
-        for (PricingChart price :PCresult){
-            if(price.isByHourOrSubscription()){
-                rate=price.getRate();
-                hours=1;
-            }
-            else {
-                rate = price.getRate() * PCresult.get(price.getRateId()-1).getRate();
-                hours=(int)price.getRate();
-            }
-            tmp.add(new SubscriptionChartModel(++i, price.getName(), rate,hours, rate));
+        double[] prices={PCresult.getKioskPrice(),PCresult.getOrderBeforeHandPrice(),PCresult.getRegularSubHours()
+        ,PCresult.getMultipleCarRegularSubHours(),PCresult.getFullSubHours()};
+        String[] names={"Kiosk","OrderBeforeHand","RegularSubscription","RegularSubscriptionMultipl","FullSubscription"};
+        int[] ids={1,2,2,2,2};
+        for(int i=0;i<5;i++){
+            if (i<2)
+                tmp.add(new SubscriptionChartModel(i+1, names[i], prices[i],1, prices[i]));
+            else
+                tmp.add(new SubscriptionChartModel(i+1,names[i], prices[i]*prices[1],(int)Double.parseDouble(String.valueOf(prices[i])), prices[i]*prices[1]));
+
         }
-
-
-
 
 
         subIDcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
