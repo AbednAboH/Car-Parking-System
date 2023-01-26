@@ -78,6 +78,7 @@ public class ComplaintController {
     void submitComplaintAction(ActionEvent event) {
         // TODO: 1/16/2023 check viability of input!:
         Message requist_submition=new Message();
+
         String order_subOrKiosk,pLotId="null";
 
         if (Ordersubscription.getValue()!=null){
@@ -122,7 +123,7 @@ public class ComplaintController {
                 orderSubIdText.setDisable(false);
                 orderSubscriptionBox.setDisable(true);
             }
-//
+
 
         }
 

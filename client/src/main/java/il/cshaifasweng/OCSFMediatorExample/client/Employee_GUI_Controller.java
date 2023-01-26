@@ -1,13 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.MySQL;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
@@ -29,13 +28,13 @@ public class Employee_GUI_Controller {
     private TableColumn<?, ?> col;
 
     @FXML
-    private TextField colLabel;
+    private ComboBox<?> colLabel;
 
     @FXML
     private TableColumn<?, ?> depth;
 
     @FXML
-    private TextField depthLabel;
+    private ComboBox<?> depthLabel;
 
     @FXML
     private Button intialize;
@@ -44,66 +43,72 @@ public class Employee_GUI_Controller {
     private TableColumn<?, ?> row;
 
     @FXML
-    private TextField rowLabel;
+    private ComboBox<?> rowLabel;
 
-    boolean isAmountValid(String newAmount, int min, int max) {
-
-        if (newAmount.compareTo("") == 0) {
-            return false;
-        }
-        try {
-            if (Integer.parseInt(newAmount) < min || Integer.parseInt(newAmount) > max)
-                return false;
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-
-/*
     @FXML
-    void SaveSpot(ActionEvent event) {
-        String row= rowLabel.getText();
-        String col= colLabel.getText();
-        String depth= depthLabel.getText();
-        // send message to server requesting size of parkilot returns the 0/1/2 row/col/col in that order
-        if(isAmountValid(row, 0, ) ==0 ||isAmountValid(col, 0,  )==0  || isAmountValid(depth, 0, )==0 ){
-            // print one of the values is out of range!!!
+    private Button userOptBtn;
 
-        }
-
-
-
-
-    }*/
-
-
+    @FXML
+    private Button userOptBtn1;
 
     @FXML
     void DirectToAvailblePark(ActionEvent event) {
-
-       try {
+        try {
             Message message = new Message("#DirectToAvailblePark");
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
- /*   @FXML
-    void Table(ActionEvent event) {
-
-    }*/
+    @FXML
+    void SaveSpot(ActionEvent event) {
+        String row= (String) rowLabel.getValue();
+        String col=(String) colLabel.getValue();
+        String depth=(String) depthLabel.getValue();
+        Message message= new Message("#SaveSpot"+"$"+row+"$"+col+"$"+depth);
+        try {
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
-    void intializeBtn(ActionEvent event) {
+    void Table(ActionEvent event) {
+//TODO: GET TABLE
+        Message message = new Message("#PARKINGLOTTABLE");
         try {
-            MySQL.initiateParkingLot();
-        } catch (Exception e) {
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void initializeBtn(ActionEvent event) {
+        Message message = new Message("#DirectToAvailblePark");
+        try {
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
