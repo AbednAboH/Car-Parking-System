@@ -372,7 +372,18 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(pLot.getAll(ParkingLot.class));
 
     }
-
+    public void getParkingSpots(Message message, ConnectionToClient client) throws Exception {
+        ParkingLotEmployee employee = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
+        ParkingLot lot = employee.getParkingLot();
+        Hibernate.initialize(lot.getSpots());
+        message.setObject(lot.getSpots());
+    }
+    public void setParkingSpots(Message message,ConnectionToClient client){
+        ParkingLotEmployee employee = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
+        ParkingLot lot = employee.getParkingLot();
+        lot.setSpots((List<ParkingSpot>) message.getObject());
+        pLot.update(lot);
+    }
     public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
         message.setObject(pChart.getLastAdded(PricingChart.class));
     }

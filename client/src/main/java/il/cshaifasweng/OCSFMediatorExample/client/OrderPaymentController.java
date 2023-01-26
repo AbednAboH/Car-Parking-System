@@ -54,10 +54,13 @@ public class OrderPaymentController {
     private TextField parkingHoursTxt;
 
     @FXML
-    private TextField orderIDTxt;
+    private Label orderIDTxt;
 
     @FXML
     private Label warningMsg;
+
+    @FXML
+    private TextField ammountToPay;
 
     @FXML
     private Label orderLbl;
@@ -79,6 +82,7 @@ public class OrderPaymentController {
         dateTxt.setText(order.getDate().toString());
         PLaddress.setText(order.getParkingLotID().getId()+"");
         parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");
+        ammountToPay.setText(Double.toString(order.getValue()));
     }
 
     @FXML
