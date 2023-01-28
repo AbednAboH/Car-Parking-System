@@ -49,10 +49,10 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <TableView layoutX="607.0" layoutY="104.0" prefHeight="100.0" prefWidth="374.0">
+            <TableView fx:id="refundCriteriaTable" layoutX="607.0" layoutY="104.0" prefHeight="120.0" prefWidth="374.0">
               <columns>
-                <TableColumn prefWidth="158.0" text="Hours Before Parking Time" />
-                <TableColumn prefWidth="215.0" text="Refund Percentage of Paid Ammount" />
+                <TableColumn fx:id="hoursBeforeParking" prefWidth="158.0" text="Hours Before Parking Time" />
+                <TableColumn fx:id="refundPercentage" prefWidth="215.0" text="Refund Percentage of Paid Ammount" />
               </columns>
             </TableView>
             </children>

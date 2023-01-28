@@ -317,8 +317,6 @@ public class RegisteredCustomerController {
     void initialize() throws Exception {
         EventBus.getDefault().register(this);
         Message message = new Message("#getUser");
-
-
         SimpleClient.getClient().sendToServer(message);
         message = new Message("#getAllOrders");
         SimpleClient.getClient().sendToServer(message);

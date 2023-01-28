@@ -1,5 +1,6 @@
 package il.cshaifasweng.customerCatalogEntities;
 
+import il.cshaifasweng.LocalDateAttributeConverter;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -23,6 +24,9 @@ public class Order extends Transactions {
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
 
+    @Convert(converter = LocalDateAttributeConverter.class)
+    @Column(name="dateOfOrder")
+    private LocalDate dateOfOrder;
 
     @Column(name="active")
     private boolean active;
@@ -42,7 +46,8 @@ public class Order extends Transactions {
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
         this.registeredCustomer = registeredCustomer;
-        this.date=date;
+        this.dateOfOrder=date;
+        this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
         this.entering = entering;
         this.exiting = exiting;

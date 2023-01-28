@@ -17,7 +17,7 @@ public class Transactions implements Serializable {
     protected int id;
     @Column(name = "value", nullable = false)
     protected double value;
-//    @Convert(converter = LocalDateAttributeConverter.class)
+    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name = "date", nullable = false)
     protected LocalDate date;
     @Column(name = "payment_method", nullable = false)

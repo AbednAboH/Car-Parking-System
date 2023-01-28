@@ -75,14 +75,16 @@ public class OrderPaymentController {
     void backToOrder(ActionEvent event) throws IOException {
         SimpleChatClient.setRoot("orderGUI");
     }
-
-    private void fillOrderDetails(Order order) {
+    static void fillKnownOrder(Order order, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
         emailTxt.setText(order.getEmail());
         plateNumTxt.setText(order.getPlateNum());
-        dateTxt.setText(order.getDate().toString());
-        PLaddress.setText(order.getParkingLotID().getId()+"");
+        dateTxt.setText(order.getDateOfOrder().toString());
+        pLaddress.setText(order.getParkingLotID().getId()+"");
         parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");
         ammountToPay.setText(Double.toString(order.getValue()));
+    }
+    private void fillOrderDetails(Order order) {
+        fillKnownOrder(order, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
     }
 
     @FXML
