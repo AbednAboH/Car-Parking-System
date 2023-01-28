@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CancelationRefundSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RefundChartSubscriber;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.sun.javafx.application.PlatformImpl.runLater;
 import static il.cshaifasweng.OCSFMediatorExample.client.OrderPaymentController.fillKnownOrder;
 
 public class CancelOrderController {
@@ -90,8 +92,21 @@ public class CancelOrderController {
     }
 
     @FXML
-    void cancelOrder(ActionEvent event) {
+    void cancelOrder(ActionEvent event) throws IOException {
+        Message message = new Message();
+        message.setMessage("#CancelOrderAndGetRefund&"+refundAmmount.getText()+"&"+ SimpleChatClient.getCurrentOrder().getId());
+        SimpleClient.getClient().sendToServer(message);
+    }
 
+    @Subscribe
+    public void getRefund(CancelationRefundSubscriber event){
+        displaySuccessStatus();
+    }
+    private void displaySuccessStatus() {
+        runLater(() -> {
+            successLbl.setVisible(true);
+            warningMsg.setVisible(false);
+        });
     }
 
     @FXML

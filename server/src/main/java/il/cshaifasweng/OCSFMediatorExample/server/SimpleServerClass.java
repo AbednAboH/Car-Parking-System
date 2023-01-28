@@ -8,6 +8,7 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
@@ -129,6 +130,9 @@ public class SimpleServerClass extends AbstractServer {
                 verifyOrder(message, client);
             } else if (request.startsWith("#GetCustomerCars")) {
                 getCustomerCars(message, client);
+            } else if (request.startsWith("#CancelOrderAndGetRefund")) {
+                cancelOrderAndGetRefund(message, client);
+
             } else {
                 System.out.println("message content doesn't match any request");
             }
@@ -140,6 +144,22 @@ public class SimpleServerClass extends AbstractServer {
             session.getTransaction().commit();
         }
     }
+
+    private void cancelOrderAndGetRefund(Message message, ConnectionToClient client) {
+        String[] instructions=message.getMessage().split("&");
+
+        Order order=orderHandler.get(Integer.parseInt(instructions[2]), Order.class) ;
+        order.setActive(false);
+        orderHandler.update(order);
+        int customer= (int) client.getInfo("userId");
+        Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
+        refund.setTransaction_method(order.getTransaction_method());
+        refund.setTransactionStatus(true);
+        session.save(refund);
+        message.setMessage("#CancelOrderAndGetRefund");
+
+    }
+
     private void getRefundChart(Message message, ConnectionToClient client) throws IOException {
         message.setObject(refundChartHandler.getAll(RefundChart.class));
         

@@ -242,6 +242,7 @@ public class RegisteredCustomerController {
         orderLicense.setCellValueFactory(new PropertyValueFactory<>("plateNum"));
         orderParchaseDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         orderPLotID.setCellValueFactory(data -> new SimpleObjectProperty<>(Integer.toString(data.getValue().getParkingLotID().getId())));
+        orderPricePaid.setCellValueFactory(data -> new SimpleObjectProperty<>(Double.toString(data.getValue().getValue())));
         observableOrders.forEach(ordersTable.getItems()::add);
     }
 

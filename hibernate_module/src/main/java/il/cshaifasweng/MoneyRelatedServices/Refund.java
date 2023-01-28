@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,6 +19,7 @@ public class Refund extends Transactions {
         this.refundType = refundType;
         this.value = value;
         this.registeredCustomer = registeredCustomer;
+        this.date= LocalDate.now();
     }
     public static enum refundChart{
         LESS_THAN_ONE_HOUR,
