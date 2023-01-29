@@ -62,8 +62,6 @@ public class OrderPaymentController {
     @FXML
     private TextField ammountToPay;
 
-    @FXML
-    private Label orderLbl;
 
     @FXML
     private TextField plateNumTxt;
@@ -141,7 +139,6 @@ public class OrderPaymentController {
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
         paymentWindow.setVisible(false);
-        orderLbl.setVisible(true);
         orderIDTxt.setVisible(true);
         done.setDisable(false);
         back.setDisable(false);

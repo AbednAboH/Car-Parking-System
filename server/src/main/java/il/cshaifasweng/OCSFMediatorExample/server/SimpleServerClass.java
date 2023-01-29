@@ -442,6 +442,14 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(newOrder.getId());
         System.out.println(message.getObject());
         rg.addOrder(newOrder);
+//        rg.getCars().forEach(car -> {
+//            car.setCustomer(rg);
+//            session.update(car);
+//        });
+
+//        (newOrder).get;
+
+
         rCustomer.update(rg);
     }
 

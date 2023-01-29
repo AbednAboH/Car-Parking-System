@@ -49,9 +49,12 @@ public class RegisteredCustomer extends Customer {
 
     public void addOrder(Order newOrder){
         orders.add(newOrder);
-        Car car=new Car(newOrder.getPlateNum());
-        if (!this.getCars().contains(car))
+        Car car=
+                new Car(newOrder.getPlateNum());
+        if (!this.getCars().contains(car)){
+            car.setCustomer(this);
             this.getCars().add(car);
+        }
     }
     public void addSubscription(Subscription sub){
         subscriptions.add(sub);

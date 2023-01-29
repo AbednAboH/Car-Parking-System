@@ -49,18 +49,27 @@
                   <Font size="15.0" />
                </font>
             </Label>
+              <Label fx:id="successLbl" layoutX="448.0" layoutY="262.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false">
+               <font>
+                  <Font name="Baskerville Old Face" size="36.0" />
+               </font>
+            </Label>
             <TableView fx:id="refundCriteriaTable" layoutX="607.0" layoutY="104.0" prefHeight="120.0" prefWidth="374.0">
               <columns>
                 <TableColumn fx:id="hoursBeforeParking" prefWidth="158.0" text="Hours Before Parking Time" />
                 <TableColumn fx:id="refundPercentage" prefWidth="215.0" text="Refund Percentage of Paid Ammount" />
               </columns>
             </TableView>
+            <Label fx:id="successLbl1" layoutX="458.0" layoutY="272.0" text="Order  has been cancled and Refunded" textFill="#1b8207" visible="false">
+               <font>
+                  <Font name="Baskerville Old Face" size="36.0" />
+               </font>
+            </Label>
             </children>
         </AnchorPane>
         <Label fx:id="orderLbl" layoutX="62.0" layoutY="175.0" text="OrderID:" visible="false" />
         <TextField fx:id="orderIDTxt" disable="true" layoutX="121.0" layoutY="171.0" visible="false" />
         <Button fx:id="homeBtn" layoutX="361.0" layoutY="171.0" mnemonicParsing="false" onAction="#goToHome" prefHeight="25.0" prefWidth="149.0" text="Back to home screen" visible="false" />
-        <Label fx:id="successLbl" layoutX="192.0" layoutY="214.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false" />
         <AnchorPane layoutX="46.0" layoutY="-15.0" prefHeight="359.0" prefWidth="928.0">
             <children>
                 <TextField fx:id="emailTxt" disable="true" layoutX="382.0" layoutY="343.0">
