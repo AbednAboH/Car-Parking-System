@@ -10,6 +10,7 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
+import il.cshaifasweng.MySQL;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
@@ -17,6 +18,8 @@ import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import il.cshaifasweng.customerCatalogEntities.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -25,7 +28,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
+@Getter
+@Setter
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
@@ -43,12 +52,28 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
-    private static Session session;
+    private static Session handleMessegesSession;
+    static Session handleDelaysAndPenaltiesSession;
+    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+    public ScheduledFuture<?> scheduledFuture;
+
+
 
     public SimpleServerClass(int port) {
         super(port);
         DataBaseManipulation.intiate();
-        session=DataBaseManipulation.getSession();
+        System.out.println("messegesSession is open");
+        handleMessegesSession =DataBaseManipulation.getSession();
+        System.out.println("DelaysSession is open");
+        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
+        scheduledFuture= executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+
+        try {
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -68,7 +93,7 @@ public class SimpleServerClass extends AbstractServer {
         Message message = (Message) msg;
         String request = message.getMessage();
         try {
-            session.beginTransaction();
+            handleMessegesSession.beginTransaction();
             if (request.isBlank()) {
                 message.setMessage("Error! we got an empty message");
             } else if (request.startsWith("#LogIn")) {
@@ -141,7 +166,7 @@ public class SimpleServerClass extends AbstractServer {
             ex.printStackTrace();
         }
         finally{
-            session.getTransaction().commit();
+            handleMessegesSession.getTransaction().commit();
         }
     }
 
@@ -155,7 +180,7 @@ public class SimpleServerClass extends AbstractServer {
         Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
         refund.setTransaction_method(order.getTransaction_method());
         refund.setTransactionStatus(true);
-        session.save(refund);
+        handleMessegesSession.save(refund);
         message.setMessage("#CancelOrderAndGetRefund");
 
     }
@@ -173,12 +198,12 @@ public class SimpleServerClass extends AbstractServer {
         Customer customer = customerHandler.get(Integer.parseInt(lazyElements[3]), Customer.class);
         if (customer == null) {
             customer = new OneTimeCustomer(Integer.parseInt(lazyElements[3]), lazyElements[1], lazyElements[2], lazyElements[4], "");
-            session.save(customer);
+            handleMessegesSession.save(customer);
         }
         complaint.setCustomer(customer);
-        session.save(complaint);
-        session.update(customer);
-        session.flush();
+        handleMessegesSession.save(complaint);
+        handleMessegesSession.update(customer);
+        handleMessegesSession.flush();
 
     }
 
@@ -199,9 +224,7 @@ public class SimpleServerClass extends AbstractServer {
                 + "AND o.parkingLotID.id = :parkingLotId "
                 + "AND o.date = CURDATE()";
         HashMap<String, Object> params = new HashMap<>();
-        params.put("orderID", orderID);
-        params.put("customerId", customerID);
-        params.put("parkingLotId", parkingLotId);
+
         List<Object> lst = rCustomer.executeQuery(Object.class, queryOnOrder, params);
         if (lst != null && lst.size() > 0) {
             message.setObject(lst.get(0));
@@ -295,7 +318,7 @@ public class SimpleServerClass extends AbstractServer {
 
 
     private void showSubscription(Message message, ConnectionToClient client) {
-        RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         List<Subscription> subscription=regCostumer.getSubscriptions();
         Hibernate.initialize(subscription);
         for (Subscription sub:subscription
@@ -304,7 +327,7 @@ public class SimpleServerClass extends AbstractServer {
         }
 
         message.setObject(subscription);
-        session.flush();
+        handleMessegesSession.flush();
 
     }
 
@@ -455,10 +478,10 @@ public class SimpleServerClass extends AbstractServer {
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
 
-        RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         Object orders =regCostumer.getOrders();
         Hibernate.initialize(orders);
-        session.flush();
+        handleMessegesSession.flush();
         message.setObject(orders);
 
     }
@@ -473,7 +496,7 @@ public class SimpleServerClass extends AbstractServer {
 
     }
     public void getCustomerCars(Message message, ConnectionToClient client) throws IOException {
-        RegisteredCustomer regCostumer=session.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         List<Car> cars=regCostumer.getCars();
         Hibernate.initialize(cars);
         message.setObject(cars);

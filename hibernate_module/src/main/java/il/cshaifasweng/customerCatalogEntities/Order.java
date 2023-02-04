@@ -42,7 +42,10 @@ public class Order extends Transactions {
 
     @Column(name="email")
     private String email;
-
+    @Column(name="ReminderSent")
+    private boolean reminderSent=false;
+    @Column(name="agreedToPayPenalty")
+    private boolean agreedToPayPenalty=false;
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
         this.registeredCustomer = registeredCustomer;

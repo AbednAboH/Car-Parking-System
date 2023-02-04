@@ -138,7 +138,11 @@ public class OrderPaymentController {
 
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
-        paymentWindow.setVisible(false);
+        fxmlHandl(event);
+    }
+
+    private void fxmlHandl(UpdateMessageEvent event) {
+         paymentWindow.setVisible(false);
         orderIDTxt.setVisible(true);
         done.setDisable(false);
         back.setDisable(false);

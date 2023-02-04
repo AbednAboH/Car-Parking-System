@@ -62,9 +62,13 @@
                </font>
             </Label>
             <Button fx:id="homeBtn" layoutX="577.0" layoutY="257.0" mnemonicParsing="false" onAction="#goToHome" prefHeight="25.0" prefWidth="149.0" text="Back to home screen" visible="false" />
+            <Label fx:id="successLbl" layoutX="539.0" layoutY="243.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
-      <Label fx:id="successLbl" layoutX="192.0" layoutY="214.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false" />
       <AnchorPane layoutX="39.0" layoutY="10.0" prefHeight="359.0" prefWidth="928.0">
          <children>
             <TextField fx:id="emailTxt" disable="true" layoutX="408.0" layoutY="341.0">
