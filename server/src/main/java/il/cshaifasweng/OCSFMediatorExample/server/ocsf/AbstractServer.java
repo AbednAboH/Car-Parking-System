@@ -157,7 +157,7 @@ public abstract class AbstractServer implements Runnable
    * @exception IOException if an I/O error occurs
    * when creating the server socket.
    */
-  final public void listen() throws IOException
+  public void listen() throws IOException
   {
     if (!isListening())
     {
@@ -377,7 +377,7 @@ public abstract class AbstractServer implements Runnable
     this.connectionFactory = factory;
   }
 
-// RUN METHOD -------------------------------------------------------
+// ⁶6 METHOD -------------------------------------------------------
 
   /**
    * Runs the listening thread that allows clients to connect.

@@ -109,6 +109,7 @@ public class CompliantsListController {
     @FXML
     void onLogout(ActionEvent event) throws Exception {
         SimpleChatClient.setRoot("LogInScreen");
+        // TODO: 22/01/2023 disconnect from server 
     }
 
     @FXML

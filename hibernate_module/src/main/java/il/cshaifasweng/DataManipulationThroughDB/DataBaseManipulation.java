@@ -90,11 +90,14 @@ public class DataBaseManipulation<T> implements DAO<T>{
     }
 
     public <T> List<T> executeQuery(Class<T> Type, String hql, Map<String,Object> params){
-        Query query = session.createQuery(hql, Type).setMaxResults(1); // Can be changed to more than one.
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            query.setParameter(entry.getKey(), entry.getValue());
-        }
-        return query.list();
+        return executeQuery(Type,hql,params,session);
     }
+    public <T> List<T> executeQuery(Class<T> Type, String hql, Map<String,Object> params,Session session){
+            Query query = session.createQuery(hql, Type).setMaxResults(1); // Can be changed to more than one.
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+            return query.list();
+        }
 
 }

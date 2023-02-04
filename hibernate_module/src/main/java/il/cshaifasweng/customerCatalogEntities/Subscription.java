@@ -4,6 +4,7 @@ package il.cshaifasweng.customerCatalogEntities;
 import il.cshaifasweng.LocalDateAttributeConverter;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
 import lombok.Getter;
@@ -15,14 +16,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy =InheritanceType.JOINED)
+//@Inheritance(strategy =InheritanceType.JOINED)
 @Getter
 @Setter
-public abstract class Subscription implements Serializable {
+public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)
@@ -48,7 +49,21 @@ public abstract class Subscription implements Serializable {
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList;
 //    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
-
+    public  String getParkingLotIdAsString(){
+        return "All";
+    }
+    public String getCarsAsString(){
+        String cars="";
+        int i=0;
+        for (Car car:
+             carsList) {
+            cars=cars.concat(car.toString());
+           if(i>0)
+               cars.concat(", ");
+           i++;
+        }
+        return cars;
+    }
     public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
         this.hoursPerMonth = hoursPerMonth;
         this.startDate = startDate;
@@ -70,9 +85,10 @@ public abstract class Subscription implements Serializable {
 
 
     public boolean[] getAllowedDays(){
-        if(allowedDays.isBlank() || allowedDays.length() < 7 || allowedDays.length() > 7) {
-            throw new IllegalArgumentException("Allowed days string is not valid!");
+        if(allowedDays.isBlank() || allowedDays.length() != 7) {
+            throw new IllegalArgumentException("Allowed days string is not valid!"+allowedDays);
         }
+
         return toBooleanArray(allowedDays);
     }
 

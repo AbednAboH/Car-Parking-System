@@ -17,10 +17,7 @@ import il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee;
 import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
-import il.cshaifasweng.MoneyRelatedServices.Penalty;
-import il.cshaifasweng.MoneyRelatedServices.PricingChart;
-import il.cshaifasweng.MoneyRelatedServices.Refund;
-import il.cshaifasweng.MoneyRelatedServices.Reports;
+import il.cshaifasweng.MoneyRelatedServices.*;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
@@ -36,7 +33,7 @@ public class MySQL
 {
     public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
-            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class};
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class, RefundChart.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),
@@ -46,7 +43,7 @@ public class MySQL
             ,Map.entry("Complaint",Complaint.class),Map.entry("OneTime",OneTimeCustomer.class),Map.entry("Registered",RegisteredCustomer.class)
             ,Map.entry("Penalty",Penalty.class),Map.entry("Refund",Refund.class)
             ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class)
-            ,Map.entry("Orders", Order.class));;
+            ,Map.entry("Orders", Order.class),Map.entry("RefundChart",Refund.class));
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session
@@ -64,10 +61,13 @@ public class MySQL
     public static void main( String[] args ) {
         try {
             connectToDB();
-            //initiatePricingChart();
+//            initiateRefundChart();
+            initiatePricingChart();
+            initiateParkingLot();
 ////            printAllEntities();
 
             // Save everything.
+            session.getTransaction().commit();
         } catch (Exception exception) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -85,6 +85,7 @@ public class MySQL
     public static void connectToDB()throws Exception{
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
+        session.beginTransaction();
 
     }
     public static void commitToDB()throws Exception{
@@ -195,6 +196,12 @@ public class MySQL
         session.save(new ParkingLotManager("manager1","prototype1","manager","manager1Prototype@Cps.co.il",15000));
         session.save(new ParkingLotManager("manager2","prototype2","manager","manager1Prototype@Cps.co.il",12000));
         session.save(new ParkingLotManager("manager3","prototype3","manager","manager1Prototype@Cps.co.il",13000));
+        session.flush();
+    }
+    private static void initiateRefundChart()throws Exception{
+        session.save(new RefundChart(0,1,0.1));
+        session.save(new RefundChart(1,3,0.5));
+        session.save(new RefundChart(3,-1,0.9));
         session.flush();
     }
 }
