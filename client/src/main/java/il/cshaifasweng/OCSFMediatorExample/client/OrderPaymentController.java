@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
 import il.cshaifasweng.customerCatalogEntities.Order;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -138,7 +139,7 @@ public class OrderPaymentController {
 
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
-        fxmlHandl(event);
+       Platform.runLater(()-> fxmlHandl(event));
     }
 
     private void fxmlHandl(UpdateMessageEvent event) {

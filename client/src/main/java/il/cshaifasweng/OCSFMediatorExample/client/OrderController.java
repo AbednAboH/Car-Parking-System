@@ -89,6 +89,7 @@ public class OrderController {
     private Label pricePerHour;
     @FXML
     private Label totalPrice;
+
     private double perHourPrice;
     private boolean orderInfoValidation() {
         if (exitTime.getValue() < arrivalTime.getValue())
