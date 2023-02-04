@@ -10,6 +10,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -94,6 +96,7 @@ public class SubscriptionController {
         EventBus.getDefault().register(this);
         sendMessagesToServer("#getPricingChart"); // returns the pricingChart data.
         sendMessagesToServer("#getAllParkingLots"); // returns the id's for the parking lots, or can be defined for names later.
+        plateNum.setDisable(false);
         plateNumSec.setDisable(true);
         plateNumTwo.setDisable(true);
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -167,7 +170,7 @@ public class SubscriptionController {
         if(validateInfo()) {
             SimpleChatClient.setRoot("orderPaymentGUI");
         }else{
-
+            checkInputs();
         }
     }
 
@@ -228,9 +231,12 @@ public class SubscriptionController {
     }
     private boolean validateInfo() {
         String email = emailInput.getText();
-        // TODO: 17/01/2023 Abo Abied car plate validator.
-        return InputValidator.isValidEmail(email);
+        boolean secCar = true;
+        if(subType.getValue().equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage()))
+            secCar = InputValidator.isValidPlateNumber(plateNumSec.getText());
+        return InputValidator.isValidEmail(email) && InputValidator.isValidPlateNumber(plateNum.getText()) && secCar;
     }
+
     public void updatePricesTable(PricingChart PCresult) {
         ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
         System.out.println(PCresult.getOrderBeforeHandPrice() + "This is the price for one hour");
@@ -256,6 +262,22 @@ public class SubscriptionController {
 
         pricingChart.setItems(tmp);
     }
+
+    public void checkInputs() {
+        plateNum.setStyle("-fx-border-color: red;");
+        if(!plateNumTwo.isDisable())
+            plateNumTwo.setStyle("-fx-border-color: red;");
+        emailInput.setStyle("-fx-border-color: red;");
+
+        // Show an error message
+        Label errorLabel = new Label("There is something wrong with your inputs. Please correct the red fields.");
+        errorLabel.setTextFill(Color.RED);
+        errorLabel.setLayoutX(35);
+        errorLabel.setLayoutY(460);
+        ((AnchorPane) plateNum.getParent()).getChildren().add(errorLabel);
+
+    }
+
 
 
 }
