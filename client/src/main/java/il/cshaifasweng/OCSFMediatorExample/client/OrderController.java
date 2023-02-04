@@ -98,6 +98,14 @@ public class OrderController {
             return false;
         return true;
     }
+    @FXML
+    void backToRegisteredCustomer(ActionEvent event) {
+        try {
+            SimpleChatClient.setRoot("registeredCustomer");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     void goToPayment(ActionEvent event) throws Exception {

@@ -61,19 +61,14 @@ public class SimpleServerClass extends AbstractServer {
 
     public SimpleServerClass(int port) {
         super(port);
-        DataBaseManipulation.intiate();
-        System.out.println("messegesSession is open");
-        handleMessegesSession =DataBaseManipulation.getSession();
-        System.out.println("DelaysSession is open");
+//        DataBaseManipulation.intiate();
+//        handleMessegesSession =DataBaseManipulation.getSession();
+//        System.out.println("messegesSession is open");
+
         handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
         scheduledFuture= executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+        System.out.println("DelaysSession is open");
 
-        try {
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     @Override

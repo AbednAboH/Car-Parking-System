@@ -99,5 +99,12 @@ public class DataBaseManipulation<T> implements DAO<T>{
             }
             return query.list();
         }
+ public <T> List<T> executeListQuery(Class<T> Type, String hql, Map<String,Object> params,Session session){
+            Query query = session.createQuery(hql, Type); // Can be changed to more than one.
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+            return query.list();
+        }
 
 }

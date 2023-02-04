@@ -85,10 +85,19 @@ public class CancelOrderController {
 
     @FXML
     private TableColumn<RefundChart, String> refundPercentage;
-
+    @FXML
+    private ProgressIndicator backProgress;
+    @FXML
+    private ProgressIndicator progressCancelation;
     @FXML
     void backToOrder(ActionEvent event) {
-
+        try{
+            backProgress.setVisible(true);
+            SimpleChatClient.setRoot("RegisteredCustomer");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -96,6 +105,9 @@ public class CancelOrderController {
         Message message = new Message();
         message.setMessage("#CancelOrderAndGetRefund&"+refundAmmount.getText()+"&"+ SimpleChatClient.getCurrentOrder().getId());
         SimpleClient.getClient().sendToServer(message);
+        done.setDisable(true);
+        progressCancelation.setVisible(true);
+
     }
 
     @Subscribe
@@ -104,6 +116,7 @@ public class CancelOrderController {
     }
     private void displaySuccessStatus() {
         runLater(() -> {
+            progressCancelation.setVisible(false);
             successLbl.setVisible(true);
             warningMsg.setVisible(false);
         });

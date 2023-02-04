@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,9 +23,9 @@ public class Order extends Transactions {
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
 
-    @Convert(converter = LocalDateAttributeConverter.class)
+//    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name="dateOfOrder")
-    private LocalDate dateOfOrder;
+    private LocalDateTime dateOfOrder;
 
     @Column(name="active")
     private boolean active;
@@ -47,7 +48,7 @@ public class Order extends Transactions {
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
         this.registeredCustomer = registeredCustomer;
-        this.dateOfOrder=date;
+        this.dateOfOrder= date.atTime(Integer.parseInt(entering),0);
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
         this.entering = entering;

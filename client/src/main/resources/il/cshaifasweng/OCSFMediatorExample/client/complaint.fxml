@@ -31,7 +31,7 @@
          </font>
       </Text>
       <Text layoutX="76.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter all relevant contact information below ,select the Parking Lot that you encountered inconvienience in, and a complaint subject :" wrappingWidth="608.0" />
-    <Button fx:id="submitComplaint" layoutX="664.0" layoutY="502.0" mnemonicParsing="false" onAction="#submitComplaintAction" text="Submit" />
+    <Button fx:id="submitComplaint" layoutX="630.0" layoutY="515.0" mnemonicParsing="false" onAction="#submitComplaintAction" text="Submit" />
       <ComboBox fx:id="Ordersubscription" layoutX="581.0" layoutY="342.0" onAction="#typeOfSubscription" prefHeight="25.0" prefWidth="211.0" promptText="Order/Subscription" />
       <TextField fx:id="orderSubIdText" layoutX="607.0" layoutY="393.0" />
       <Text layoutX="624.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Order/Subscripion ID" wrappingWidth="115.0" />
@@ -40,5 +40,6 @@
       <Text layoutX="601.0" layoutY="261.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a Parking Lot" wrappingWidth="161.0" />
       <Text layoutX="601.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Complaint Subject" wrappingWidth="161.0" />
       <Label fx:id="status" layoutX="592.0" layoutY="468.0" prefHeight="34.0" prefWidth="234.0" text="Complaint Was sent Succesfully" textFill="#009e08" textOverrun="CENTER_ELLIPSIS" wrapText="true" />
+      <Button fx:id="back" layoutX="739.0" layoutY="515.0" mnemonicParsing="false" onAction="#backButton" text="back" />
    </children>
 </AnchorPane>
