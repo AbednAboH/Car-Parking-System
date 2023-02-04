@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SubscriptionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SubscriptionController">
     <children>
         <Label layoutX="250.0" layoutY="14.0" text="Place order">
             <font>
@@ -32,16 +32,12 @@
         <Label fx:id="timeFormat" disable="true" layoutX="240.0" layoutY="137.0" text="*Format: HH:00 (00-23)" />
         <Label layoutX="129.0" layoutY="367.0" text="*Make sure to insert the right information before going to payment" />
         <Label fx:id="minFormat" layoutX="202.0" layoutY="137.0" text=":00" />
-        <Label disable="true" layoutX="93.0" layoutY="424.0" prefHeight="28.0" prefWidth="477.0" text="*In case of arrival at 23:00, The reservation will be from 23:00 untill 23:59." wrapText="true">
-            <font>
-                <Font name="System Bold" size="13.0" />
-            </font>
-        </Label>
-      <TableView fx:id="pricingChart" layoutX="632.0" layoutY="51.0" prefHeight="203.0" prefWidth="356.0">
+      <TableView fx:id="pricingChart" layoutX="632.0" layoutY="51.0" prefHeight="203.0" prefWidth="448.0">
         <columns>
             <TableColumn fx:id="nameCol" prefWidth="143.0" text="Name" />
-            <TableColumn fx:id="byHourCol" prefWidth="94.0" text="By Hour" />
-            <TableColumn fx:id="rateCol" prefWidth="136.0" text="Rate" />
+            <TableColumn fx:id="byHourCol" prefWidth="69.0" text="By Hour" />
+            <TableColumn fx:id="rateCol" prefWidth="88.0" text="Rate" />
+            <TableColumn fx:id="totalPriceCol" prefWidth="146.0" text="Total Price" />
         </columns>
       </TableView>
       <ChoiceBox fx:id="subType" layoutX="171.0" layoutY="69.0" prefHeight="25.0" prefWidth="176.0" />
@@ -57,28 +53,28 @@
             <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="back" layoutX="19.0" layoutY="697.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="97.0" text="Back" />
-      <Label layoutX="678.0" layoutY="266.0" prefHeight="34.0" prefWidth="307.0" text="Hours per month for vehicle: ">
+      <Button fx:id="back" layoutX="23.0" layoutY="681.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="97.0" text="Back" />
+      <Label layoutX="678.0" layoutY="266.0" prefHeight="34.0" prefWidth="307.0" text="Hours per month for vehicle: " visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="678.0" layoutY="294.0" prefHeight="45.0" prefWidth="170.0" text="Regualr subscription:   ">
+      <Label layoutX="678.0" layoutY="294.0" prefHeight="45.0" prefWidth="170.0" text="Regualr subscription:   " visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="678.0" layoutY="329.0" prefHeight="45.0" prefWidth="225.0" text="Regualr multiple subscription:">
+      <Label layoutX="678.0" layoutY="329.0" prefHeight="45.0" prefWidth="225.0" text="Regualr multiple subscription:" visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="678.0" layoutY="367.0" prefHeight="45.0" prefWidth="170.0" text="Full subscription: ">
+      <Label layoutX="678.0" layoutY="367.0" prefHeight="45.0" prefWidth="170.0" text="Full subscription: " visible="false">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <VBox layoutX="922.0" layoutY="300.0" prefHeight="125.0" prefWidth="57.0" spacing="5.0">
+      <VBox layoutX="922.0" layoutY="300.0" prefHeight="125.0" prefWidth="57.0" spacing="5.0" visible="false">
          <children>
             <Label fx:id="rePrice" alignment="CENTER" prefHeight="14.0" prefWidth="57.0" text="20">
                <font>
