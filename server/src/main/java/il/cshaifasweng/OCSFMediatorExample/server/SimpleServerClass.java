@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
@@ -61,13 +62,14 @@ public class SimpleServerClass extends AbstractServer {
 
     public SimpleServerClass(int port) {
         super(port);
-//        DataBaseManipulation.intiate();
-//        handleMessegesSession =DataBaseManipulation.getSession();
-//        System.out.println("messegesSession is open");
+        handleMessegesSession = DAO.factory.openSession();
+        DataBaseManipulation.intiate(handleMessegesSession);
+        AuthenticationService.intiate(handleMessegesSession);
+        System.out.println("messegesSession is open");
 
-        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
+//        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
         scheduledFuture= executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
-        System.out.println("DelaysSession is open");
+//        System.out.println("DelaysSession is open");
 
     }
 
@@ -87,13 +89,19 @@ public class SimpleServerClass extends AbstractServer {
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message message = (Message) msg;
         String request = message.getMessage();
+        if (!handleMessegesSession.isOpen()){
+            handleMessegesSession = DAO.factory.openSession();
+            DataBaseManipulation.intiate(handleMessegesSession);
+            AuthenticationService.intiate(handleMessegesSession);
+        }
         try {
+
             handleMessegesSession.beginTransaction();
             if (request.isBlank()) {
                 message.setMessage("Error! we got an empty message");
             } else if (request.startsWith("#LogIn")) {
                 Login(message,client);
-        
+
             }else if (request.startsWith("#Register")) {
                 registerUser(message,client);
         
@@ -162,6 +170,7 @@ public class SimpleServerClass extends AbstractServer {
         }
         finally{
             handleMessegesSession.getTransaction().commit();
+            handleMessegesSession.close();
         }
     }
 

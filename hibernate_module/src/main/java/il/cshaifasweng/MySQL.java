@@ -1,11 +1,8 @@
 package il.cshaifasweng;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import javax.persistence.Entity;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -50,6 +47,7 @@ public class MySQL
     public static SessionFactory getSessionFactory() throws HibernateException {
 
         Configuration configuration = new Configuration();
+        configuration.configure(MySQL.class.getClassLoader().getResource("hibernate.cfg.xml"));
         for (Class cl:classes)
             configuration.addAnnotatedClass(cl);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
@@ -61,7 +59,7 @@ public class MySQL
     public static void main( String[] args ) {
         try {
             connectToDB();
-//            initiateRefundChart();
+            initiateRefundChart();
             initiatePricingChart();
             initiateParkingLot();
 ////            printAllEntities();

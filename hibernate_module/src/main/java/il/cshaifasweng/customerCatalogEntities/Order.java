@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "orders")
 public class Order extends Transactions {
+    final int MAX_REMINDER_SENT=3;
+    final int REMIND=0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="registeredCustomer_id")
     private RegisteredCustomer registeredCustomer;
@@ -42,7 +44,7 @@ public class Order extends Transactions {
     @Column(name="email")
     private String email;
     @Column(name="ReminderSent")
-    private boolean reminderSent=false;
+    private int reminderSent=REMIND;
     @Column(name="agreedToPayPenalty")
     private boolean agreedToPayPenalty=false;
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,

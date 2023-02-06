@@ -7,16 +7,28 @@ import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryRespon
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.*;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.web.WebView;
+import javafx.util.Duration;
+import org.controlsfx.control.NotificationPane;
+import org.controlsfx.control.Notifications;
+import org.controlsfx.control.action.Action;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +41,12 @@ public class RegisteredCustomerController {
     private ObservableList<Subscription> observableSubs;
     private ObservableList<Car> carList;
     private List<Subscription> subs;
+    @FXML
+    private AnchorPane activitiesAnchor;
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Tab activitiesTab;
     @FXML
     private TableView<Car> KioskParchases;
 
@@ -136,6 +154,11 @@ public class RegisteredCustomerController {
 
     @FXML
     private ChoiceBox<Integer> subType;
+
+    NotificationPane notificationPane = new NotificationPane();
+
+
+
 
     @FXML
     void saveInfo(ActionEvent event) throws IOException {
@@ -325,6 +348,34 @@ public class RegisteredCustomerController {
         SimpleClient.getClient().sendToServer(message);
         message = new Message("#GetCustomerCars");
         SimpleClient.getClient().sendToServer(message);
+        adjustScene();
+        Notifications.create()
+                .title("Title Text")
+                .text("Hello World 0!")
+                .showWarning();
+        Notifications notifications = Notifications.create()
+                .title("Title Text")
+                .text("Hello World 1!")
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.CENTER);
+        notifications.show();
+
+//
+    }
+    @FXML
+    public void adjustScene(){
+
+        complaintbutton.autosize();
+        addsubscriptionbutton1.autosize();
+        cancelorderbutton.autosize();
+        cancelsubsbutton1.autosize();
+        placebutton.autosize();
+        savebutton.autosize();
+        tabPane.autosize();
+        activitiesAnchor.autosize();
+//        activitiesAnchor.snapToPixelProperty().setValue(false);
+
     }
 
 }
+

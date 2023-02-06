@@ -1,5 +1,6 @@
 package il.cshaifasweng.DataManipulationThroughDB;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import javax.persistence.TypedQuery;
@@ -10,8 +11,9 @@ import java.util.Map;
 
 public class DataBaseManipulation<T> implements DAO<T>{
     static Session session;
-    public static void intiate(){
-        session=factory.openSession();
+
+    public static void intiate(Session session){
+        DataBaseManipulation.session=session;
     }
     public static Session getSession(){
         return session;

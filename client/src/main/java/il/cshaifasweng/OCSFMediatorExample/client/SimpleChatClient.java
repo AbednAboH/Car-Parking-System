@@ -7,10 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-
+@Getter
+@Setter
 public class SimpleChatClient extends Application {
 
     private static Scene scene;
@@ -24,6 +28,9 @@ public class SimpleChatClient extends Application {
 
     public static void setCurrentOrder(Order currentOrder) {
         SimpleChatClient.currentOrder = currentOrder;
+    }
+    public  static Scene getScene(){
+        return scene;
     }
 
     @Override
@@ -43,7 +50,7 @@ public class SimpleChatClient extends Application {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SimpleChatClient.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+        return fxmlLoader. load();
     }
     
     public static Object getUser(){

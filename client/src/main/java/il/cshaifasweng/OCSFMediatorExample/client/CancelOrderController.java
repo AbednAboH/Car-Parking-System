@@ -119,6 +119,11 @@ public class CancelOrderController {
             progressCancelation.setVisible(false);
             successLbl.setVisible(true);
             warningMsg.setVisible(false);
+            try {
+                SimpleChatClient.setRoot("RegisteredCustomer");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

@@ -16,7 +16,10 @@ import java.util.Map;
 
 
 public class AuthenticationService {
-    static Session session=DataBaseManipulation.getSession();
+    static Session session;
+    public static void intiate(Session session){
+        AuthenticationService.session=session;
+    }
     private static final Map<Integer,Class> mappedClasses=Map.ofEntries(Map.entry(1,ParkingLotManager.class),
             Map.entry(2,ParkingLotEmployee.class),
             Map.entry(4,GlobalManager.class),
