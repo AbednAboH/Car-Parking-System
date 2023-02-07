@@ -11,7 +11,6 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
-import il.cshaifasweng.MySQL;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
@@ -25,6 +24,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Setter
 public class SimpleServerClass extends AbstractServer {
+
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
@@ -55,10 +56,8 @@ public class SimpleServerClass extends AbstractServer {
     private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
     static Session handleDelaysAndPenaltiesSession;
-    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-    public ScheduledFuture<?> scheduledFuture;
-
-
+    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    public ScheduledFuture<?> HandleOnTimeOrderDelays, HandleSubsReminders;
 
     public SimpleServerClass(int port) {
         super(port);
@@ -68,8 +67,12 @@ public class SimpleServerClass extends AbstractServer {
         System.out.println("messegesSession is open");
 
 //        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
-        scheduledFuture= executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
-//        System.out.println("DelaysSession is open");
+        // TODO: 06/02/2023 testing purposes only !!
+//            HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.SECONDS);
+//         HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
+        // TODO: 06/02/2023  should be working correctly use these lines in final project !
+                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
 
     }
 

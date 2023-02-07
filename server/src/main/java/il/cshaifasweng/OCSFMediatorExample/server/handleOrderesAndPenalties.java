@@ -6,16 +6,16 @@ import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import org.hibernate.Session;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class handleOrderesAndPenalties extends  TimeTriggeredThread{
-    // TODO: 06/02/2023 add session and check
+    // TODO: 06/02/2023 add session and check the option to add another field in all transaction entities, or paid entities , for entrance and exit form the parking lot ,
+    // TODO: 06/02/2023 meaning actuall arival time , and exit time ,this might be troublesome for subscriptions , as they enter multiple times
+    // // TODO: 06/02/2023 maybe change the name to currently using for subscriptions , and is using for orders !! this way entrance and exit can be attended
 
     public handleOrderesAndPenalties(SimpleServerClass server) {
         super(server);
@@ -23,7 +23,6 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
     // code for calculating the minutes to enter
     //given LocalTime timeToEnter
     // return the number of minutes to enter
-
     final int REMIND=0,
             LATE=1,
         NO_SHOW=2,
@@ -51,7 +50,7 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
         DataBaseManipulation<Order> handler=new DataBaseManipulation<>();
         orders = handler.executeListQuery(Order.class,hql,params, session);
 
-
+        System.out.println("im here");
         for (Order order:orders) {
             int minutesToEnter=calculateMinutesToEnter(order.getDateOfOrder());
             System.out.println(minutesToEnter);
@@ -86,6 +85,7 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
 
 
         }
+        System.out.println(orders);
         session.getTransaction().commit();
         session.close();
     }
