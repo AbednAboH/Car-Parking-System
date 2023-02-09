@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,10 +10,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,16 +34,19 @@ SubscriptionController {
     private Spinner<Integer> exitTime;
 
     @FXML
-    private TableView<PricingChart> pricingChart;
+    private TableView<SubscriptionChartModel> pricingChart;
 
     @FXML
     private TableColumn<PricingChart, String> nameCol;
 
     @FXML
-    private TableColumn<PricingChart, Boolean> byHourCol;
+    private TableColumn<PricingChart, Double> byHourCol;
 
     @FXML
     private TableColumn<PricingChart, Integer> rateCol;
+
+    @FXML
+    private TableColumn<PricingChart, Double> totalPriceCol;
 
     @FXML
     private TextField plateNum;
@@ -68,7 +74,15 @@ SubscriptionController {
 
     @FXML
     private Label timeFormat;
-    
+
+    @FXML
+    private Label rePrice;
+
+    @FXML
+    private Label multiPrice;
+
+    @FXML
+    private Label fullPrice;
 
 
     private ObservableList<PricingChart> pricingChartsList = FXCollections.observableArrayList();
@@ -83,6 +97,7 @@ SubscriptionController {
         EventBus.getDefault().register(this);
         sendMessagesToServer("#getPricingChart"); // returns the pricingChart data.
         sendMessagesToServer("#getAllParkingLots"); // returns the id's for the parking lots, or can be defined for names later.
+        plateNum.setDisable(false);
         plateNumSec.setDisable(true);
         plateNumTwo.setDisable(true);
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -93,44 +108,41 @@ SubscriptionController {
 
         // Enable disable the according to the selected subscription type.
         subType.valueProperty().addListener((observable, oldValue, newValue) -> {
+
             if (newValue.equals(Constants.FULL_SUBSCRIPTION.getMessage())) {
-                disableTime(true);
+                disableTime(false);
                 ParkingLotList.setDisable(true);
                 plateNumSec.setDisable(true);
                 plateNumTwo.setDisable(true);
+                updatePrice(pricingChart.getItems().filtered(sub -> sub.getType().contains("Full")).get(0).getTotal());
             } else {
-                disableTime(false);
+                disableTime(true);
                 ParkingLotList.setDisable(false);
                 if(newValue.equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage())){
                     plateNumTwo.setDisable(false);
                     plateNumSec.setDisable(false);
+                    updatePrice(pricingChart.getItems().filtered(sub -> sub.getType().contains("Two")).get(0).getTotal());
                 }else{
                     plateNumSec.setDisable(true);
                     plateNumTwo.setDisable(true);
+                    updatePrice(pricingChart.getItems().filtered(sub -> sub.getType().contains("Regular Subscription")).get(0).getTotal());
                 }
             }
         });
 
-
-
-
     }
 
-    private void disableTime(boolean flag) {
-        expectedTime.setVisible(flag);
-        minFormat.setVisible(flag);
-        exitTime.setVisible(flag);
-    }
+
 
 
     @Subscribe
     public void SubscriptionEvents(ParkingLotResults event){
         if(event.getMessage() != null) {
             if (event.getMessage().getMessage().startsWith("#getPricingChart")){
-                pricingChartsList.addAll((ArrayList<PricingChart>) event.getMessage().getObject());
-                pricingChart.setItems(pricingChartsList);
+                System.out.println("Hello Parkings");
+                updatePricesTable((PricingChart) event.getMessage().getObject());
             }
-            System.out.println("Hello Parkings");
+
             if(event.getMessage().getMessage().startsWith("#getAllParkingLots")){
                 parkingLots = (ArrayList<ParkingLot>) event.getMessage().getObject();
                 addParkingLotsNames();
@@ -139,26 +151,15 @@ SubscriptionController {
         }
     }
 
-    private void addParkingLotsNames() {
-        for(ParkingLot plot : parkingLots) {
-            parkingLotsIds.add(plot.getId());
-            pLotsMap.put(plot.getId(),plot);
-        }
-        ParkingLotList.setItems(parkingLotsIds);
-    }
 
     @Subscribe
     public void SubscriptionEvents(SubscriptionsChartResults event){
         if(event.getMessage() != null) {
             if (event.getMessage().getMessage().startsWith("#getPricingChart")) {
-                pricingChartsList.addAll((ArrayList<PricingChart>) event.getMessage().getObject());
-                pricingChart.setItems(pricingChartsList);
+                updatePricesTable((PricingChart) event.getMessage().getObject());
             }
-
         }
     }
-
-
 
 
     @FXML
@@ -170,14 +171,8 @@ SubscriptionController {
         if(validateInfo()) {
             SimpleChatClient.setRoot("orderPaymentGUI");
         }else{
-
+            checkInputs();
         }
-    }
-
-    private boolean validateInfo() {
-        String email = emailInput.getText();
-        // TODO: 17/01/2023 Abo Abied car plate validator.
-        return InputValidator.isValidEmail(email);
     }
 
     @FXML
@@ -195,6 +190,95 @@ SubscriptionController {
         }
 
     }
+
+    private void updatePrice(double full) {
+        totalPrice.setVisible(true);
+        totalPrice.setText(String.valueOf(full));
+    }
+
+    private void disableTime(boolean flag) {
+        expectedTime.setVisible(flag);
+        minFormat.setVisible(flag);
+        exitTime.setVisible(flag);
+        timeFormat.setVisible(flag);
+    }
+
+    private void addParkingLotsNames() {
+        for(ParkingLot plot : parkingLots) {
+            parkingLotsIds.add(plot.getId());
+            pLotsMap.put(plot.getId(),plot);
+        }
+        ParkingLotList.setItems(parkingLotsIds);
+    }
+
+
+    private Callback<TableColumn<PricingChart, Double>, TableCell<PricingChart, Double>> createDoubleCellFactory(int decimalPlaces) {
+        return tc -> new TableCell<PricingChart, Double>() {
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    int intValue = value.intValue();
+                    if (value == intValue) {
+                        setText(Integer.toString(intValue));
+                    } else {
+                        setText(String.format("%." + decimalPlaces + "f", value));
+                    }
+                }
+            }
+        };
+    }
+    private boolean validateInfo() {
+        String email = emailInput.getText();
+        boolean secCar = true;
+        if(subType.getValue().equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage()))
+            secCar = InputValidator.isValidPlateNumber(plateNumSec.getText());
+        return InputValidator.isValidEmail(email) && InputValidator.isValidPlateNumber(plateNum.getText()) && secCar;
+    }
+
+    public void updatePricesTable(PricingChart PCresult) {
+        ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
+        System.out.println(PCresult.getOrderBeforeHandPrice() + "This is the price for one hour");
+        System.out.println(PCresult.getKioskPrice() + "This is the price for one hour in kiosk");
+        double rate;
+        double[] prices={PCresult.getRegularSubHours()
+                ,PCresult.getMultipleCarRegularSubHours(),PCresult.getFullSubHours()};
+        String[] names={"Regular Subscription","Regular Two Cars","Full Subscription"};
+        int[] ids={1,1,1};
+        for(int i=0;i<3;i++){
+            if(names[i].contains("Two"))
+                tmp.add(new SubscriptionChartModel(i+1,names[i], PCresult.getOrderBeforeHandPrice(),(int)Double.parseDouble(String.valueOf(prices[i])), prices[i]* PCresult.getOrderBeforeHandPrice() * 2));
+            else
+                tmp.add(new SubscriptionChartModel(i+1,names[i], PCresult.getOrderBeforeHandPrice(),(int)Double.parseDouble(String.valueOf(prices[i])), prices[i]* PCresult.getOrderBeforeHandPrice()));
+        }
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        byHourCol.setCellValueFactory(new PropertyValueFactory<>("HourlyPrice"));
+        rateCol.setCellValueFactory(new PropertyValueFactory<>("HoursInMonth"));
+        totalPriceCol.setCellValueFactory(new PropertyValueFactory<>("total"));
+
+        byHourCol.setCellFactory(createDoubleCellFactory(2));
+        totalPriceCol.setCellFactory(createDoubleCellFactory(2));
+
+        pricingChart.setItems(tmp);
+    }
+
+    public void checkInputs() {
+        plateNum.setStyle("-fx-border-color: red;");
+        if(!plateNumTwo.isDisable())
+            plateNumTwo.setStyle("-fx-border-color: red;");
+        emailInput.setStyle("-fx-border-color: red;");
+
+        // Show an error message
+        Label errorLabel = new Label("There is something wrong with your inputs. Please correct the red fields.");
+        errorLabel.setTextFill(Color.RED);
+        errorLabel.setLayoutX(35);
+        errorLabel.setLayoutY(460);
+        ((AnchorPane) plateNum.getParent()).getChildren().add(errorLabel);
+
+    }
+
 
 
 }
