@@ -22,7 +22,10 @@ public class RegularSubscription extends Subscription {
 
     @Column(columnDefinition = "TIME",nullable = false)
     private LocalDate extractionDate;
-
+    @Override
+    public  String getParkingLotIdAsString(){
+        return Integer.toString(desegnatedParkingLot.getId());
+    }
     public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
         super(customer, hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
     }

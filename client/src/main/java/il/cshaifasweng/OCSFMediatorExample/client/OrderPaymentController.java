@@ -2,13 +2,12 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Order;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.converter.IntegerStringConverter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -56,13 +55,14 @@ public class OrderPaymentController {
     private TextField parkingHoursTxt;
 
     @FXML
-    private TextField orderIDTxt;
+    private Label orderIDTxt;
 
     @FXML
     private Label warningMsg;
 
     @FXML
-    private Label orderLbl;
+    private TextField ammountToPay;
+
 
     @FXML
     private TextField plateNumTxt;
@@ -74,13 +74,16 @@ public class OrderPaymentController {
     void backToOrder(ActionEvent event) throws IOException {
         SimpleChatClient.setRoot("orderGUI");
     }
-
-    private void fillOrderDetails(Order order) {
+    static void fillKnownOrder(Order order, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
         emailTxt.setText(order.getEmail());
         plateNumTxt.setText(order.getPlateNum());
-        dateTxt.setText(order.getDate().toString());
-        PLaddress.setText(order.getParkingLotID().getId()+"");
+        dateTxt.setText(order.getDateOfOrder().toString());
+        pLaddress.setText(order.getParkingLotID().getId()+"");
         parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");
+        ammountToPay.setText(Double.toString(order.getValue()));
+    }
+    private void fillOrderDetails(Order order) {
+        fillKnownOrder(order, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
     }
 
     @FXML
@@ -121,6 +124,9 @@ public class OrderPaymentController {
                 done.setDisable(true);
                 back.setDisable(true);
                 Order newOrder = SimpleChatClient.getCurrentOrder();
+                newOrder.setTransaction_method("Credit Card");
+                newOrder.setTransactionStatus(true);
+
                 Message message = new Message("#placeOrder", newOrder);
                 SimpleClient.getClient().sendToServer(message);
             } else {
@@ -133,8 +139,11 @@ public class OrderPaymentController {
 
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
-        paymentWindow.setVisible(false);
-        orderLbl.setVisible(true);
+       Platform.runLater(()-> fxmlHandl(event));
+    }
+
+    private void fxmlHandl(UpdateMessageEvent event) {
+         paymentWindow.setVisible(false);
         orderIDTxt.setVisible(true);
         done.setDisable(false);
         back.setDisable(false);

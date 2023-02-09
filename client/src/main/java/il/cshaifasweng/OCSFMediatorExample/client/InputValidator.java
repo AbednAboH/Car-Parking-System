@@ -7,10 +7,13 @@ public class InputValidator {
     private static final String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
     private static final String PHONE_REGEX = "^(\\+972|05|0)[2-9]\\d{7,8}$";
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+    private static final String PLATE_REGEX = "^(\\d{2}-\\d{3}-\\d{2}|\\d{3}-\\d{2}-\\d{3}|\\d{3}-\\d{3}|\\d{2}\\d{3}\\d{2}|\\d{3}\\d{2}\\d{3}|\\d{5}\\d{3})$";
+
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
+    private static final Pattern PLATE_PATTERN = Pattern.compile(PLATE_REGEX);
 
     public static boolean isValidEmail(String email) {
         Matcher matcher = EMAIL_PATTERN.matcher(email);
@@ -26,9 +29,13 @@ public class InputValidator {
         Matcher matcher = PASSWORD_PATTERN.matcher(password);
         return matcher.matches();
     }
+    public static boolean isValidPlateNumber(String plateNum){
+        Matcher matcher = PLATE_PATTERN.matcher(plateNum);
+        return matcher.matches();
+    }
 
-    public static boolean checkAll(String email, String phone, String password){
-        return isValidEmail(email) && isValidPhone(phone) && isValidPassword(password);
+    public static boolean checkAll(String email, String phone, String password,String plateNum){
+        return isValidEmail(email) && isValidPhone(phone) && isValidPassword(password) && isValidPlateNumber(plateNum);
     }
 
 }
