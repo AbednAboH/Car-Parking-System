@@ -13,6 +13,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -41,13 +42,13 @@ public abstract class Subscription extends Transactions {
     private LocalDate expirationDate;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean isActive=true;
 
     @Column(name = "allowed_days")
     private String allowedDays;
 
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<Car> carsList;
+    private List<Car> carsList=new ArrayList<>();
 //    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
     public  String getParkingLotIdAsString(){
         return "All";
@@ -64,19 +65,31 @@ public abstract class Subscription extends Transactions {
         }
         return cars;
     }
-    public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
+    public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate,
+                        LocalDate expirationDate, boolean isActive, String allowedDays,List<String> cars,
+                        int value,String transaction_method,boolean transactionStatus) {
         this.hoursPerMonth = hoursPerMonth;
         this.startDate = startDate;
         this.expirationDate = expirationDate;
         this.isActive = isActive;
         this.allowedDays = allowedDays;
+        this.value=value;
+        this.transaction_method=transaction_method;
+        this.transactionStatus=transactionStatus;
+        this.date=startDate;
+        this.registeredCustomer=(RegisteredCustomer)customer;
+        for(String car:cars)
+            this.carsList.add(new Car(car));
     }
-    public Subscription(int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
+    public Subscription(Customer customer,int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays,List<String> cars) {
         this.hoursPerMonth = hoursPerMonth;
         this.startDate = startDate;
         this.expirationDate = expirationDate;
         this.isActive = isActive;
         this.allowedDays = allowedDays;
+        this.registeredCustomer=(RegisteredCustomer)customer;
+        for(String car:cars)
+            this.carsList.add(new Car(car));
     }
 
     public Subscription() {

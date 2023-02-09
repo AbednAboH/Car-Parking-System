@@ -4,6 +4,7 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ComplaintSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionResponse;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.Order;

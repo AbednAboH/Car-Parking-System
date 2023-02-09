@@ -69,7 +69,7 @@ public class SimpleServerClass extends AbstractServer {
 //        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
         // TODO: 06/02/2023 testing purposes only !!
 //            HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.SECONDS);
-//         HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
+//            HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
         // TODO: 06/02/2023  should be working correctly use these lines in final project !
                 HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
                 HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
@@ -472,15 +472,9 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(newOrder.getId());
         System.out.println(message.getObject());
         rg.addOrder(newOrder);
-//        rg.getCars().forEach(car -> {
-//            car.setCustomer(rg);
-//            session.update(car);
-//        });
-
-//        (newOrder).get;
-
-
         rCustomer.update(rg);
+        message.setObject(newOrder.getId());
+        client.sendToClient(message);
     }
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{

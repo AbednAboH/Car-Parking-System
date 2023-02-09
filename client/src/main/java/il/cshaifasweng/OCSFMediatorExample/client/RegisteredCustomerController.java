@@ -2,36 +2,26 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CustomerCarsSubscriber;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.*;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.*;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.web.WebView;
 import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 import org.controlsfx.control.Notifications;
-import org.controlsfx.control.action.Action;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RegisteredCustomerController {
@@ -238,8 +228,9 @@ public class RegisteredCustomerController {
 
 
     @FXML
-    void AddSubscriptions(ActionEvent event) {
+    void AddSubscriptions(ActionEvent event) throws IOException {
         // TODO: 23/01/2023 place subscription screen
+        SimpleChatClient.setRoot("SubscriptionScreen");
     }
 
 

@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,22 +23,24 @@ public class RegularSubscription extends Subscription {
     private ParkingLot desegnatedParkingLot;
 
     @Column(columnDefinition = "TIME",nullable = false)
-    private LocalDate extractionDate;
+    private LocalTime extractionDate;
     @Override
     public  String getParkingLotIdAsString(){
         return Integer.toString(desegnatedParkingLot.getId());
     }
-    public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays) {
-        super(customer, hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
-    }
+//    public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate) {
+//        super(customer, hoursPerMonth, startDate, expirationDate,true, "1111100");
+//    }
 
-    public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays, ParkingLot desegnatedParkingLot, LocalDate extractionDate) {
-        super(customer, hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
+    public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, List<String> cars, int value,
+                               String transaction_method, boolean transactionStatus, ParkingLot desegnatedParkingLot, LocalTime extractionDate) {
+        super(customer, hoursPerMonth, startDate, expirationDate, true, "1111100",cars,value,transaction_method,transactionStatus);
+
         this.desegnatedParkingLot = desegnatedParkingLot;
         this.extractionDate = extractionDate;
     }
-  public RegularSubscription(int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays, ParkingLot desegnatedParkingLot, LocalDate extractionDate) {
-        super( hoursPerMonth, startDate, expirationDate, isActive, allowedDays);
+  public RegularSubscription(Customer customer,int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, ParkingLot desegnatedParkingLot, LocalTime extractionDate, List<String> cars) {
+        super( customer,hoursPerMonth, startDate, expirationDate,true, "1111100",cars);
         this.desegnatedParkingLot = desegnatedParkingLot;
         this.extractionDate = extractionDate;
     }

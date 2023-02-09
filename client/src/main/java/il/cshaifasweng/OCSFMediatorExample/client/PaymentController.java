@@ -2,7 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 
 import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
 import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.function.UnaryOperator;
 
-public class OrderPaymentController {
+public class PaymentController {
 
     @FXML
     private TextField PLaddress;
@@ -71,9 +73,16 @@ public class OrderPaymentController {
     private ChoiceBox<Integer> yearInput;
 
     @FXML
+    private ProgressIndicator doneIndecator;
+    @FXML
     void backToOrder(ActionEvent event) throws IOException {
-        SimpleChatClient.setRoot("orderGUI");
+        if (SimpleChatClient.getCurrentOrder() != null)
+            SimpleChatClient.setRoot("orderGUI");
+        else
+            SimpleChatClient.setRoot("SubscriptionScreen");
     }
+    @Subscribe
+    public void orderConfirmed(){}
     static void fillKnownOrder(Order order, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
         emailTxt.setText(order.getEmail());
         plateNumTxt.setText(order.getPlateNum());
@@ -82,8 +91,19 @@ public class OrderPaymentController {
         parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");
         ammountToPay.setText(Double.toString(order.getValue()));
     }
+    static void fillKnownSubscription(Subscription subscription, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
+        emailTxt.setText(subscription.getRegisteredCustomer().getEmail());
+        plateNumTxt.setText(subscription.getCarsAsString());
+        dateTxt.setText(subscription.getStartDate().toString());
+        pLaddress.setText(subscription.getParkingLotIdAsString());
+        parkingHoursTxt.setText(subscription.getExpirationDate().toString());
+        ammountToPay.setText(Double.toString(subscription.getValue()));
+    }
     private void fillOrderDetails(Order order) {
         fillKnownOrder(order, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
+    }
+    private void fillSubscriptionDetails(Subscription subscription) {
+        fillKnownSubscription(subscription, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
     }
 
     @FXML
@@ -123,12 +143,25 @@ public class OrderPaymentController {
             if (orderPaymentValidation()) {
                 done.setDisable(true);
                 back.setDisable(true);
-                Order newOrder = SimpleChatClient.getCurrentOrder();
-                newOrder.setTransaction_method("Credit Card");
-                newOrder.setTransactionStatus(true);
+                if (SimpleChatClient.getCurrentOrder() != null) {
+                    Order newOrder = SimpleChatClient.getCurrentOrder();
+                    newOrder.setTransaction_method("Credit Card");
+                    newOrder.setTransactionStatus(true);
 
-                Message message = new Message("#placeOrder", newOrder);
-                SimpleClient.getClient().sendToServer(message);
+                    Message message = new Message("#placeOrder", newOrder);
+                    SimpleClient.getClient().sendToServer(message);
+
+                } else {
+                    Subscription subscription = SimpleChatClient.getCurrentSubscription();
+                    subscription.setTransaction_method("Credit Card");
+                    subscription.setTransactionStatus(true);
+                    subscription.setDate(LocalDate.now());
+                    Message message = new Message("#addSubscription", subscription);
+                    SimpleClient.getClient().sendToServer(message);
+
+                }
+                doneIndecator.setVisible(true);
+
             } else {
                 warningMsg.setVisible(true);
             }
@@ -139,11 +172,12 @@ public class OrderPaymentController {
 
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
-       Platform.runLater(()-> fxmlHandl(event));
+       Platform.runLater(()-> fxmlHandl(event)); 
+       
     }
 
     private void fxmlHandl(UpdateMessageEvent event) {
-         paymentWindow.setVisible(false);
+        paymentWindow.setVisible(false);
         orderIDTxt.setVisible(true);
         done.setDisable(false);
         back.setDisable(false);
@@ -151,6 +185,14 @@ public class OrderPaymentController {
         successLbl.setVisible(true);
         System.out.println(event.getMessage().getObject());
         orderIDTxt.setText(event.getMessage().getObject() + "");
+        doneIndecator.setVisible(false);
+        try {
+            SimpleChatClient.setRoot("RegisteredCustomer");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
 
     private void initPaymentControls() {
@@ -187,7 +229,13 @@ public class OrderPaymentController {
     void initialize() {
         EventBus.getDefault().register(this);
         initPaymentControls();
-        fillOrderDetails(SimpleChatClient.getCurrentOrder());
+        if (SimpleChatClient.getCurrentOrder() != null)
+            fillOrderDetails(SimpleChatClient.getCurrentOrder());
+        else if (SimpleChatClient.getCurrentSubscription()!=null)
+            fillSubscriptionDetails(SimpleChatClient.getCurrentSubscription());
+        else
+            System.out.println("Error: no order or subscription to pay for");
+        doneIndecator.setVisible(false);
     }
 
 }

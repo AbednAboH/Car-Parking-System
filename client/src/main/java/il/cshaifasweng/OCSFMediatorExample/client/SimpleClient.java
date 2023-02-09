@@ -66,6 +66,24 @@ public class SimpleClient extends AbstractClient {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
 		}
+//		String messageString = message.getMessage();
+//		switch (messageString) {
+//			case "#authintication" -> EventBus.getDefault().post(new LogInSubscriber(message));
+//			case "#getUser" -> EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
+//			case "#getAllParkingLots" -> EventBus.getDefault().post(new ParkingLotResults(message));
+//			case "#getPricingChart" -> EventBus.getDefault().post(new SubscriptionsChartResults(message));
+//			case "#showOrders", "#getAllOrders" -> EventBus.getDefault().post(new OrderHistoryResponse(message));
+//			case "#showSubscription" -> EventBus.getDefault().post(new SubscriptionResponse(message));
+//			case "#placeOrder", "addSubscription", "cancelSubscription", "cancelOrder" -> EventBus.getDefault().post(new UpdateMessageEvent(message));
+//			case "Error! we got an empty message" -> EventBus.getDefault().post(new ErrorEvent(message));
+//			case "#GetAllCompliants", "#CloseComplaint" -> EventBus.getDefault().post(new CompliantsSubscriber(message));
+//			case "#verifySubscription", "#verifyOrder" -> EventBus.getDefault().post(new KioskSubscriber(message));
+//			case "#applyComplaint" -> EventBus.getDefault().post(new ComplaintSubscriber(message));
+//			case "#GetCustomerCars" -> EventBus.getDefault().post(new CustomerCarsSubscriber(message));
+//			case "#GetRefundChart" -> EventBus.getDefault().post(new RefundChartSubscriber(message));
+//			case "#CancelOrderAndGetRefund" -> EventBus.getDefault().post(new CancelationRefundSubscriber(message));
+//			default -> EventBus.getDefault().post(new MessageEvent(message));
+//		}
 	}
 	
 	public static SimpleClient getClient() {

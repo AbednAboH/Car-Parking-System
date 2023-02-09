@@ -1,15 +1,15 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.client.Subscribers;
 
 import il.cshaifasweng.Message;
 
-public class SubscriptionResponse {
+public class NewSubscriberEvent {
     private Message message;
 
     public Message getMessage() {
         return message;
     }
 
-    public SubscriptionResponse(Message message) {
+    public NewSubscriberEvent(Message message) {
         this.message = message;
     }
 }
