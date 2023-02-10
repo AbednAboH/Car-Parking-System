@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
@@ -18,17 +17,12 @@ import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import il.cshaifasweng.customerCatalogEntities.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -37,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Setter
 public class SimpleServerClass extends AbstractServer {
-
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
@@ -107,7 +100,8 @@ public class SimpleServerClass extends AbstractServer {
 
             }else if (request.startsWith("#Register")) {
                 registerUser(message,client);
-        
+            } else if (request.startsWith("#intializeParkingLot")) {
+                initializeParkingLot(message, client);
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
@@ -124,7 +118,12 @@ public class SimpleServerClass extends AbstractServer {
                 updatePriceChart(message, client);
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
-
+            } else if (request.startsWith("#DirectToAvailblePark")) {
+                diretToParkingLots(message, client);
+            } else if (request.startsWith("#GetParkingSpots")) {
+                getParkingSpots(message, client);
+            } else if (request.startsWith("#SetParkingSpots")) {
+                setParkingSpots(message, client);
             } else if (request.startsWith("#showOrders")) {
                 showOrders(message, client);
             } else if (request.startsWith("#showSubscription")) {
@@ -231,7 +230,9 @@ public class SimpleServerClass extends AbstractServer {
                 + "AND o.parkingLotID.id = :parkingLotId "
                 + "AND o.date = CURDATE()";
         HashMap<String, Object> params = new HashMap<>();
-
+        params.put("orderID", orderID);
+        params.put("customerId", customerID);
+        params.put("parkingLotId", parkingLotId);
         List<Object> lst = rCustomer.executeQuery(Object.class, queryOnOrder, params);
         if (lst != null && lst.size() > 0) {
             message.setObject(lst.get(0));
@@ -432,8 +433,15 @@ public class SimpleServerClass extends AbstractServer {
     public void setParkingSpots(Message message,ConnectionToClient client){
         ParkingLotEmployee employee = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot lot = employee.getParkingLot();
-        lot.setSpots((List<ParkingSpot>) message.getObject());
-        pLot.update(lot);
+        ParkingSpot ps = pSpot.get(((ParkingSpot) message.getObject()).getId(), ParkingSpot.class);
+        ps.setOccupied(((ParkingSpot) message.getObject()).isOccupied());
+        pSpot.update(ps);
+        System.out.println(ps);
+        Hibernate.initialize(lot.getSpots());
+        System.out.println(ps);
+        message.setMessage("#GetParkingSpots");
+        message.setObject(lot.getSpots());
+
     }
     public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
         message.setObject(pChart.getLastAdded(PricingChart.class));
@@ -517,4 +525,25 @@ public class SimpleServerClass extends AbstractServer {
         }
         return user;
     }
+
+    private void initializeParkingLot(Message message, ConnectionToClient client) {
+        ParkingLotEmployee E = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
+        ParkingLot PL = E.getParkingLot();
+        Hibernate.initialize(PL.getSpots());
+        PL.reInitiateParkingSpots();
+        session.update(PL);
+        session.flush();
+        message.setObject(PL.getSpots());
+        message.setMessage("#GetParkingSpots");
+    }
+
+
+    // todo: need to fix it!!!!!!!
+    public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
+        // TODO: get all parkinglots find nearenest that has space
+        message.setMessage("#GO TO :" + "TO BE CONTINUED");
+        client.sendToClient(message);
+    }
+
+
 }

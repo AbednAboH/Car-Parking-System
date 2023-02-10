@@ -13,7 +13,7 @@ public class ParkingSpot implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name="rowNum")
-    private int rrow;
+    private int row;
     @Column(name="floor")
     private int floor;
     @Column(name="depth")
@@ -36,9 +36,8 @@ public class ParkingSpot implements Serializable {
     public ParkingLot getParkingLot() {
         return parkingLot;
     }
-
     public ParkingSpot(int row, int floor, int depth,ParkingLot parkingLot) {
-        this.rrow = row;
+        this.row = row;
         this.floor = floor;
         this.depth = depth;
         occupied=false;
@@ -48,7 +47,7 @@ public class ParkingSpot implements Serializable {
     }
 
     public ParkingSpot(int row, int floor, int depth, boolean occupied, String currentCarId, boolean saved,ParkingLot parkingLot) {
-        this.rrow = row;
+        this.row = row;
         this.floor = floor;
         this.depth = depth;
         this.occupied = occupied;
@@ -62,11 +61,11 @@ public class ParkingSpot implements Serializable {
     }
 
     public int getRow() {
-        return rrow;
+        return row;
     }
 
     public void setRow(int row) {
-        this.rrow = row;
+        this.row = row;
     }
 
     public int getFloor() {
@@ -125,8 +124,11 @@ public class ParkingSpot implements Serializable {
     }
     @Override
     public String toString(){
-        return "parkingLotId="+parkingLot.getId()+" ["+floor+"]"+"["+rrow+"]"+"["+depth+"]= OC"+occupied+" S"+saved;
+        return "parkingLotId="+parkingLot.getId()+" ["+floor+"]"+"["+row+"]"+"["+depth+"]= OC"+occupied+" S"+saved;
     }
 
 
+    public int getId() {
+        return id;
+    }
 }

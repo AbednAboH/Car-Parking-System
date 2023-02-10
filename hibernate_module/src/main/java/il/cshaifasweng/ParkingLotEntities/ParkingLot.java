@@ -89,6 +89,12 @@ public class ParkingLot implements Serializable {
             }
         }
     }
+    public void reInitiateParkingSpots(){
+            spots.forEach(spot -> {
+                spot.setSaved(false);
+                spot.setOccupied(false);
+            });
+        }
 
     @Override
     public String toString() {
@@ -117,6 +123,10 @@ public class ParkingLot implements Serializable {
     public void setFloor(int floor) {
         this.floor = floor;
     }
+    public int getRow(){return this.floor;}
+    public int getCol(){return this.rowsInEachFloor;}
+    public int getDepth(){return this.rowCapacity;}
+
 
     public void setRowsInEachFloor(int rowsInEachFloor) {
         this.rowsInEachFloor = rowsInEachFloor;
@@ -125,6 +135,7 @@ public class ParkingLot implements Serializable {
     public void setRowCapacity(int rowCapacity) {
         this.rowCapacity = rowCapacity;
     }
+
 
     public List<ParkingSpot> getSpots() {
         return spots;
@@ -162,11 +173,6 @@ public class ParkingLot implements Serializable {
         this.spots = spots;
     }
 
-
-
-
-
-
     public int getFloor() {
         return floor;
     }
@@ -177,7 +183,9 @@ public class ParkingLot implements Serializable {
 
     public int getRowCapacity() {
         return rowCapacity;
-    }}
+    }
+
+}
 
 
 
