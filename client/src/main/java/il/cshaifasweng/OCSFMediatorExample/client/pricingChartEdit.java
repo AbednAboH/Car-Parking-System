@@ -2,9 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.Message;

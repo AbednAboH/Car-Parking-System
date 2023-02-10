@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/test-transactions?useSSL=true</property>
+        <property name="connection.username">CpsAdmin</property>
+        <property name="connection.password">@#123asad</property>
+<!--        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>-->
+
+
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="hibernate.cache.use_second_level_cache">false</property>
+
+
+
+        <!-- Disable Hibernate's automatic session management -->
+        <property name="hibernate.current_session_context_class">thread</property>
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Mapping files -->
+        <mapping class="il.cshaifasweng.LogInEntities.Employees.ParkingLotManager"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Employees.Employee"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Employees.GlobalManager"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Customers.Customer"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer"/>
+        <mapping class="il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer"/>
+        <mapping class="il.cshaifasweng.ParkingLotEntities.ParkingLot"/>
+        <mapping class="il.cshaifasweng.ParkingLotEntities.Car"/>
+        <mapping class="il.cshaifasweng.ParkingLotEntities.ParkingSpot"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.Subscription"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.FullSubscription"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.RegularSubscription"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.Complaint"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.Order"/>
+        <mapping class="il.cshaifasweng.MoneyRelatedServices.Penalty"/>
+        <mapping class="il.cshaifasweng.MoneyRelatedServices.PricingChart"/>
+        <mapping class="il.cshaifasweng.MoneyRelatedServices.Refund"/>
+        <mapping class="il.cshaifasweng.MoneyRelatedServices.RefundChart"/>
+        <mapping class="il.cshaifasweng.MoneyRelatedServices.Reports"/>
+        <mapping class="il.cshaifasweng.MoneyRelatedServices.Transactions"/>
+
+    </session-factory>
+</hibernate-configuration>

@@ -5,8 +5,8 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
-import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import javafx.application.Platform;
@@ -14,7 +14,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -97,6 +96,14 @@ public class OrderController {
         if (plateNum.getText().length() < 6)
             return false;
         return true;
+    }
+    @FXML
+    void backToRegisteredCustomer(ActionEvent event) {
+        try {
+            SimpleChatClient.setRoot("registeredCustomer");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

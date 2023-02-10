@@ -1,9 +1,14 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.customerCatalogEntities.FullSubscription;
+import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +22,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -164,14 +171,34 @@ public class SubscriptionController {
     @FXML
     void goToPayment(ActionEvent event) throws IOException {
 
-        if(!subType.getValue().equals(Constants.FULL_SUBSCRIPTION.getMessage())){
+        if (!subType.getValue().equals(Constants.FULL_SUBSCRIPTION.getMessage())) {
             currParkingLot = pLotsMap.get(ParkingLotList.getValue());
         }
-        if(validateInfo()) {
+        if (validateInfo()) {
+            Subscription subscription ;
+            List<String> cars = new ArrayList<>();
+            cars.add(plateNum.getText());
+            if (!subType.getValue().equals(Constants.FULL_SUBSCRIPTION.getMessage())) {
+                if (subType.getValue().equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage()))
+                    cars.add(plateNumTwo.getText());
+
+                subscription = new RegularSubscription((Customer) SimpleChatClient.getUser(), 100, LocalDate.now(),
+                        LocalDate.now().plusMonths(1), parkingLots.get(parkingLots.indexOf(currParkingLot)), LocalTime.of(exitTime.getValue(), 0), cars);
+
+
+            }
+            else {
+                subscription = new FullSubscription((Customer) SimpleChatClient.getUser(), 100, LocalDate.now(),
+                        LocalDate.now().plusMonths(1),cars,16);
+
+            }
+            SimpleChatClient.setCurrentSubscription(subscription);
             SimpleChatClient.setRoot("orderPaymentGUI");
-        }else{
-            checkInputs();
         }
+        else {
+                checkInputs();
+            }
+
     }
 
     @FXML
@@ -233,7 +260,7 @@ public class SubscriptionController {
         String email = emailInput.getText();
         boolean secCar = true;
         if(subType.getValue().equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage()))
-            secCar = InputValidator.isValidPlateNumber(plateNumSec.getText());
+            secCar = InputValidator.isValidPlateNumber(plateNumTwo.getText());
         return InputValidator.isValidEmail(email) && InputValidator.isValidPlateNumber(plateNum.getText()) && secCar;
     }
 
@@ -264,11 +291,16 @@ public class SubscriptionController {
     }
 
     public void checkInputs() {
-        plateNum.setStyle("-fx-border-color: red;");
-        if(!plateNumTwo.isDisable())
-            plateNumTwo.setStyle("-fx-border-color: red;");
-        emailInput.setStyle("-fx-border-color: red;");
+        String validplateNumTwo="";
 
+        String validEmail=InputValidator.isValidEmail(emailInput.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+        String validplateNum=InputValidator.isValidPlateNumber(plateNum.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+        if(!plateNumTwo.isDisable()){
+            validplateNumTwo=InputValidator.isValidPlateNumber(plateNumTwo.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+            plateNumTwo.setStyle(validplateNumTwo);
+        }
+        emailInput.setStyle(validEmail);
+        plateNum.setStyle(validplateNum);
         // Show an error message
         Label errorLabel = new Label("There is something wrong with your inputs. Please correct the red fields.");
         errorLabel.setTextFill(Color.RED);

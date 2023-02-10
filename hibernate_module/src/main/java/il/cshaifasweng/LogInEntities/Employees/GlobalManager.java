@@ -14,6 +14,7 @@ public class GlobalManager extends Employee {
     @OneToMany(fetch = FetchType.LAZY)
     private List<ParkingLot> parkingLot;
 
+
     public GlobalManager(String name, String title, double salary) {
         super(name, title, salary);
     }

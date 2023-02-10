@@ -1,7 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
-import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CancelationRefundSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RefundChartSubscriber;
@@ -12,19 +11,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
-import java.sql.Ref;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sun.javafx.application.PlatformImpl.runLater;
-import static il.cshaifasweng.OCSFMediatorExample.client.OrderPaymentController.fillKnownOrder;
+import static il.cshaifasweng.OCSFMediatorExample.client.PaymentController.fillKnownOrder;
 
 public class CancelOrderController {
 
@@ -85,10 +81,19 @@ public class CancelOrderController {
 
     @FXML
     private TableColumn<RefundChart, String> refundPercentage;
-
+    @FXML
+    private ProgressIndicator backProgress;
+    @FXML
+    private ProgressIndicator progressCancelation;
     @FXML
     void backToOrder(ActionEvent event) {
-
+        try{
+            backProgress.setVisible(true);
+            SimpleChatClient.setRoot("RegisteredCustomer");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -96,6 +101,9 @@ public class CancelOrderController {
         Message message = new Message();
         message.setMessage("#CancelOrderAndGetRefund&"+refundAmmount.getText()+"&"+ SimpleChatClient.getCurrentOrder().getId());
         SimpleClient.getClient().sendToServer(message);
+        done.setDisable(true);
+        progressCancelation.setVisible(true);
+
     }
 
     @Subscribe
@@ -104,8 +112,14 @@ public class CancelOrderController {
     }
     private void displaySuccessStatus() {
         runLater(() -> {
+            progressCancelation.setVisible(false);
             successLbl.setVisible(true);
             warningMsg.setVisible(false);
+            try {
+                SimpleChatClient.setRoot("RegisteredCustomer");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

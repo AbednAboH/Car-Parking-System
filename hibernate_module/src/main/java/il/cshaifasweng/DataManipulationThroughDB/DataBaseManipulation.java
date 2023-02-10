@@ -1,5 +1,6 @@
 package il.cshaifasweng.DataManipulationThroughDB;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import javax.persistence.TypedQuery;
@@ -10,8 +11,9 @@ import java.util.Map;
 
 public class DataBaseManipulation<T> implements DAO<T>{
     static Session session;
-    public static void intiate(){
-        session=factory.openSession();
+
+    public static void intiate(Session session){
+        DataBaseManipulation.session=session;
     }
     public static Session getSession(){
         return session;
@@ -94,6 +96,13 @@ public class DataBaseManipulation<T> implements DAO<T>{
     }
     public <T> List<T> executeQuery(Class<T> Type, String hql, Map<String,Object> params,Session session){
             Query query = session.createQuery(hql, Type).setMaxResults(1); // Can be changed to more than one.
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+            return query.list();
+        }
+ public <T> List<T> executeListQuery(Class<T> Type, String hql, Map<String,Object> params,Session session){
+            Query query = session.createQuery(hql, Type); // Can be changed to more than one.
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 query.setParameter(entry.getKey(), entry.getValue());
             }

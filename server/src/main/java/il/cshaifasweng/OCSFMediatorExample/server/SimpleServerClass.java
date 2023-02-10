@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
@@ -10,7 +11,6 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
-import il.cshaifasweng.MySQL;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
@@ -24,10 +24,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -52,28 +50,27 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<ParkingSpot> pSpot=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
     static Session handleDelaysAndPenaltiesSession;
-    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-    public ScheduledFuture<?> scheduledFuture;
-
-
+    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    public ScheduledFuture<?> HandleOnTimeOrderDelays, HandleSubsReminders;
 
     public SimpleServerClass(int port) {
         super(port);
-        DataBaseManipulation.intiate();
+        handleMessegesSession = DAO.factory.openSession();
+        DataBaseManipulation.intiate(handleMessegesSession);
+        AuthenticationService.intiate(handleMessegesSession);
         System.out.println("messegesSession is open");
-        handleMessegesSession =DataBaseManipulation.getSession();
-        System.out.println("DelaysSession is open");
-        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
-        scheduledFuture= executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
 
-        try {
+//        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
+        // TODO: 06/02/2023 testing purposes only !!
+//            HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.SECONDS);
+//            HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
+        // TODO: 06/02/2023  should be working correctly use these lines in final project !
+                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
 
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -92,16 +89,23 @@ public class SimpleServerClass extends AbstractServer {
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message message = (Message) msg;
         String request = message.getMessage();
+        if (!handleMessegesSession.isOpen()){
+            handleMessegesSession = DAO.factory.openSession();
+            DataBaseManipulation.intiate(handleMessegesSession);
+            AuthenticationService.intiate(handleMessegesSession);
+        }
         try {
+
             handleMessegesSession.beginTransaction();
             if (request.isBlank()) {
                 message.setMessage("Error! we got an empty message");
             } else if (request.startsWith("#LogIn")) {
                 Login(message,client);
-        
+
             }else if (request.startsWith("#Register")) {
                 registerUser(message,client);
-        
+            } else if (request.startsWith("#intializeParkingLot")) {
+                initializeParkingLot(message, client);
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
 
@@ -118,7 +122,12 @@ public class SimpleServerClass extends AbstractServer {
                 updatePriceChart(message, client);
             } else if (request.startsWith("#updateAmount")) {
                 updateSubscriptionAmount(message, client);
-
+            } else if (request.startsWith("#DirectToAvailblePark")) {
+                diretToParkingLots(message, client);
+            } else if (request.startsWith("#GetParkingSpots")) {
+                getParkingSpots(message, client);
+            } else if (request.startsWith("#SetParkingSpots")) {
+                setParkingSpots(message, client);
             } else if (request.startsWith("#showOrders")) {
                 showOrders(message, client);
             } else if (request.startsWith("#showSubscription")) {
@@ -167,6 +176,7 @@ public class SimpleServerClass extends AbstractServer {
         }
         finally{
             handleMessegesSession.getTransaction().commit();
+            handleMessegesSession.close();
         }
     }
 
@@ -224,7 +234,9 @@ public class SimpleServerClass extends AbstractServer {
                 + "AND o.parkingLotID.id = :parkingLotId "
                 + "AND o.date = CURDATE()";
         HashMap<String, Object> params = new HashMap<>();
-
+        params.put("orderID", orderID);
+        params.put("customerId", customerID);
+        params.put("parkingLotId", parkingLotId);
         List<Object> lst = rCustomer.executeQuery(Object.class, queryOnOrder, params);
         if (lst != null && lst.size() > 0) {
             message.setObject(lst.get(0));
@@ -425,8 +437,15 @@ public class SimpleServerClass extends AbstractServer {
     public void setParkingSpots(Message message,ConnectionToClient client){
         ParkingLotEmployee employee = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot lot = employee.getParkingLot();
-        lot.setSpots((List<ParkingSpot>) message.getObject());
-        pLot.update(lot);
+        ParkingSpot ps = pSpot.get(((ParkingSpot) message.getObject()).getId(), ParkingSpot.class);
+        ps.setOccupied(((ParkingSpot) message.getObject()).isOccupied());
+        pSpot.update(ps);
+        System.out.println(ps);
+        Hibernate.initialize(lot.getSpots());
+        System.out.println(ps);
+        message.setMessage("#GetParkingSpots");
+        message.setObject(lot.getSpots());
+
     }
     public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
         message.setObject(pChart.getLastAdded(PricingChart.class));
@@ -465,15 +484,9 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(newOrder.getId());
         System.out.println(message.getObject());
         rg.addOrder(newOrder);
-//        rg.getCars().forEach(car -> {
-//            car.setCustomer(rg);
-//            session.update(car);
-//        });
-
-//        (newOrder).get;
-
-
         rCustomer.update(rg);
+        message.setObject(newOrder.getId());
+        client.sendToClient(message);
     }
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
@@ -516,4 +529,25 @@ public class SimpleServerClass extends AbstractServer {
         }
         return user;
     }
+
+    private void initializeParkingLot(Message message, ConnectionToClient client) {
+        ParkingLotEmployee E = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
+        ParkingLot PL = E.getParkingLot();
+        Hibernate.initialize(PL.getSpots());
+        PL.reInitiateParkingSpots();
+        handleMessegesSession.update(PL);
+        handleMessegesSession.flush();
+        message.setObject(PL.getSpots());
+        message.setMessage("#GetParkingSpots");
+    }
+
+
+    // todo: need to fix it!!!!!!!
+    public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
+        // TODO: get all parkinglots find nearenest that has space
+        message.setMessage("#GO TO :" + "TO BE CONTINUED");
+        client.sendToClient(message);
+    }
+
+
 }

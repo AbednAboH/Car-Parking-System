@@ -8,12 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "orders")
 public class Order extends Transactions {
+    final int MAX_REMINDER_SENT=3;
+    final int REMIND=0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="registeredCustomer_id")
     private RegisteredCustomer registeredCustomer;
@@ -22,9 +25,9 @@ public class Order extends Transactions {
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
 
-    @Convert(converter = LocalDateAttributeConverter.class)
+//    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name="dateOfOrder")
-    private LocalDate dateOfOrder;
+    private LocalDateTime dateOfOrder;
 
     @Column(name="active")
     private boolean active;
@@ -41,13 +44,13 @@ public class Order extends Transactions {
     @Column(name="email")
     private String email;
     @Column(name="ReminderSent")
-    private boolean reminderSent=false;
+    private int reminderSent=REMIND;
     @Column(name="agreedToPayPenalty")
     private boolean agreedToPayPenalty=false;
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
         this.registeredCustomer = registeredCustomer;
-        this.dateOfOrder=date;
+        this.dateOfOrder= date.atTime(Integer.parseInt(entering),0);
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
         this.entering = entering;

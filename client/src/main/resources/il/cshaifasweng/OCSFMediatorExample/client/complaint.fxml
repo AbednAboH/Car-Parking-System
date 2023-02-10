@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="586.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ComplaintController">
+<AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ComplaintController">
    <children>
       <ComboBox fx:id="ComplaintSubject" layoutX="581.0" layoutY="192.0" onAction="#subjectChange" prefHeight="25.0" prefWidth="211.0" promptText="Complaint subject" />
       <Accordion layoutX="62.0" layoutY="15.0" />
@@ -31,14 +25,15 @@
          </font>
       </Text>
       <Text layoutX="76.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter all relevant contact information below ,select the Parking Lot that you encountered inconvienience in, and a complaint subject :" wrappingWidth="608.0" />
-    <Button fx:id="submitComplaint" layoutX="664.0" layoutY="502.0" mnemonicParsing="false" onAction="#submitComplaintAction" text="Submit" />
+    <Button fx:id="submitComplaint" layoutX="630.0" layoutY="515.0" mnemonicParsing="false" onAction="#submitComplaintAction" text="Submit" />
       <ComboBox fx:id="Ordersubscription" layoutX="581.0" layoutY="342.0" onAction="#typeOfSubscription" prefHeight="25.0" prefWidth="211.0" promptText="Order/Subscription" />
       <TextField fx:id="orderSubIdText" layoutX="607.0" layoutY="393.0" />
       <Text layoutX="624.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Order/Subscripion ID" wrappingWidth="115.0" />
-      <ComboBox fx:id="orderSubscriptionBox" layoutX="586.0" layoutY="419.0" onAction="#getOrderSub" prefHeight="25.0" prefWidth="211.0" promptText="Choose an Order/Subscription" />
+      <ComboBox fx:id="orderSubscriptionBox" layoutX="589.0" layoutY="419.0" onAction="#getOrderSub" prefHeight="25.0" prefWidth="211.0" promptText="Choose an Order/Subscription" />
       <Text layoutX="601.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a type of Order: " wrappingWidth="161.0" />
       <Text layoutX="601.0" layoutY="261.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a Parking Lot" wrappingWidth="161.0" />
       <Text layoutX="601.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Complaint Subject" wrappingWidth="161.0" />
       <Label fx:id="status" layoutX="592.0" layoutY="468.0" prefHeight="34.0" prefWidth="234.0" text="Complaint Was sent Succesfully" textFill="#009e08" textOverrun="CENTER_ELLIPSIS" wrapText="true" />
+      <Button fx:id="back" layoutX="739.0" layoutY="515.0" mnemonicParsing="false" onAction="#backButton" text="back" />
    </children>
 </AnchorPane>
