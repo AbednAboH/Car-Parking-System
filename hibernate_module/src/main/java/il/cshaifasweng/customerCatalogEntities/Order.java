@@ -93,5 +93,8 @@ public class Order extends Transactions {
     public Order() {
 
     }
+    public int getHoursOfResidency(){
+        return Integer.parseInt(exiting)-Integer.parseInt(entering);
+    }
     // TODO: 1/10/2023 toString Function 
 }
