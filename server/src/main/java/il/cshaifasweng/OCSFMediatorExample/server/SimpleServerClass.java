@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
@@ -17,6 +18,8 @@ import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import il.cshaifasweng.customerCatalogEntities.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -47,6 +50,7 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<ParkingSpot> pSpot=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
     static Session handleDelaysAndPenaltiesSession;
     public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
@@ -531,8 +535,8 @@ public class SimpleServerClass extends AbstractServer {
         ParkingLot PL = E.getParkingLot();
         Hibernate.initialize(PL.getSpots());
         PL.reInitiateParkingSpots();
-        session.update(PL);
-        session.flush();
+        handleMessegesSession.update(PL);
+        handleMessegesSession.flush();
         message.setObject(PL.getSpots());
         message.setMessage("#GetParkingSpots");
     }
