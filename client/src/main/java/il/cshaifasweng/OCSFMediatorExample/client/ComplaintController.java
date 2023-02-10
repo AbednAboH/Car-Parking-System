@@ -291,8 +291,14 @@ public class ComplaintController {
     public void checkSubmit(ComplaintSubscriber event) {
         System.out.println("Complaint Was Sent Successfuly");
         status.setVisible(true);
+        try {
+            if (SimpleChatClient.getUser() == null)
+                SimpleChatClient.setRoot("HomePage");
+            else
+                SimpleChatClient.setRoot("RegisteredCustomer");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-
-        // TODO: 1/17/2023   go to next screen+
     }
 }

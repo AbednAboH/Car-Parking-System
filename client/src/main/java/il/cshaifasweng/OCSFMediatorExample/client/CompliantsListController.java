@@ -97,8 +97,8 @@ public class CompliantsListController {
 
     @FXML
     void onBack(ActionEvent event) throws Exception {
-        // TODO: 13/01/2023 Return to the previous screen.
 //        SimpleChatClient.setRoot();
+        SimpleChatClient.setRoot("CustomerServiceEmployeeScreen");
     }
 
     @FXML
@@ -109,7 +109,8 @@ public class CompliantsListController {
     @FXML
     void onLogout(ActionEvent event) throws Exception {
         SimpleChatClient.setRoot("LogInScreen");
-        // TODO: 22/01/2023 disconnect from server 
+        Message message = new Message("#LogOut");
+        SimpleClient.getClient().sendToServer(message);
     }
 
     @FXML

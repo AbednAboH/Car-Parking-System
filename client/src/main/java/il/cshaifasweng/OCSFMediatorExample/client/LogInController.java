@@ -149,7 +149,7 @@ public class LogInController{
             Message message = new Message("#LogIn&"+ email + "&"+password);
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+
             showErrorMessage(Constants.INTERNAL_ERROR);
             e.printStackTrace();
         }
@@ -189,7 +189,7 @@ public class LogInController{
             }
             return;
         }
-        if(!validateEmail(email)){
+        if(!InputValidator.isValidEmail(email)){
             invalidSignupCredentials.setText("Please add a valid email");
             invalidSignupCredentials.setStyle(errorMessage);
             signUpEmailTextField.setStyle(errorStyle);
@@ -242,7 +242,7 @@ public class LogInController{
             Message message = new Message("#Register&"+ID+"&"+ email + "&"+password+"&"+username+"&"+lastName);
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+
             showErrorMessage(Constants.INTERNAL_ERROR);
             e.printStackTrace();
         }
@@ -250,7 +250,9 @@ public class LogInController{
     }
 
     private boolean isStrongPassword(String password) {
-        // TODO: 10/01/2023 Check if the password is strong - valid.
+        //todo: unchecke this one after all testing is done
+        // return InputValidator.isValidPassword(password);
+
         return true;
     }
 
