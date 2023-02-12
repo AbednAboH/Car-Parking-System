@@ -39,8 +39,8 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
-    private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
-    private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
+    private static Map<Long, Customer> clientsCustomersMap = new HashMap<>();
+    private static Map<Long, Employee> clientsEmployeeMap = new HashMap<>();
     private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
     private static  final  DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();

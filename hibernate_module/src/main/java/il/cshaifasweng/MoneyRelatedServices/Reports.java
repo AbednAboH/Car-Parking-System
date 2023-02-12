@@ -14,7 +14,7 @@ import java.util.List;
 public class Reports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Complaint> complaints;
 //    @OneToMany(fetch = FetchType.LAZY,mappedBy = "reports",cascade = CascadeType.ALL,orphanRemoval = true)

@@ -24,7 +24,7 @@ public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
+//    private long id;
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)

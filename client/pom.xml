@@ -57,6 +57,7 @@
 				<version>1.6.0</version>
 				<configuration>
 					<mainClass>il.cshaifasweng.OCSFMediatorExample.client.Main</mainClass>
+
 				</configuration>
 			</plugin>
 			<plugin>

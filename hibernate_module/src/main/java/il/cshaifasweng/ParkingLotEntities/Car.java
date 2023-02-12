@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Car implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Column(name="carNumber")
     private String carNum;
     @ManyToOne

@@ -1,4 +1,5 @@
 package il.cshaifasweng.DataManipulationThroughDB;
+import il.cshaifasweng.MySQL;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -12,6 +13,22 @@ import java.util.Map;
 public class DataBaseManipulation<T> implements DAO<T>{
     static Session session;
 
+    // TODO: 12/02/2023 Remove, this is for testing purposes only , as adding manually would take a lot of time . 
+    static {
+        try {
+            session = MySQL.getSession();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public DataBaseManipulation() {
+        try {
+            session = MySQL.getSession();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void intiate(Session session){
         DataBaseManipulation.session=session;
     }
@@ -19,7 +36,7 @@ public class DataBaseManipulation<T> implements DAO<T>{
         return session;
     }
     @Override
-    public T get(int id,Class<T> type) {
+    public T get(long id,Class<T> type) {
 
        T object=session.get(type,id);
 
@@ -86,7 +103,7 @@ public class DataBaseManipulation<T> implements DAO<T>{
 
 
     }
-    public void deleteById(int id,Class<T> type){
+    public void deleteById(long id,Class<T> type){
         T object= get(id,type);
         delete(object,type);
     }

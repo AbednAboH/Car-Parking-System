@@ -14,7 +14,7 @@ public class PricingChart implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Column(name = "Kiosk")
     private double kioskPrice = 8;
     @Column(name = "OrderBeforehand")
@@ -71,7 +71,7 @@ public class PricingChart implements Serializable {
         Approved = approved;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

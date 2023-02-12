@@ -1,8 +1,12 @@
 package il.cshaifasweng;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,22 +19,24 @@ import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 import il.cshaifasweng.MoneyRelatedServices.*;
-import il.cshaifasweng.ParkingLotEntities.Car;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
-import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
+import il.cshaifasweng.ParkingLotEntities.*;
 import il.cshaifasweng.customerCatalogEntities.*;
+import lombok.ToString;
+import org.apache.commons.lang3.RandomUtils;
 import org.hibernate.HibernateException;
+import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-
+import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 public class MySQL
 {
     public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
-            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class, RefundChart.class};
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class, RefundChart.class, Vehicle.class,ParkingLotScheduler.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),
@@ -40,7 +46,7 @@ public class MySQL
             ,Map.entry("Complaint",Complaint.class),Map.entry("OneTime",OneTimeCustomer.class),Map.entry("Registered",RegisteredCustomer.class)
             ,Map.entry("Penalty",Penalty.class),Map.entry("Refund",Refund.class)
             ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class)
-            ,Map.entry("Orders", Order.class),Map.entry("RefundChart",Refund.class));
+            ,Map.entry("Orders", Order.class),Map.entry("RefundChart",Refund.class),Map.entry("Scheduler",ParkingLotScheduler.class),Map.entry("Vehicle",Vehicle.class));
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session
@@ -50,21 +56,57 @@ public class MySQL
         configuration.configure(MySQL.class.getClassLoader().getResource("hibernate.cfg.xml"));
         for (Class cl:classes)
             configuration.addAnnotatedClass(cl);
+        Interceptor interceptor = new ParkingLotScheduelerInterceptor();
+
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties()).build()
-                ;
+                .applySettings(configuration.getProperties())
+                .applySetting(AvailableSettings.INTERCEPTOR, interceptor)
+                .build();
+
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
     public static void main( String[] args ) {
         try {
             connectToDB();
-            initiateRefundChart();
-            initiatePricingChart();
             initiateParkingLot();
-////            printAllEntities();
+            List<RegularSubscription> rSubs=getAllEntities(RegularSubscription.class);
+            List<FullSubscription> fSubs=getAllEntities(FullSubscription.class);
+            List<Order> orders=getAllEntities(Order.class);
+            ParkingLot plot=getEntity(1,ParkingLot.class);
+            for(int i=0;i<30;i+=3){
+                Vehicle vehicle=plot.enterParkingLot(rSubs.get(i));
+                if(vehicle!=null){
+                    System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
+                }
+                else{
+                    System.out.println("ParkingLot is full");
+                    break;
+                }
+            }
 
-            // Save everything.
+            for(int i=0;i<30;i+=2){
+                Vehicle vehicle=plot.enterParkingLot(orders.get(i));
+                if(vehicle!=null){
+                    System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
+                }
+                else{
+                    System.out.println("ParkingLot is full");
+                    break;
+
+                }
+            }
+            for(int i=0;i<30;i+=2){
+                Vehicle vehicle=plot.enterParkingLot(fSubs.get(i));
+                if(vehicle!=null){
+                    System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
+                }
+                else{
+                    System.out.println("ParkingLot is full");
+                    break;
+                }
+            }
+
             session.getTransaction().commit();
         } catch (Exception exception) {
             if (session != null) {
@@ -86,9 +128,10 @@ public class MySQL
         session.beginTransaction();
 
     }
-    public static void commitToDB()throws Exception{
-       
+    public static Session getSession() throws Exception{
+        return session;
     }
+
     public static void handleException(Exception e){
         if (session != null) {
             session.getTransaction().rollback();
@@ -128,8 +171,8 @@ public class MySQL
     public static <T> void update(T entity){
         session.update(entity);
     }
-    private static <T> void deleteEntity(int fromId,int toId,Class<T> EntityClass)throws Exception{
-        for (int id=fromId;id<=toId;id++){
+    private static <T> void deleteEntity(long fromId,long toId,Class<T> EntityClass)throws Exception{
+        for (long id=fromId;id<=toId;id++){
             T entity =  session.get(EntityClass, id);
 
         if (entity!=null)
@@ -159,14 +202,14 @@ public class MySQL
         System.out.println("\n");
     }
 
-    public static <T> T getEntity(int EntityId,Class<T> EntityClass)throws Exception{
+    public static <T> T getEntity(long EntityId,Class<T> EntityClass)throws Exception{
         return session.get(EntityClass,EntityId);
     }
-    public static <T> T getEntityByName(int EntityId,String entityName)throws Exception{
+    public static <T> T getEntityByName(long EntityId,String entityName)throws Exception{
 
         return (T) getEntity(EntityId,mappedClasses.get(entityName));
     }
-    private static void addParkingLotEmployee(String firstName,String lastName, String title,String email,double salary,int parkingLotId)throws Exception{
+    private static void addParkingLotEmployee(String firstName,String lastName, String title,String email,double salary,long parkingLotId)throws Exception{
         ParkingLot pl=getEntity(parkingLotId,ParkingLot.class);
         ParkingLotEmployee employee=new ParkingLotEmployee(firstName,lastName,title,email,salary,pl);
         session.save(employee);
@@ -184,10 +227,13 @@ public class MySQL
         session.flush();
     }
     public static void initiateParkingLot() throws Exception {
+        initiatePricingChart();
         intiateParkingLotManagers();
         List<ParkingLotManager> managers=getAllEntities(ParkingLotManager.class);
         for(ParkingLotManager manager: managers)
             addParkingLotToDB(3,3,4,manager);
+        initiateRefundChart();
+        initiateCustomers();
 
     }
     private static void intiateParkingLotManagers()throws Exception{
@@ -200,6 +246,68 @@ public class MySQL
         session.save(new RefundChart(0,1,0.1));
         session.save(new RefundChart(1,3,0.5));
         session.save(new RefundChart(3,-1,0.9));
+        session.flush();
+    }
+    private static void initiateCustomers()throws Exception {
+        for (int i=0;i<10;i++){
+            session.save(new RegisteredCustomer(i,"customer"+i+"@email.com",   "user"+i,"userFamily"+i,"123456789"));
+        }
+        initiateOrderList();
+        initiateSubscriptions();
+
+    }
+    private static void initiateOrderList()throws Exception{
+        for (RegisteredCustomer customer : getAllEntities(RegisteredCustomer.class)){
+            ParkingLot parkingLot=retrieveLastAdded(ParkingLot.class);
+            for (long i=0;i<10;i++){
+                Random random = new Random();
+                int randomNum = random.nextInt(900000000) + 100000000;
+                Order order=new Order(customer,parkingLot, LocalDate.now(),
+                        LocalTime.now().plusMinutes(i*2 ), Integer.toString(LocalDateTime.now().getHour()+1),Integer.toString(randomNum), customer.getEmail());
+                order.setTransaction_method("cash");
+                order.setTransactionStatus(true);
+                order.setValue(100);
+                session.save(order);
+
+            }
+            session.update(customer);
+
+        }
+        session.flush();
+    }
+    private static void initiateSubscriptions() throws Exception{
+        for (RegisteredCustomer customer : getAllEntities(RegisteredCustomer.class)){
+            ParkingLot parkingLot=retrieveLastAdded(ParkingLot.class);
+            for (int i=0;i<10;i++){
+                Random random = new Random();
+                int randomNum = random.nextInt(900000000) + 100000000;
+                List<String> rand=new ArrayList<String>();
+                rand.add(Integer.toString(randomNum));
+                RegularSubscription subscription=new RegularSubscription(customer,60, LocalDate.now(), LocalDate.now().plusMonths(1), parkingLot, LocalTime.MIDNIGHT,rand );
+                subscription.setTransaction_method("cash");
+                subscription.setTransactionStatus(true);
+                subscription.setValue(100);
+                subscription.setDate(LocalDate.now());
+
+                session.save(subscription);
+            }
+            session.update(customer);
+             for (int i=0;i<10;i++){
+                Random random = new Random();
+                int randomNum = random.nextInt(900000000) + 100000000;
+                List<String> rand=new ArrayList<String>();
+                rand.add(Integer.toString(randomNum));
+                FullSubscription subscription=new FullSubscription(customer,60, LocalDate.now(), LocalDate.now().plusMonths(1),rand ,14);
+                 subscription.setTransaction_method("cash");
+                 subscription.setTransactionStatus(true);
+                 subscription.setValue(100);
+                 subscription.setDate(LocalDate.now());
+                session.save(subscription);
+
+            }
+            session.update(customer);
+
+        }
         session.flush();
     }
 }
