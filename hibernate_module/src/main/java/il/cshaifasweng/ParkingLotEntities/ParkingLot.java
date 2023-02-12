@@ -91,6 +91,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
             // TODO: 12/02/2023 send to robot new quardinates
 
         }
+        return isEntry;
     }
     public void reArrangeParkingLot(){
         List<ParkingSpot>spotsToAlter=sortSpots();
