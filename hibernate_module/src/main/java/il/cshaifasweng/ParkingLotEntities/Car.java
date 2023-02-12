@@ -18,7 +18,8 @@ public class Car implements Serializable {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
+    @Column(name = "activeCar")
+    private boolean activeCar=false;
     @ManyToOne
     @JoinColumn(name = "subscription_id")
     private Subscription subscription; // Redundant?

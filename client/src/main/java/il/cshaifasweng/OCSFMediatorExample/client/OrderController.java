@@ -119,7 +119,7 @@ public class OrderController {
                         plateNum.getText(), emailInput.getText());
                 System.out.println(dateChoice.getValue());
                 newOrder.setValue((exitTime.getValue()-arrivalTime.getValue())*perHourPrice);
-                System.out.println(newOrder.getPlateNum());
+                System.out.println(newOrder.getCar());
                 SimpleChatClient.setCurrentOrder(newOrder);
                 SimpleChatClient.setRoot("orderPaymentGUI");
             } else {
@@ -182,7 +182,7 @@ public class OrderController {
 
     private void fillOrderDetails(Order order) {
         emailInput.setText(order.getEmail());
-        plateNum.setText(order.getPlateNum());
+        plateNum.setText(order.getCar());
         dateChoice.setValue(order.getDate());
         exitTime.getValueFactory().setValue(Integer.parseInt(order.getExiting()));
         arrivalTime.getValueFactory().setValue(Integer.parseInt(order.getEntering()));

@@ -65,6 +65,14 @@ public abstract class Subscription extends Transactions {
         }
         return cars;
     }
+    public Car getCar(String lisePlate){
+        for (Car car:
+             carsList) {
+            if(car.getCarNum().equals(lisePlate))
+                return car;
+        }
+        return null;
+    }
     public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate,
                         LocalDate expirationDate, boolean isActive, String allowedDays,List<String> cars,
                         int value,String transaction_method,boolean transactionStatus) {

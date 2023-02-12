@@ -21,8 +21,6 @@ import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 import il.cshaifasweng.MoneyRelatedServices.*;
 import il.cshaifasweng.ParkingLotEntities.*;
 import il.cshaifasweng.customerCatalogEntities.*;
-import lombok.ToString;
-import org.apache.commons.lang3.RandomUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.Session;
@@ -31,7 +29,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
+
 public class MySQL
 {
     public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
@@ -75,7 +73,7 @@ public class MySQL
             List<Order> orders=getAllEntities(Order.class);
             ParkingLot plot=getEntity(1,ParkingLot.class);
             for(int i=0;i<30;i+=3){
-                Vehicle vehicle=plot.enterParkingLot(rSubs.get(i));
+                Vehicle vehicle=plot.enterParkingLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum());
                 if(vehicle!=null){
                     System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
                 }
@@ -86,7 +84,7 @@ public class MySQL
             }
 
             for(int i=0;i<30;i+=2){
-                Vehicle vehicle=plot.enterParkingLot(orders.get(i));
+                Vehicle vehicle=plot.enterParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
                 if(vehicle!=null){
                     System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
                 }
@@ -97,7 +95,7 @@ public class MySQL
                 }
             }
             for(int i=0;i<30;i+=2){
-                Vehicle vehicle=plot.enterParkingLot(fSubs.get(i));
+                Vehicle vehicle=plot.enterParkingLot(fSubs.get(i),fSubs.get(i).getCarsList().get(0).getCarNum());
                 if(vehicle!=null){
                     System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
                 }

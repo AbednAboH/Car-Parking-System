@@ -1,6 +1,7 @@
 package il.cshaifasweng.ParkingLotEntities;
 
 
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.customerCatalogEntities.FullSubscription;
 import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
@@ -21,6 +22,18 @@ public enum ConstantVariables {
     ConstantVariables(String type,int priority) {
         this.type = type;
         this.priority=priority;
+    }
+    boolean isSubscription(Transactions orderSubKioskEntity){
+        String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
+        return identifyEntranceIdentity.startsWith(REGULAR_SUBSCRIPTION.type)||identifyEntranceIdentity.startsWith(FULL_SUBSCRIPTION.type);
+    }
+    boolean isOrder(Transactions orderSubKioskEntity){
+        String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
+        return identifyEntranceIdentity.startsWith(ORDER.type);
+    }
+    boolean isKioskBuyer(Transactions orderSubKioskEntity){
+        String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
+        return identifyEntranceIdentity.startsWith(KioskBuyer.type);
     }
 
 

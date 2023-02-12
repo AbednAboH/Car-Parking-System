@@ -13,7 +13,7 @@ import java.util.Map;
 public class DataBaseManipulation<T> implements DAO<T>{
     static Session session;
 
-    // TODO: 12/02/2023 Remove, this is for testing purposes only , as adding manually would take a lot of time . 
+    // TODO: 12/02/2023 Remove, this is for testing purposes only , as adding manually would take a lot of time .
     static {
         try {
             session = MySQL.getSession();
@@ -125,5 +125,11 @@ public class DataBaseManipulation<T> implements DAO<T>{
             }
             return query.list();
         }
-
+    public <T> T queiryData(Class<T> Type, String hql, Map<String,Object> params){
+        Query query = session.createQuery(hql, Type).setMaxResults(1); // Can be changed to more than one.
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue()).getSingleResult();
+        }
+        return (T) query;
+    }
 }

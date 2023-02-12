@@ -24,8 +24,9 @@ public class ParkingSpot implements Serializable {
     private int depth;
     @Column(name="Occupied")
     private boolean occupied;
-    @Column(name="CarID")
-    private String currentCarID;
+    @JoinColumn(name="vehicle_id")
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private Vehicle vehicle;
     @Column(name="SavedSpace")
     private boolean saved;
     @Column(name="faulty")
@@ -47,7 +48,7 @@ public class ParkingSpot implements Serializable {
         this.floor = floor;
         this.depth = depth;
         occupied=false;
-        currentCarID ="";
+
         saved=false;
         setParkingLot(parkingLot);
     }
@@ -57,7 +58,6 @@ public class ParkingSpot implements Serializable {
         this.floor = floor;
         this.depth = depth;
         this.occupied = occupied;
-        this.currentCarID = currentCarId;
         this.saved = saved;
         setParkingLot(parkingLot);
     }
@@ -66,17 +66,16 @@ public class ParkingSpot implements Serializable {
 
     }
 
-
-
-
-    public String getCurrentCarID() {
-        return currentCarID;
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+        occupied=true;
     }
-
-    public void setCurrentCarID(String currentCarId) {
-        this.currentCarID = currentCarId;
+    public Vehicle removeVehicle(){
+        Vehicle v = this.vehicle;
+        this.vehicle = null;
+        occupied=false;
+        return v;
     }
-
     public boolean isSaved() {
         return saved;
     }

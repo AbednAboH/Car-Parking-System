@@ -36,14 +36,12 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
     private ParkingLotManager manager;
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot",cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<ParkingSpot> spots=new ArrayList<>();
+    private  List<ParkingSpot> spots=new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="executiveManager_id")
     private static GlobalManager executiveManager=new GlobalManager("ElonMusk","CEO",1000000);
-//    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
-//    @JoinColumn(name="parkingLotScheduler_id")
-//    private ParkingLotScheduler parkingLotScheduler;
+
     public ParkingLot(ParkingLot pl){
 
         this.id=pl.getId();
@@ -52,7 +50,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         this.rowsInEachFloor=pl.getRowsInEachFloor();
         this.employeeList=pl.getEmployeeList();
         this.manager=pl.getManager();
-        this.spots=pl.getSpots();
+        spots=pl.getSpots();
 //        parkingLotScheduler=new ParkingLotScheduler(this);
 
     }
@@ -82,26 +80,69 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         // TODO: 1/3/2023 add initiation of specific classes
 
     }
-    public boolean entryToPLot(Transactions transaction,String CarID){
+    public boolean entryToPLot(Transactions transaction,String licensePlate){
         restoreQueueFromList();
         setMaxCapacity();
         boolean isEntry=false;
         if (this.getQueue().size()<this.getMaxCapacity()){
-            isEntry= this.enterParkingLot(transaction) != null;
-            // TODO: 12/02/2023 send to robot new quardinates
+            isEntry= this.enterParkingLot(transaction,licensePlate) != null;
+            reArrangeParkingLot();
+            if (isEntry){
+                sendNewPosistionsToRobot(true,licensePlate);
+            }
 
         }
         return isEntry;
     }
+    public boolean exitParkingLot(Transactions transaction,String licensePlate){
+        restoreQueueFromList();
+        setMaxCapacity();
+        boolean isExit=false;
+        if (this.getQueue().size()!=0){
+            Vehicle vehicle= getVehicle(licensePlate);
+            isExit= this.exitParkingLot(vehicle) != null;
+            reArrangeParkingLot();
+            if (isExit){
+                sendNewPosistionsToRobot(false,licensePlate);
+            }
+            
+        }
+        return isExit;
+    }
+    public Vehicle getVehicle(String licensePlate){
+        return spots.stream().filter(spot -> spot.getVehicle()!=null && spot.getVehicle().getActiveCar().equals(licensePlate)).findFirst().get().getVehicle();
+    }
+    public  void sendNewPosistionsToRobot(boolean enterExit,String licensePlate){
+        // TODO: 12/02/2023 to be implemented mostly just send the new positions to the robot
+        // TODO : expected format : enter/exit,licensePlate, new positions ,can be inferred easily from the parking spots
+
+         if(enterExit)
+             System.out.println("To Robot: Enter=" + enterExit + ",licensePlate=" + licensePlate + ",new positions:");
+         else
+             System.out.println("To Robot: Exit=" + enterExit + ",licensePlate=" + licensePlate + ",new positions:");
+         this.positionsToRobot();
+    }
+    public  void positionsToRobot(){
+        spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).forEach(spot -> {
+            System.out.println("To Robot: "+spot.getVehicle().getActiveCar()+","+spot.getFloor()+","+spot.getRow()+","+spot.getDepth());
+
+        });
+    }
     public void reArrangeParkingLot(){
         List<ParkingSpot>spotsToAlter=sortSpots();
         PriorityQueue<Vehicle> copiedQueue=new PriorityQueue<>(getQueue());
+        spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).forEach(spot -> {
+            spot.setOccupied(false);
+            spot.setVehicle(null);
+        });
         for (int i=spotsToAlter.size()-getQueue().size();i<getMaxCapacity();i++){
            spotsToAlter.get(i).setOccupied(true);
             Vehicle vehicle=copiedQueue.poll();
-            // TODO: 12/02/2023  maybe add an active field to each car ,or something along those lines
-           spotsToAlter.get(i).setCurrentCarID("replace this");
+
+           spotsToAlter.get(i).setVehicle(vehicle);
         }
+        getParkingLotSchedulerDB().update(this);
+
 
     }
     private List<ParkingSpot> sortSpots(){
@@ -129,9 +170,6 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         }
         this.setMaxCapacity(maxCapacity);
     }
-//    public ParkingLotScheduler getParkingLotScheduler() {
-//        return parkingLotScheduler;
-//    }
 
     public void initiateParkingSpots(){
         this.spots=new ArrayList<>();
