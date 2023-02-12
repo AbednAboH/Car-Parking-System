@@ -5,7 +5,8 @@
         <!-- Database connection settings -->
 
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/test-transactions?useSSL=true</property>
+        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/test-transaction?useSSL=true</property>
+
         <property name="connection.username">CpsAdmin</property>
         <property name="connection.password">@#123asad</property>
 <!--        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>-->
@@ -13,7 +14,7 @@
 
 
         <!-- SQL dialect -->
-        <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
 
         <!-- Enable Hibernate's automatic session context management -->
         <property name="current_session_context_class">thread</property>
@@ -26,10 +27,11 @@
         <!-- Disable Hibernate's automatic session management -->
         <property name="hibernate.current_session_context_class">thread</property>
         <!-- Echo all executed SQL to stdout -->
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
 
         <!-- Drop and re-create the database schema on startup -->
-        <property name="hbm2ddl.auto">update</property>
+<!--        todo: change to update, this mode is for testing only !!!-->
+        <property name="hbm2ddl.auto">create</property>
 
         <!-- Mapping files -->
         <mapping class="il.cshaifasweng.LogInEntities.Employees.ParkingLotManager"/>

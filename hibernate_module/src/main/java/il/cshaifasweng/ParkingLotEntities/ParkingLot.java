@@ -16,23 +16,13 @@ public class ParkingLot implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Column(name="floor")
     private int floor;
     @Column(name="RowsInFloor")
     private int rowsInEachFloor;
     @Column(name="RowCapacity")
     private int rowCapacity;
-//    @ManyToOne(fetch=FetchType.LAZY)
-//    PricingChart pricingChart;
-//
-//    public PricingChart getPricingChart() {
-//        return pricingChart;
-//    }
-//
-//    public void setPricingChart(PricingChart pricingChart) {
-//        this.pricingChart = pricingChart;
-//    }
 
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<ParkingLotEmployee> employeeList;
@@ -46,6 +36,9 @@ public class ParkingLot implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="executiveManager_id")
     private static GlobalManager executiveManager=new GlobalManager("ElonMusk","CEO",1000000);
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name="parkingLotScheduler_id")
+    private ParkingLotScheduler parkingLotScheduler;
     public ParkingLot(ParkingLot pl){
         this.id=pl.getId();
         this.rowCapacity=pl.getRowCapacity();
@@ -54,6 +47,7 @@ public class ParkingLot implements Serializable {
         this.employeeList=pl.getEmployeeList();
         this.manager=pl.getManager();
         this.spots=pl.getSpots();
+        parkingLotScheduler=new ParkingLotScheduler(this);
 
     }
     public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity) {
@@ -75,8 +69,12 @@ public class ParkingLot implements Serializable {
         setManager(manager);
         manager.setParkingLot(this);
         this.initiateParkingSpots();
+        this.parkingLotScheduler=new ParkingLotScheduler(this);
         // TODO: 1/3/2023 add initiation of specific classes
 
+    }
+    public ParkingLotScheduler getParkingLotScheduler() {
+        return parkingLotScheduler;
     }
 
     public void initiateParkingSpots(){
@@ -112,7 +110,7 @@ public class ParkingLot implements Serializable {
 
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

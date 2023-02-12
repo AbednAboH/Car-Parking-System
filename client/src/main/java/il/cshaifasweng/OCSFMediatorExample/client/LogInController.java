@@ -122,7 +122,7 @@ public class LogInController{
                         invalidLoginCredentials.setStyle(successMessage);
                         loginUsernameTextField.setStyle(successStyle);
                         try {
-                            SimpleChatClient.setRoot("Employee_GUI");
+                            SimpleChatClient.setRoot("RegisteredCustomer");
 //                            EventBus.getDefault().unregister(LogInController.this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -250,6 +250,7 @@ public class LogInController{
     }
 
     private boolean isStrongPassword(String password) {
+        //todo: unchecke this one after all testing is done
         //todo: unchecke this one after all testing is done
         // return InputValidator.isValidPassword(password);
 

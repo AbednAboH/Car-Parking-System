@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -60,6 +61,18 @@ public class Order extends Transactions {
         this.active = true;
     }
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
+                 LocalTime DateOfOrder, String exiting, String plateNum, String email) {
+        this.registeredCustomer = registeredCustomer;
+        this.dateOfOrder= date.atTime(DateOfOrder.getHour(),DateOfOrder.getMinute());
+        this.date=LocalDate.now();
+        this.parkingLotID = parkingLotID;
+        this.entering = entering;
+        this.exiting = exiting;
+        this.plateNum = plateNum;
+        this.email = email;
+        this.active = true;
+    }
+    public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email,boolean localBuilder) {
         this.date=date;
         this.registeredCustomer = registeredCustomer;
@@ -70,7 +83,7 @@ public class Order extends Transactions {
         this.email = email;
         this.active = true;
         if (!localBuilder)
-        this.registeredCustomer.addOrder(this);
+            this.registeredCustomer.addOrder(this);
     }
     public Order(ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String plateNum, String email) {
@@ -94,7 +107,9 @@ public class Order extends Transactions {
 
     }
     public int getHoursOfResidency(){
-        return Integer.parseInt(exiting)-Integer.parseInt(entering);
+        return Integer.parseInt(exiting)-dateOfOrder.getHour();
+        // TODO: 12/02/2023  remap the exiting time to the date of order
+//        return Integer.parseInt(exiting)-Integer.parseInt(entering);
     }
     // TODO: 1/10/2023 toString Function 
 }

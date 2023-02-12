@@ -1,5 +1,6 @@
 package il.cshaifasweng.ParkingLotEntities;
 
+import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.customerCatalogEntities.FullSubscription;
 import il.cshaifasweng.customerCatalogEntities.Order;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -16,7 +18,7 @@ import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 @Table(name = "vehicles")
 @Getter
 @Setter
-public class Vehicle {
+public class Vehicle implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
@@ -29,11 +31,18 @@ public class Vehicle {
     @OneToOne
     @JoinColumn(name = "order_sub_kiosk_entity_id")
     private Transactions orderSubKioskEntity;
-    public Vehicle(String identifyEntranceIdentity, Transactions orderSubKioskEntity) {
+//    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parking_lot_scheduler_id")
+    private ParkingLotScheduler parkingLotScheduler;
+    @Transient
+    DataBaseManipulation<Vehicle> vehicleDB = new DataBaseManipulation<>();
+    public Vehicle( Transactions orderSubKioskEntity) {
 
         RegularSubscription rSub;
         FullSubscription fSub;
         Order order;
+        String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
         if (identifyEntranceIdentity.startsWith(REGULAR_SUBSCRIPTION.type)){
             rSub = (RegularSubscription) orderSubKioskEntity;
             this.estimatedExitTime =  FromLocalTimeToDateTime(rSub.getExtractionDate());

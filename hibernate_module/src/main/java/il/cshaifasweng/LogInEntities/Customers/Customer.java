@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public abstract class Customer implements Serializable {
     @Id
-    private int id;
+    private long id;
     @Column(name="email")
     private String email;
     @Column(name="firstName")

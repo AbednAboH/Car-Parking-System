@@ -46,7 +46,8 @@ public class SendEmail {
             );
             message.setSubject(subject);
             message.setText(body);
-            Transport.send(message);
+            // TODO: 11/02/2023 apply this when done testing on random emails
+//            Transport.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
