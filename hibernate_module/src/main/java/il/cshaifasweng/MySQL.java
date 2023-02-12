@@ -74,8 +74,8 @@ public class MySQL
             List<FullSubscription> fSubs=getAllEntities(FullSubscription.class);
             List<Order> orders=getAllEntities(Order.class);
             ParkingLot plot=getEntity(1,ParkingLot.class);
-            for(RegularSubscription sub:rSubs){
-                Vehicle vehicle=plot.getParkingLotScheduler().enterParkingLot(sub);
+            for(int i=0;i<30;i+=3){
+                Vehicle vehicle=plot.enterParkingLot(rSubs.get(i));
                 if(vehicle!=null){
                     System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
                 }
@@ -84,8 +84,9 @@ public class MySQL
                     break;
                 }
             }
-            for(FullSubscription sub:fSubs){
-                Vehicle vehicle=plot.getParkingLotScheduler().enterParkingLot(sub);
+
+            for(int i=0;i<30;i+=2){
+                Vehicle vehicle=plot.enterParkingLot(orders.get(i));
                 if(vehicle!=null){
                     System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
                 }
@@ -95,15 +96,14 @@ public class MySQL
 
                 }
             }
-            for(Order sub:orders){
-                Vehicle vehicle=plot.getParkingLotScheduler().enterParkingLot(sub);
+            for(int i=0;i<30;i+=2){
+                Vehicle vehicle=plot.enterParkingLot(fSubs.get(i));
                 if(vehicle!=null){
                     System.out.println("Vehicle "+vehicle.getOrderSubKioskEntity().getId()+" entered the parking lot");
                 }
                 else{
                     System.out.println("ParkingLot is full");
                     break;
-
                 }
             }
 

@@ -3,16 +3,21 @@ package il.cshaifasweng.ParkingLotEntities;
 import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.Transaction;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
 @Table(name = "parkinglots")
-public class ParkingLot implements Serializable {
+@Getter
+@Setter
+public class ParkingLot extends ParkingLotScheduler implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,10 +41,11 @@ public class ParkingLot implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="executiveManager_id")
     private static GlobalManager executiveManager=new GlobalManager("ElonMusk","CEO",1000000);
-    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name="parkingLotScheduler_id")
-    private ParkingLotScheduler parkingLotScheduler;
+//    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+//    @JoinColumn(name="parkingLotScheduler_id")
+//    private ParkingLotScheduler parkingLotScheduler;
     public ParkingLot(ParkingLot pl){
+
         this.id=pl.getId();
         this.rowCapacity=pl.getRowCapacity();
         this.floor=pl.getFloor();
@@ -47,7 +53,7 @@ public class ParkingLot implements Serializable {
         this.employeeList=pl.getEmployeeList();
         this.manager=pl.getManager();
         this.spots=pl.getSpots();
-        parkingLotScheduler=new ParkingLotScheduler(this);
+//        parkingLotScheduler=new ParkingLotScheduler(this);
 
     }
     public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity) {
@@ -61,6 +67,7 @@ public class ParkingLot implements Serializable {
 
     }
     public ParkingLot(int floor, int rowsInEachFloor, int rowCapacity,ParkingLotManager manager) {
+        super();
         this.floor = floor;
         this.rowsInEachFloor = rowsInEachFloor;
         this.rowCapacity = rowCapacity;
@@ -69,13 +76,61 @@ public class ParkingLot implements Serializable {
         setManager(manager);
         manager.setParkingLot(this);
         this.initiateParkingSpots();
-        this.parkingLotScheduler=new ParkingLotScheduler(this);
+        this.setMaxCapacity();
+
+//        this.parkingLotScheduler=new ParkingLotScheduler(this);
         // TODO: 1/3/2023 add initiation of specific classes
 
     }
-    public ParkingLotScheduler getParkingLotScheduler() {
-        return parkingLotScheduler;
+    public boolean entryToPLot(Transactions transaction,String CarID){
+        restoreQueueFromList();
+        setMaxCapacity();
+        boolean isEntry=false;
+        if (this.getQueue().size()<this.getMaxCapacity()){
+            isEntry= this.enterParkingLot(transaction) != null;
+            // TODO: 12/02/2023 send to robot new quardinates
+
+        }
     }
+    public void reArrangeParkingLot(){
+        List<ParkingSpot>spotsToAlter=sortSpots();
+        PriorityQueue<Vehicle> copiedQueue=new PriorityQueue<>(getQueue());
+        for (int i=spotsToAlter.size()-getQueue().size();i<getMaxCapacity();i++){
+           spotsToAlter.get(i).setOccupied(true);
+            Vehicle vehicle=copiedQueue.poll();
+            // TODO: 12/02/2023  maybe add an active field to each car ,or something along those lines
+           spotsToAlter.get(i).setCurrentCarID("replace this");
+        }
+
+    }
+    private List<ParkingSpot> sortSpots(){
+        List<ParkingSpot> parkingSpots = spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).sorted(new Comparator<ParkingSpot>() {
+            @Override
+            public int compare(ParkingSpot o1, ParkingSpot o2) {
+                if (o1.getFloor() == o2.getFloor()) {
+                    if (o1.getRow() == o2.getRow()) {
+                        return o1.getDepth() - o2.getDepth();
+                    }
+                    return o1.getRow() - o2.getRow();
+                }
+                return o1.getFloor() - o2.getFloor();
+            }
+        }).toList();
+        return parkingSpots;
+//        Collections.reverse(spots);
+    }
+    private void setMaxCapacity(){
+        int maxCapacity=0;
+        for (ParkingSpot spot:spots) {
+            if(!spot.isSaved()&&!spot.isFaulty()){
+                maxCapacity++;
+            }
+        }
+        this.setMaxCapacity(maxCapacity);
+    }
+//    public ParkingLotScheduler getParkingLotScheduler() {
+//        return parkingLotScheduler;
+//    }
 
     public void initiateParkingSpots(){
         this.spots=new ArrayList<>();
@@ -110,78 +165,22 @@ public class ParkingLot implements Serializable {
 
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setFloor(int floor) {
-        this.floor = floor;
-    }
-    public int getRow(){return this.floor;}
-    public int getCol(){return this.rowsInEachFloor;}
-    public int getDepth(){return this.rowCapacity;}
-
-
-    public void setRowsInEachFloor(int rowsInEachFloor) {
-        this.rowsInEachFloor = rowsInEachFloor;
-    }
-
-    public void setRowCapacity(int rowCapacity) {
-        this.rowCapacity = rowCapacity;
-    }
-
-
-    public List<ParkingSpot> getSpots() {
-        return spots;
-    }
-
-    public List<ParkingLotEmployee> getEmployeeList() {
-        return employeeList;
-    }
-
-    public void setEmployeeList(List<ParkingLotEmployee> employeeList) {
-        this.employeeList = employeeList;
-    }
     public void addEmployee(ParkingLotEmployee employee) {
         this.employeeList.add(employee);
 
     }
 
-    public ParkingLotManager getManager() {
-        return manager;
-    }
 
-    public void setManager(ParkingLotManager manager) {
-        this.manager = manager;
-    }
 
-    public GlobalManager getExecutiveManager() {
-        return executiveManager;
-    }
 
-    public void setExecutiveManager(GlobalManager executiveManager) {
-        this.executiveManager = executiveManager;
-    }
 
-    public void setSpots(List<ParkingSpot> spots) {
-        this.spots = spots;
-    }
 
-    public int getFloor() {
-        return floor;
-    }
 
-    public int getRowsInEachFloor() {
-        return rowsInEachFloor;
-    }
 
-    public int getRowCapacity() {
-        return rowCapacity;
-    }
+
+
+
 
 }
 

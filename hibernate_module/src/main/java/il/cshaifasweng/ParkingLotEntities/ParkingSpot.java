@@ -2,12 +2,16 @@ package il.cshaifasweng.ParkingLotEntities;
 
 
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "parkingspots")
+@Getter
+@Setter
 public class ParkingSpot implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +28,8 @@ public class ParkingSpot implements Serializable {
     private String currentCarID;
     @Column(name="SavedSpace")
     private boolean saved;
+    @Column(name="faulty")
+    private boolean faulty;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "parkinglots_id")
@@ -60,37 +66,8 @@ public class ParkingSpot implements Serializable {
 
     }
 
-    public int getRow() {
-        return row;
-    }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
 
-    public int getFloor() {
-        return floor;
-    }
-
-    public void setFloor(int column) {
-        this.floor = column;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public boolean isOccupied() {
-        return occupied;
-    }
-
-    public void setOccupied(boolean occupied) {
-        this.occupied = occupied;
-    }
 
     public String getCurrentCarID() {
         return currentCarID;
@@ -108,6 +85,7 @@ public class ParkingSpot implements Serializable {
         this.saved = saved;
     }
 
+    // TODO: 12/02/2023 check this one , don't like it one bit !
     public boolean free(){
         if(this.isOccupied())
             return false;

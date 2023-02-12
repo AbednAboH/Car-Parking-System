@@ -31,14 +31,15 @@ public class Vehicle implements Serializable {
     @OneToOne
     @JoinColumn(name = "order_sub_kiosk_entity_id")
     private Transactions orderSubKioskEntity;
+    @Column(name = "entrance_time")
 //    @ManyToOne
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parking_lot_scheduler_id")
     private ParkingLotScheduler parkingLotScheduler;
     @Transient
     DataBaseManipulation<Vehicle> vehicleDB = new DataBaseManipulation<>();
-    public Vehicle( Transactions orderSubKioskEntity) {
-
+    public Vehicle( Transactions orderSubKioskEntity, ParkingLotScheduler parkingLotScheduler) {
+        this.parkingLotScheduler = parkingLotScheduler;
         RegularSubscription rSub;
         FullSubscription fSub;
         Order order;
@@ -78,6 +79,7 @@ public class Vehicle implements Serializable {
     public Vehicle() {
 
     }
+
 
     private LocalDateTime FromLocalTimeToDateTime(LocalTime time){
         LocalDateTime dateTime=LocalDateTime.now();
