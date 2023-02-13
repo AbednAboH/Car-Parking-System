@@ -1,5 +1,6 @@
-package il.cshaifasweng.ParkingLotEntities;
+package il.cshaifasweng.converters;
 
+import il.cshaifasweng.ParkingLotEntities.ParkingLotScheduler;
 import org.hibernate.CallbackException;
 import org.hibernate.EntityMode;
 import org.hibernate.Interceptor;

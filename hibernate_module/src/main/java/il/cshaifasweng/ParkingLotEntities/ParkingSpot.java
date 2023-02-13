@@ -1,7 +1,6 @@
 package il.cshaifasweng.ParkingLotEntities;
 
 
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,8 +23,9 @@ public class ParkingSpot implements Serializable {
     private int depth;
     @Column(name="Occupied")
     private boolean occupied;
-    @Column(name="CarID")
-    private String currentCarID;
+    @JoinColumn(name="entryAndExitLog_id")
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private EntryAndExitLog entryAndExitLog;
     @Column(name="SavedSpace")
     private boolean saved;
     @Column(name="faulty")
@@ -47,7 +47,7 @@ public class ParkingSpot implements Serializable {
         this.floor = floor;
         this.depth = depth;
         occupied=false;
-        currentCarID ="";
+
         saved=false;
         setParkingLot(parkingLot);
     }
@@ -57,7 +57,6 @@ public class ParkingSpot implements Serializable {
         this.floor = floor;
         this.depth = depth;
         this.occupied = occupied;
-        this.currentCarID = currentCarId;
         this.saved = saved;
         setParkingLot(parkingLot);
     }
@@ -66,23 +65,22 @@ public class ParkingSpot implements Serializable {
 
     }
 
-
-
-
-    public String getCurrentCarID() {
-        return currentCarID;
+    public void setEntryAndExitLog(EntryAndExitLog entryAndExitLog) {
+        this.entryAndExitLog = entryAndExitLog;
+        this.entryAndExitLog.setParkingSpot(this);
+        occupied=true;
     }
-
-    public void setCurrentCarID(String currentCarId) {
-        this.currentCarID = currentCarId;
+    public void resetEntryAndExitLog() {
+        if (entryAndExitLog!=null&&entryAndExitLog.getParkingSpot()!=null)
+            entryAndExitLog.setParkingSpot(null);
+        entryAndExitLog = null;
+        occupied=false;
     }
-
-    public boolean isSaved() {
-        return saved;
-    }
-
-    public void setSaved(boolean saved) {
-        this.saved = saved;
+    public EntryAndExitLog removeVehicle(){
+        EntryAndExitLog v = this.entryAndExitLog;
+        this.entryAndExitLog = null;
+        occupied=false;
+        return v;
     }
 
     // TODO: 12/02/2023 check this one , don't like it one bit !

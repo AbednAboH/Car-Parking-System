@@ -6,6 +6,7 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.Car;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -46,11 +48,39 @@ public abstract class Subscription extends Transactions {
 
     @Column(name = "allowed_days")
     private String allowedDays;
+    @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL)
+    private List<EntryAndExitLog> entryAndExitLogs=new ArrayList<>();
 
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList=new ArrayList<>();
 //    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
+    public void setEntryAndExitLogs(EntryAndExitLog entryAndExitLog){
+        this.entryAndExitLogs.add(entryAndExitLog);
+    }
+    public EntryAndExitLog getLatestLog(){
+        if (!entryAndExitLogs.isEmpty()){
+            return entryAndExitLogs.stream().max(Comparator.comparing(EntryAndExitLog::getAcutallEntryTime)).get();
+        }
+        else return null;
+    }
+    public EntryAndExitLog getEntryAndExitLog(String carPlateNumber){
+        for (EntryAndExitLog entryAndExitLog:
+             entryAndExitLogs) {
+            if (entryAndExitLog.getActiveCar().equals(carPlateNumber))
+                return entryAndExitLog;
+        }
+        return null;
+    }
+    public void setEntryAndExitLog(String carPlateNumber,EntryAndExitLog entryExit){
+        for (EntryAndExitLog entryAndExitLog:
+             entryAndExitLogs) {
+            if (entryAndExitLog.getActiveCar().equals(carPlateNumber))
+                entryAndExitLog=entryExit;
+        }
+
+    }
     public  String getParkingLotIdAsString(){
+
         return "All";
     }
     public String getCarsAsString(){
@@ -64,6 +94,14 @@ public abstract class Subscription extends Transactions {
            i++;
         }
         return cars;
+    }
+    public Car getCar(String lisePlate){
+        for (Car car:
+             carsList) {
+            if(car.getCarNum().equals(lisePlate))
+                return car;
+        }
+        return null;
     }
     public Subscription(Customer customer, int hoursPerMonth, LocalDate startDate,
                         LocalDate expirationDate, boolean isActive, String allowedDays,List<String> cars,
@@ -80,6 +118,7 @@ public abstract class Subscription extends Transactions {
         this.registeredCustomer=(RegisteredCustomer)customer;
         for(String car:cars)
             this.carsList.add(new Car(car));
+        initCar();
     }
     public Subscription(Customer customer,int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, boolean isActive, String allowedDays,List<String> cars) {
         this.hoursPerMonth = hoursPerMonth;
@@ -90,8 +129,15 @@ public abstract class Subscription extends Transactions {
         this.registeredCustomer=(RegisteredCustomer)customer;
         for(String car:cars)
             this.carsList.add(new Car(car));
+        initCar();
     }
-
+    public void initCar(){
+        for (Car car:
+             carsList) {
+            car.setTransaction(this);
+            car.setCustomer(registeredCustomer);
+        }
+    }
     public Subscription() {
 
     }

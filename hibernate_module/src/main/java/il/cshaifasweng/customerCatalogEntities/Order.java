@@ -1,8 +1,9 @@
 package il.cshaifasweng.customerCatalogEntities;
 
-import il.cshaifasweng.LocalDateAttributeConverter;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
+import il.cshaifasweng.ParkingLotEntities.Car;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,9 @@ public class Order extends Transactions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="registeredCustomer_id")
     private RegisteredCustomer registeredCustomer;
-
+    @OneToOne
+    @JoinColumn(name="EntryAndExitLog_id")
+    private EntryAndExitLog entryAndExitLog;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
@@ -39,8 +42,9 @@ public class Order extends Transactions {
     @Column(name="exitingTime")
     private String exiting;
 
-    @Column(name="plateNumber")
-    private String plateNum;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private Car car;
 
     @Column(name="email")
     private String email;
@@ -49,50 +53,62 @@ public class Order extends Transactions {
     @Column(name="agreedToPayPenalty")
     private boolean agreedToPayPenalty=false;
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
-                 String entering, String exiting, String plateNum, String email) {
+                 String entering, String exiting, String car, String email) {
         this.registeredCustomer = registeredCustomer;
         this.dateOfOrder= date.atTime(Integer.parseInt(entering),0);
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
         this.entering = entering;
         this.exiting = exiting;
-        this.plateNum = plateNum;
+        this.car =new Car(car);
         this.email = email;
         this.active = true;
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
+
+
     }
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
-                 LocalTime DateOfOrder, String exiting, String plateNum, String email) {
+                 LocalTime DateOfOrder, String exiting, String car, String email) {
         this.registeredCustomer = registeredCustomer;
         this.dateOfOrder= date.atTime(DateOfOrder.getHour(),DateOfOrder.getMinute());
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
         this.entering = entering;
         this.exiting = exiting;
-        this.plateNum = plateNum;
+        this.car =new Car(car);
         this.email = email;
         this.active = true;
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
+
     }
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
-                 String entering, String exiting, String plateNum, String email,boolean localBuilder) {
+                 String entering, String exiting, String car, String email, boolean localBuilder) {
         this.date=date;
         this.registeredCustomer = registeredCustomer;
         this.parkingLotID = parkingLotID;
         this.entering = entering;
         this.exiting = exiting;
-        this.plateNum = plateNum;
+        this.car =new Car(car);
+
         this.email = email;
         this.active = true;
         if (!localBuilder)
             this.registeredCustomer.addOrder(this);
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
+
+
     }
     public Order(ParkingLot parkingLotID, LocalDate date,
-                 String entering, String exiting, String plateNum, String email) {
+                 String entering, String exiting, String car, String email) {
 //        this.registeredCustomer = registeredCustomer;
         this.date=date;
         this.parkingLotID = parkingLotID;
         this.entering = entering;
         this.exiting = exiting;
-        this.plateNum = plateNum;
+        this.car =new Car(car);
         this.email = email;
         this.active = true;
     }
@@ -100,9 +116,7 @@ public class Order extends Transactions {
     public String toString(){
         return "order id: "+id+" at"+date;
     }
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="reports_id")
-//    private Reports reports;
+
     public Order() {
 
     }
@@ -110,6 +124,12 @@ public class Order extends Transactions {
         return Integer.parseInt(exiting)-dateOfOrder.getHour();
         // TODO: 12/02/2023  remap the exiting time to the date of order
 //        return Integer.parseInt(exiting)-Integer.parseInt(entering);
+    }
+    public EntryAndExitLog getEntryAndExitLog(String licensePlate){
+        return entryAndExitLog;
+    }
+    public EntryAndExitLog getEntryAndExitLog(){
+        return entryAndExitLog;
     }
     // TODO: 1/10/2023 toString Function 
 }

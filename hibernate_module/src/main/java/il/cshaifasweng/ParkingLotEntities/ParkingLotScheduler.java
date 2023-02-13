@@ -3,14 +3,16 @@ package il.cshaifasweng.ParkingLotEntities;
 
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
+import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 
 
 /*********  ParkingLotScheduler
@@ -32,73 +34,116 @@ public class ParkingLotScheduler implements Serializable {
     private long id;
     // TODO: 11/02/2023 check if one to many may cause problems
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    protected List<Vehicle> vehicleList=new ArrayList<>();
+    protected List<EntryAndExitLog> entryAndExitLogList =new ArrayList<>();
     @Transient
-    protected PriorityQueue<Vehicle> queue=new PriorityQueue<>(new VehicleComparator());
+    protected PriorityQueue<EntryAndExitLog> queue=new PriorityQueue<>(new VehicleComparator());
 
     @Column(name = "maxCapacity")
     protected int maxCapacity;
-//    @JoinColumn(name = "parkingLot_id")
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private ParkingLot parkingLot;
 
     public ParkingLotScheduler() {
 
     }
     public ParkingLotScheduler(ParkingLot parkingLot) {
-//        this.parkingLot = parkingLot;
         this.maxCapacity = parkingLot.getFloor() * parkingLot.getRowsInEachFloor() * parkingLot.getRowCapacity();
-        this.vehicleList = new ArrayList<>();
+        this.entryAndExitLogList = new ArrayList<>();
         this.queue = new PriorityQueue<>(new VehicleComparator());
     }
 
-    public void addToQueue(Transactions orderSubKioskEntities) {
-        Vehicle vehicle = new Vehicle(orderSubKioskEntities,this);
-        queue.offer(vehicle);
-        vehicleList .add(vehicle);
+    public void addToQueue(Transactions orderSubKioskEntities,String car) {
+        EntryAndExitLog entryAndExitLog = new EntryAndExitLog(orderSubKioskEntities,this,car);
+        queue.offer(entryAndExitLog);
+        entryAndExitLogList.add(entryAndExitLog);
     }
     @Transient
     DataBaseManipulation<ParkingLotScheduler> ParkingLotSchedulerDB = new DataBaseManipulation<>();
 
+    public EntryAndExitLog getVehicleFromDB(Transactions orderSubKioskEntities) {
+        String sqlQuery= "SELECT * FROM Vehicle WHERE orderSubKioskEntities_id = " + orderSubKioskEntities.getId();
+        return getParkingLotSchedulerDB().queiryData(EntryAndExitLog.class, sqlQuery, new HashMap<String,Object>());
 
-    public Vehicle exitParkingLot(Vehicle vehicle) {
-        queue.remove(vehicle);
-        vehicleList.remove(vehicle);
-        ParkingLotSchedulerDB.update(this);
-        return vehicle;
     }
-    public Vehicle enterParkingLot(Transactions orderSubKioskEntities) {
-        Vehicle vehicle = new Vehicle(orderSubKioskEntities,this);
-        // TODO: 12/02/2023 maybe add -1 to make room for the robot to move ,and check if there are scenarios where the robot can't move
-        //  i actually doubt that the robot can't move based on the current requirements
-        if (queue.size() < maxCapacity) {
-            queue.offer(vehicle);
-            vehicleList.add(vehicle);
-            ParkingLotSchedulerDB.update(this);
-            // TODO: 12/02/2023 might add vehicle to the database
-            return vehicle;
+    public EntryAndExitLog extractAndLog(Transactions transaction, String licensePlate) {
+        if (queue.size()>0) {
+            EntryAndExitLog entryAndExitLog= getLogBasedOnType(transaction, licensePlate);
+            if( queue.remove(entryAndExitLog)) {
+                LocalDateTime exitTime = LocalDateTime.now();
+                entryAndExitLogList.remove(entryAndExitLog);
+                entryAndExitLog.updateCar(false);
+                entryAndExitLog.setAcutallExitTime(exitTime);
+                setLogsBasedOnType(transaction, licensePlate, entryAndExitLog);
+                return entryAndExitLog;
+            }
+            else throw new IllegalArgumentException("Vehicle number"+licensePlate+" not found in parking Lot");
         }
         else return null;
 
     }
-    public Vehicle removeFromQueue() {
-        Vehicle vehicle = queue.poll();
-        vehicleList.remove(vehicle);
-        return vehicle;
+
+    public EntryAndExitLog EnterAndLog(Transactions orderSubKioskEntities, String licensePlate) {
+        EntryAndExitLog entryAndExitLog = new EntryAndExitLog(orderSubKioskEntities,this,licensePlate);
+        // TODO: 12/02/2023 maybe add -1 to make room for the robot to move ,and check if there are scenarios where the robot can't move
+        //  i actually doubt that the robot can't move based on the current requirements
+        if (queue.size() <= maxCapacity) {
+            LocalDateTime entryTime = LocalDateTime.now();
+            entryAndExitLog.updateCar(true);
+            entryAndExitLog.setAcutallEntryTime(entryTime);
+            queue.offer(entryAndExitLog);
+            entryAndExitLogList.add(entryAndExitLog);
+            return entryAndExitLog;
+        }
+        else throw new IllegalArgumentException("Parking Lot is full");
+        //todo: throw exception and handle it in the server
+    }
+    public EntryAndExitLog removeFromQueue() {
+        EntryAndExitLog entryAndExitLog = queue.poll();
+        entryAndExitLogList.remove(entryAndExitLog);
+        return entryAndExitLog;
     }
     public void restoreQueueFromList() {
         // TODO: 11/02/2023 check if the list is sorted
-        queue = new PriorityQueue<>(new VehicleComparator());
-        for (Vehicle vehicle : vehicleList) {
-            queue.offer(vehicle);
+            queue = new PriorityQueue<>(new VehicleComparator());
+            for (EntryAndExitLog entryAndExitLog : entryAndExitLogList) {
+                queue.offer(entryAndExitLog);
+
         }
+
     }
 
 
+    private static EntryAndExitLog getLogBasedOnType(Transactions transaction, String licensePlate) {
+        EntryAndExitLog entryAndExitLog;
+        if (FULL_SUBSCRIPTION.isSubscription(transaction))
+            entryAndExitLog= ((Subscription) transaction).getEntryAndExitLog(licensePlate);
+        else if(ORDER.isOrder(transaction))
+            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
+        else if(KioskBuyer.isKioskBuyer(transaction)){
+            System.out.println("Kiosk  not implemented yet!!!!!!");
+            //TODO: Kiosk Order Not implemented
+            // TODO entryAndExitLog= ((BasicOrder)transaction).getEntryAndExitLog( licensePlate);
 
-    static class VehicleComparator implements Comparator<Vehicle> {
+
+            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
+        } else
+            throw new IllegalArgumentException("Transaction is not a subscription or an order or a kiosk buyer");
+        return entryAndExitLog;
+    }
+    private static void setLogsBasedOnType(Transactions transaction, String licensePlate, EntryAndExitLog entryAndExitLog) {
+
+        if (FULL_SUBSCRIPTION.isSubscription(transaction))
+            ((Subscription) transaction).setEntryAndExitLog(licensePlate,entryAndExitLog);
+        else if(ORDER.isOrder(transaction))
+            ((Order) transaction).setEntryAndExitLog(entryAndExitLog);
+        else if(KioskBuyer.isKioskBuyer(transaction)){
+            System.out.println("Kiosk  not implemented yet!!!!!!");
+            //TODO: Kiosk Order Not implemented
+            // TODO entryAndExitLog= ((BasicOrder)transaction).setEntryAndExitLog( entryAndExitLog);
+        }
+
+    }
+    static class VehicleComparator implements Comparator<EntryAndExitLog> {
         @Override
-        public int compare(Vehicle v1, Vehicle v2) {
+        public int compare(EntryAndExitLog v1, EntryAndExitLog v2) {
             int result = Integer.compare(v1.getPriority(), v2.getPriority());
             if (result == 0) {
                 result = v1.getEstimatedExitTime().compareTo(v2.getEstimatedExitTime());
@@ -106,6 +151,7 @@ public class ParkingLotScheduler implements Serializable {
             return result;
         }
     }
+
 
 
 }
