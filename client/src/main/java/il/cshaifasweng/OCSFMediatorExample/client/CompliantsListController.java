@@ -87,11 +87,11 @@ public class CompliantsListController {
 
     private Complaint selected;
 
-    private int getComplaintId;
+    private long getComplaintId;
 
-    private int getUserId;
+    private long getUserId;
 
-    private int getParkingLotId;
+    private long getParkingLotId;
     private boolean isRemoved;
 
 

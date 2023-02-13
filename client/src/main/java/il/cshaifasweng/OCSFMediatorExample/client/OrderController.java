@@ -77,7 +77,7 @@ public class OrderController {
     private Spinner<Integer> exitTime;
 
     @FXML
-    private ChoiceBox<Integer> plChoice;
+    private ChoiceBox<Long> plChoice;
 
     @FXML
     private TextField plateNum;
@@ -110,11 +110,11 @@ public class OrderController {
     void goToPayment(ActionEvent event) throws Exception {
         try {
             if (orderInfoValidation()) {
-                int idx = plChoice.getSelectionModel().getSelectedItem();
+                long idx = plChoice.getSelectionModel().getSelectedItem();
                 String start = arrivalTime.getValue() + "";
                 String end = exitTime.getValue() + "";
                 // TODO: 1/17/2023 get might get us in trouble , indexes of parking lots aren't linear and don't always start with 1  
-                ParkingLot pl = PLresults.get(idx - 1);
+                ParkingLot pl = PLresults.get((int)idx - 1);
                 Order newOrder = new Order(rg, pl, dateChoice.getValue(), start, end,
                         plateNum.getText(), emailInput.getText());
                 System.out.println(dateChoice.getValue());
@@ -182,7 +182,7 @@ public class OrderController {
 
     private void fillOrderDetails(Order order) {
         emailInput.setText(order.getEmail());
-        plateNum.setText(order.getCar());
+        plateNum.setText(order.getCar().toString());
         dateChoice.setValue(order.getDate());
         exitTime.getValueFactory().setValue(Integer.parseInt(order.getExiting()));
         arrivalTime.getValueFactory().setValue(Integer.parseInt(order.getEntering()));

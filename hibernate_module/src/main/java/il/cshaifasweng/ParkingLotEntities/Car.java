@@ -1,6 +1,7 @@
 package il.cshaifasweng.ParkingLotEntities;
 
 import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.Data;
 
@@ -21,8 +22,8 @@ public class Car implements Serializable {
     @Column(name = "activeCar")
     private boolean activeCar=false;
     @ManyToOne
-    @JoinColumn(name = "subscription_id")
-    private Subscription subscription; // Redundant?
+    @JoinColumn(name = "transaction_id")
+    private Transactions transaction; // Redundant?
     public Car(){
     }
     public Car(String CarID) {

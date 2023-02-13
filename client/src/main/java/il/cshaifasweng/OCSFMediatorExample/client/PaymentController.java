@@ -85,7 +85,7 @@ public class PaymentController {
     public void orderConfirmed(){}
     static void fillKnownOrder(Order order, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
         emailTxt.setText(order.getEmail());
-        plateNumTxt.setText(order.getCar());
+        plateNumTxt.setText(order.getCar().toString());
         dateTxt.setText(order.getDateOfOrder().toString());
         pLaddress.setText(order.getParkingLotID().getId()+"");
         parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");

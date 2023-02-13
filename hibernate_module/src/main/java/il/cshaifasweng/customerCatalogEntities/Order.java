@@ -3,6 +3,7 @@ package il.cshaifasweng.customerCatalogEntities;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.Car;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,9 @@ public class Order extends Transactions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="registeredCustomer_id")
     private RegisteredCustomer registeredCustomer;
-
+    @OneToOne
+    @JoinColumn(name="EntryAndExitLog_id")
+    private EntryAndExitLog entryAndExitLog;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parkingLot_id")
     private ParkingLot parkingLotID;
@@ -39,7 +42,7 @@ public class Order extends Transactions {
     @Column(name="exitingTime")
     private String exiting;
 
-    @Column(name="car")
+
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private Car car;
 
@@ -60,6 +63,9 @@ public class Order extends Transactions {
         this.car =new Car(car);
         this.email = email;
         this.active = true;
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
+
 
     }
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
@@ -73,6 +79,9 @@ public class Order extends Transactions {
         this.car =new Car(car);
         this.email = email;
         this.active = true;
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
+
     }
     public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String car, String email, boolean localBuilder) {
@@ -87,6 +96,10 @@ public class Order extends Transactions {
         this.active = true;
         if (!localBuilder)
             this.registeredCustomer.addOrder(this);
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
+
+
     }
     public Order(ParkingLot parkingLotID, LocalDate date,
                  String entering, String exiting, String car, String email) {
@@ -96,7 +109,6 @@ public class Order extends Transactions {
         this.entering = entering;
         this.exiting = exiting;
         this.car =new Car(car);
-
         this.email = email;
         this.active = true;
     }
@@ -104,9 +116,7 @@ public class Order extends Transactions {
     public String toString(){
         return "order id: "+id+" at"+date;
     }
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="reports_id")
-//    private Reports reports;
+
     public Order() {
 
     }
@@ -114,6 +124,12 @@ public class Order extends Transactions {
         return Integer.parseInt(exiting)-dateOfOrder.getHour();
         // TODO: 12/02/2023  remap the exiting time to the date of order
 //        return Integer.parseInt(exiting)-Integer.parseInt(entering);
+    }
+    public EntryAndExitLog getEntryAndExitLog(String licensePlate){
+        return entryAndExitLog;
+    }
+    public EntryAndExitLog getEntryAndExitLog(){
+        return entryAndExitLog;
     }
     // TODO: 1/10/2023 toString Function 
 }

@@ -16,29 +16,38 @@ import java.time.LocalTime;
 
 import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 @Entity
-@Table(name = "vehicles")
+@Table(name = "EntryAndExitLog")
 @Getter
 @Setter
-public class Vehicle implements Serializable {
+public class EntryAndExitLog implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private long id;
+    // TODO: 12/02/2023 should be changed to functions rather than variables
     @Column(name = "priority")
     private int priority;
     @Column(name = "estimated_exit_time")
     private LocalDateTime estimatedExitTime;
+    @Column(name="activeLog")
+    boolean activeLog=false;
     @Column(name="activeCar")
     String activeCar;
-    @OneToOne
-    @JoinColumn(name = "order_sub_kiosk_entity_id")
+    @Column(name="acutallEntryTime")
+    private LocalDateTime acutallEntryTime;
+    @Column(name="acutallExitTime")
+    private LocalDateTime acutallExitTime;
+    @ManyToOne( cascade = CascadeType.ALL)
     private Transactions orderSubKioskEntity;
+    @OneToOne
+    @JoinColumn(name = "parking_spot_id")
+     private ParkingSpot parkingSpot;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parking_lot_scheduler_id")
     private ParkingLotScheduler parkingLotScheduler;
     @Transient
-    DataBaseManipulation<Vehicle> vehicleDB = new DataBaseManipulation<>();
-    public Vehicle( Transactions orderSubKioskEntity, ParkingLotScheduler parkingLotScheduler,String activeCar) {
+    DataBaseManipulation<EntryAndExitLog> vehicleDB = new DataBaseManipulation<>();
+    public EntryAndExitLog(Transactions orderSubKioskEntity, ParkingLotScheduler parkingLotScheduler, String activeCar) {
         this.parkingLotScheduler = parkingLotScheduler;
         RegularSubscription rSub;
         FullSubscription fSub;
@@ -82,20 +91,34 @@ public class Vehicle implements Serializable {
 
     }
 
-    public Vehicle() {
+    public EntryAndExitLog() {
 
     }
 
-    public void updateCar() {
-        if (FULL_SUBSCRIPTION.isSubscription(orderSubKioskEntity))
-            ((Subscription)orderSubKioskEntity).getCar(activeCar).setActiveCar(true);
-        else if (ORDER.isOrder(orderSubKioskEntity))
-            ((Order)orderSubKioskEntity).getCar().setActiveCar(true);
+    public void updateCar(boolean active) {
+        activeLog=active;
+        if (FULL_SUBSCRIPTION.isSubscription(orderSubKioskEntity)){
+            ((Subscription)orderSubKioskEntity).getCar(activeCar).setActiveCar(active);
+            if (active)
+                ((Subscription)orderSubKioskEntity).setEntryAndExitLogs(this);
+
+        }
+        else if (ORDER.isOrder(orderSubKioskEntity)){
+            ((Order)orderSubKioskEntity).getCar().setActiveCar(active);
+            if(active)
+                ((Order)orderSubKioskEntity).setEntryAndExitLog(this);
+
+        }
         else if (ORDER.isKioskBuyer( orderSubKioskEntity)){
-            // TODO: 12/02/2023 to be defined
-            }
+
+            // TODO: 12/02/2023 to be defined same line as below
+//            if(active)
+//                ((Order)orderSubKioskEntity).setEntryAndExitLog(this);
+        }
         else
             System.out.println("Error Unable To Identify Entrance Identity");
+
+
     }
     private LocalDateTime FromLocalTimeToDateTime(LocalTime time){
         LocalDateTime dateTime=LocalDateTime.now();

@@ -4,13 +4,17 @@ import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
+import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Transaction;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 
 
 @Entity
@@ -85,9 +89,16 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         setMaxCapacity();
         boolean isEntry=false;
         if (this.getQueue().size()<this.getMaxCapacity()){
-            isEntry= this.enterParkingLot(transaction,licensePlate) != null;
-            reArrangeParkingLot();
+            try {
+                isEntry = this.enterParkingLot(transaction, licensePlate) != null;
+            }
+            catch (Exception e){
+                System.out.println("ParkingLotIsFull");
+                isEntry=false;
+            }
+
             if (isEntry){
+                reArrangeParkingLot();
                 sendNewPosistionsToRobot(true,licensePlate);
             }
 
@@ -99,19 +110,42 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         setMaxCapacity();
         boolean isExit=false;
         if (this.getQueue().size()!=0){
-            Vehicle vehicle= getVehicle(licensePlate);
-            isExit= this.exitParkingLot(vehicle) != null;
-            reArrangeParkingLot();
+            EntryAndExitLog entryAndExitLog= getEntryAndExitLogBasedOnType(transaction, licensePlate);
+
+            try {
+                isExit = this.exitParkingLot(entryAndExitLog) != null;
+            }
+            catch (Exception e){
+                System.out.println(e.getMessage());
+                isExit=false;
+            }
             if (isExit){
+                reArrangeParkingLot();
                 sendNewPosistionsToRobot(false,licensePlate);
             }
-            
+
         }
         return isExit;
     }
-    public Vehicle getVehicle(String licensePlate){
-        return spots.stream().filter(spot -> spot.getVehicle()!=null && spot.getVehicle().getActiveCar().equals(licensePlate)).findFirst().get().getVehicle();
+
+    private static EntryAndExitLog getEntryAndExitLogBasedOnType(Transactions transaction, String licensePlate) {
+        EntryAndExitLog entryAndExitLog;
+        if (FULL_SUBSCRIPTION.isSubscription(transaction))
+             entryAndExitLog= ((Subscription) transaction).getEntryAndExitLog(licensePlate);
+        else if(ORDER.isOrder(transaction))
+            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
+        else if(KioskBuyer.isKioskBuyer(transaction)){
+            System.out.println("Kiosk Entrance not implemented yet!!!!!!");
+           //TODO: Kiosk Order Not implemented
+        // TODO entryAndExitLog= ((BasicOrder)transaction).getEntryAndExitLog( licensePlate);
+
+
+            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
+        } else
+            throw new IllegalArgumentException("Transaction is not a subscription or an order or a kiosk buyer");
+        return entryAndExitLog;
     }
+
     public  void sendNewPosistionsToRobot(boolean enterExit,String licensePlate){
         // TODO: 12/02/2023 to be implemented mostly just send the new positions to the robot
         // TODO : expected format : enter/exit,licensePlate, new positions ,can be inferred easily from the parking spots
@@ -123,43 +157,42 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
          this.positionsToRobot();
     }
     public  void positionsToRobot(){
-        spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).forEach(spot -> {
-            System.out.println("To Robot: "+spot.getVehicle().getActiveCar()+","+spot.getFloor()+","+spot.getRow()+","+spot.getDepth());
+        spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()&&spot.isOccupied()).forEach(spot -> {
+            System.out.println("formatted as [liscensePLate][floor][row][depth]: ["+spot.getEntryAndExitLog().getActiveCar()+"],["+spot.getFloor()+"],["+spot.getRow()+"],["+spot.getDepth()+"]");
 
         });
     }
     public void reArrangeParkingLot(){
-        List<ParkingSpot>spotsToAlter=sortSpots();
-        PriorityQueue<Vehicle> copiedQueue=new PriorityQueue<>(getQueue());
-        spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).forEach(spot -> {
-            spot.setOccupied(false);
-            spot.setVehicle(null);
-        });
-        for (int i=spotsToAlter.size()-getQueue().size();i<getMaxCapacity();i++){
-           spotsToAlter.get(i).setOccupied(true);
-            Vehicle vehicle=copiedQueue.poll();
+        restoreQueueFromList();
+        this.reInitiateParkingSpots();
+        spots.sort( Comparator());
+        List<ParkingSpot>spotsToAlter=spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).toList();
 
-           spotsToAlter.get(i).setVehicle(vehicle);
+        int deficet=spotsToAlter.size()-queue.size();
+        for (ParkingSpot spot:spots){
+            if (!spot.isSaved() && !spot.isFaulty()&&deficet==0){
+                if(!queue.isEmpty())
+                    spot.setEntryAndExitLog(queue.poll());
+                else{
+                    deficet--;
+                    spot.resetEntryAndExitLog();
+                }
+            }
         }
-        getParkingLotSchedulerDB().update(this);
-
-
     }
-    private List<ParkingSpot> sortSpots(){
-        List<ParkingSpot> parkingSpots = spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()).sorted(new Comparator<ParkingSpot>() {
+    private Comparator<ParkingSpot> Comparator(){
+
+        return  new Comparator<ParkingSpot>() {
             @Override
             public int compare(ParkingSpot o1, ParkingSpot o2) {
                 if (o1.getFloor() == o2.getFloor()) {
-                    if (o1.getRow() == o2.getRow()) {
+                    if (o1.getRow() == o2.getRow())
                         return o1.getDepth() - o2.getDepth();
-                    }
                     return o1.getRow() - o2.getRow();
                 }
                 return o1.getFloor() - o2.getFloor();
             }
-        }).toList();
-        return parkingSpots;
-//        Collections.reverse(spots);
+        };
     }
     private void setMaxCapacity(){
         int maxCapacity=0;
@@ -183,8 +216,8 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
     }
     public void reInitiateParkingSpots(){
             spots.forEach(spot -> {
-                spot.setSaved(false);
-                spot.setOccupied(false);
+                if (!spot.isSaved() && !spot.isFaulty()){
+                     spot.resetEntryAndExitLog();}
             });
         }
 

@@ -1,7 +1,6 @@
 package il.cshaifasweng.ParkingLotEntities;
 
 
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,9 +23,9 @@ public class ParkingSpot implements Serializable {
     private int depth;
     @Column(name="Occupied")
     private boolean occupied;
-    @JoinColumn(name="vehicle_id")
+    @JoinColumn(name="entryAndExitLog_id")
     @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
-    private Vehicle vehicle;
+    private EntryAndExitLog entryAndExitLog;
     @Column(name="SavedSpace")
     private boolean saved;
     @Column(name="faulty")
@@ -66,22 +65,22 @@ public class ParkingSpot implements Serializable {
 
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public void setEntryAndExitLog(EntryAndExitLog entryAndExitLog) {
+        this.entryAndExitLog = entryAndExitLog;
+        this.entryAndExitLog.setParkingSpot(this);
         occupied=true;
     }
-    public Vehicle removeVehicle(){
-        Vehicle v = this.vehicle;
-        this.vehicle = null;
+    public void resetEntryAndExitLog() {
+        if (entryAndExitLog!=null&&entryAndExitLog.getParkingSpot()!=null)
+            entryAndExitLog.setParkingSpot(null);
+        entryAndExitLog = null;
+        occupied=false;
+    }
+    public EntryAndExitLog removeVehicle(){
+        EntryAndExitLog v = this.entryAndExitLog;
+        this.entryAndExitLog = null;
         occupied=false;
         return v;
-    }
-    public boolean isSaved() {
-        return saved;
-    }
-
-    public void setSaved(boolean saved) {
-        this.saved = saved;
     }
 
     // TODO: 12/02/2023 check this one , don't like it one bit !
