@@ -92,7 +92,7 @@ public class KioskController {
         popUp.setScene(popUpScene);
         popUp.show();
         login.setOnAction(event1 -> {
-            sendMessagesToServer("#verifyOrder&"+"12&"+ userTextField.getText() + "&" + passTextField.getText());
+            sendMessagesToServer("#verifyOrder&"+"3&"+ userTextField.getText() + "&" + passTextField.getText());
             try {
                 latch.await();
                 if(SimpleChatClient.getUser() != null){
@@ -147,7 +147,7 @@ public class KioskController {
         popUp.setScene(popUpScene);
         popUp.show();
         login.setOnAction(event1 -> {
-            sendMessagesToServer("#verifySubscription&"+"12&"+ userTextField.getText() + "&" + passTextField.getText());
+            sendMessagesToServer("#verifySubscription&"+"3&"+ userTextField.getText() + "&" + passTextField.getText());
             try {
                 latch.await();
                 if(SimpleChatClient.getUser() != null){

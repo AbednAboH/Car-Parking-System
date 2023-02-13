@@ -184,8 +184,8 @@ public class OrderController {
         emailInput.setText(order.getEmail());
         plateNum.setText(order.getCar().toString());
         dateChoice.setValue(order.getDate());
-        exitTime.getValueFactory().setValue(Integer.parseInt(order.getExiting()));
-        arrivalTime.getValueFactory().setValue(Integer.parseInt(order.getEntering()));
+        exitTime.getValueFactory().setValue(order.getExiting().getHour());
+        arrivalTime.getValueFactory().setValue(order.getDateOfOrder().getHour());
         plChoice.setValue(order.getParkingLotID().getId());
     }
 

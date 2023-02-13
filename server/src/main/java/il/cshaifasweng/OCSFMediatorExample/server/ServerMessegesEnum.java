@@ -1,17 +1,18 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 
+import il.cshaifasweng.Message;
 
 public enum ServerMessegesEnum {
 
-    MESSEGES_ENUM("MessegesEnum"),
-    ERROR("Error! we got an empty message"),
+    EMPTY("Test,TEst"),
     LOGIN("#LogIn"),
-    LOGOUT("#LogOut"),
+
     REGISTER("#Register"),
+    INITIALIZE_PARKING_LOT("#intializeParkingLot"),
     GET_ALL_PARKING_LOTS("#getAllParkingLots"),
 
-    INITIALIZE_PARKING_LOT("#intializeParkingLot"),
+
     NEW_ORDER("#placeOrder"),
 
     GET_USER("#getUser"),
@@ -35,7 +36,12 @@ public enum ServerMessegesEnum {
     VERIFY_SUBSCRIPTION("#verifySubscription"),
     VERIFY_ORDER("#verifyOrder"),
     GET_CUSTOMER_CARS("#GetCustomerCars"),
-    CANCEL_ORDER_AND_GET_REFUND("#CancelOrderAndGetRefund");
+    CANCEL_ORDER_AND_GET_REFUND("#CancelOrderAndGetRefund"),
+    LOGOUT("#LogOut"),
+    ENTER_PARKING_LOT("#EnterParkingLot"),
+    EXIT_PARKING_LOT("#ExitParkingLot")
+    ;
+
     final String type;
 
     ServerMessegesEnum(String type) {

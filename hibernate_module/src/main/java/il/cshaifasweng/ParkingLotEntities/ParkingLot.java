@@ -105,6 +105,9 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         return null;
 
     }
+    public boolean isFull(){
+        return this.getQueue().size()==this.getMaxCapacity();
+    }
     public EntryAndExitLog exitParkingLot(Transactions transaction,String licensePlate){
         EntryAndExitLog entryAndExitLog;
         restoreQueueFromList();

@@ -80,7 +80,6 @@ public abstract class Subscription extends Transactions {
 
     }
     public  String getParkingLotIdAsString(){
-
         return "All";
     }
     public String getCarsAsString(){

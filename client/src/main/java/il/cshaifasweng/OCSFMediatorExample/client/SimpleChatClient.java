@@ -50,7 +50,7 @@ public static Subscription getCurrentSubscription() {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 1080, 720);
+        scene = new Scene(loadFXML("KioskScreen"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }
