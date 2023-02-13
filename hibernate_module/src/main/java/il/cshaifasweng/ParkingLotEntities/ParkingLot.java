@@ -4,17 +4,12 @@ import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
-import il.cshaifasweng.customerCatalogEntities.Order;
-import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 
 
 @Entity
@@ -84,83 +79,74 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         // TODO: 1/3/2023 add initiation of specific classes
 
     }
-    public boolean entryToPLot(Transactions transaction,String licensePlate){
+    public EntryAndExitLog entryToPLot(Transactions transaction,String licensePlate){
+        EntryAndExitLog entryAndExitLog;
         restoreQueueFromList();
         setMaxCapacity();
-        boolean isEntry=false;
+        // TODO: 13/02/2023 do not allow the same car to enter twice
         if (this.getQueue().size()<this.getMaxCapacity()){
             try {
-                isEntry = this.enterParkingLot(transaction, licensePlate) != null;
+                entryAndExitLog=this.EnterAndLog(transaction, licensePlate) ;
+                if (entryAndExitLog!=null){
+                    reArrangeParkingLot();
+                    sendNewPosistionsToRobot(true,licensePlate);
+                }
+                return entryAndExitLog;
+
             }
             catch (Exception e){
                 System.out.println("ParkingLotIsFull");
-                isEntry=false;
+
             }
 
-            if (isEntry){
-                reArrangeParkingLot();
-                sendNewPosistionsToRobot(true,licensePlate);
-            }
+
 
         }
-        return isEntry;
+        return null;
+
     }
-    public boolean exitParkingLot(Transactions transaction,String licensePlate){
+    public EntryAndExitLog exitParkingLot(Transactions transaction,String licensePlate){
+        EntryAndExitLog entryAndExitLog;
         restoreQueueFromList();
         setMaxCapacity();
-        boolean isExit=false;
         if (this.getQueue().size()!=0){
-            EntryAndExitLog entryAndExitLog= getEntryAndExitLogBasedOnType(transaction, licensePlate);
-
             try {
-                isExit = this.exitParkingLot(entryAndExitLog) != null;
+                entryAndExitLog=this.extractAndLog(transaction,licensePlate);
+                if (entryAndExitLog!=null){
+                    reArrangeParkingLot();
+                    sendNewPosistionsToRobot(false,licensePlate);
+                    System.out.println("\nnot null\n");
+                }
+                return entryAndExitLog;
             }
             catch (Exception e){
                 System.out.println(e.getMessage());
-                isExit=false;
+
             }
-            if (isExit){
-                reArrangeParkingLot();
-                sendNewPosistionsToRobot(false,licensePlate);
-            }
+
 
         }
-        return isExit;
+        return null;
     }
 
-    private static EntryAndExitLog getEntryAndExitLogBasedOnType(Transactions transaction, String licensePlate) {
-        EntryAndExitLog entryAndExitLog;
-        if (FULL_SUBSCRIPTION.isSubscription(transaction))
-             entryAndExitLog= ((Subscription) transaction).getEntryAndExitLog(licensePlate);
-        else if(ORDER.isOrder(transaction))
-            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
-        else if(KioskBuyer.isKioskBuyer(transaction)){
-            System.out.println("Kiosk Entrance not implemented yet!!!!!!");
-           //TODO: Kiosk Order Not implemented
-        // TODO entryAndExitLog= ((BasicOrder)transaction).getEntryAndExitLog( licensePlate);
 
-
-            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
-        } else
-            throw new IllegalArgumentException("Transaction is not a subscription or an order or a kiosk buyer");
-        return entryAndExitLog;
-    }
 
     public  void sendNewPosistionsToRobot(boolean enterExit,String licensePlate){
         // TODO: 12/02/2023 to be implemented mostly just send the new positions to the robot
         // TODO : expected format : enter/exit,licensePlate, new positions ,can be inferred easily from the parking spots
 
          if(enterExit)
-             System.out.println("To Robot: Enter=" + enterExit + ",licensePlate=" + licensePlate + ",new positions:");
+             System.out.println("To Robot: Enter->licensePlate=" + licensePlate + ",new positions:");
          else
-             System.out.println("To Robot: Exit=" + enterExit + ",licensePlate=" + licensePlate + ",new positions:");
+             System.out.println("To Robot: Exit->licensePlate=" + licensePlate + ",new positions:");
          this.positionsToRobot();
     }
     public  void positionsToRobot(){
-        spots.stream().filter(spot -> !spot.isSaved() && !spot.isFaulty()&&spot.isOccupied()).forEach(spot -> {
-            System.out.println("formatted as [liscensePLate][floor][row][depth]: ["+spot.getEntryAndExitLog().getActiveCar()+"],["+spot.getFloor()+"],["+spot.getRow()+"],["+spot.getDepth()+"]");
-
-        });
+        for (ParkingSpot spot:spots)
+            if (spot.getEntryAndExitLog()!=null)
+                System.out.println("formatted as [liscensePLate][floor][row][depth]: ["+spot.getEntryAndExitLog().getActiveCar()+"],["+spot.getFloor()+"],["+spot.getRow()+"],["+spot.getDepth()+"]");
+            else
+                System.out.println("formatted as [liscensePLate][floor][row][depth]: [null],["+spot.getFloor()+"],["+spot.getRow()+"],["+spot.getDepth()+"]");
     }
     public void reArrangeParkingLot(){
         restoreQueueFromList();
@@ -170,8 +156,8 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
 
         int deficet=spotsToAlter.size()-queue.size();
         for (ParkingSpot spot:spots){
-            if (!spot.isSaved() && !spot.isFaulty()&&deficet==0){
-                if(!queue.isEmpty())
+            if (!spot.isSaved() && !spot.isFaulty()){
+                if(queue.size()!=0&&deficet==0)
                     spot.setEntryAndExitLog(queue.poll());
                 else{
                     deficet--;

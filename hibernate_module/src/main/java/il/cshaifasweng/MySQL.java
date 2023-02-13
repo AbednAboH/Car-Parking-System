@@ -95,21 +95,28 @@ public class MySQL
         List<Order> orders=getAllEntities(Order.class);
         ParkingLot plot=getEntity(1,ParkingLot.class);
         for(int i=0;i<30;i+=3){
-            boolean enteredExitedPlot = enterExit? plot.entryToPLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum());
-            if(enteredExitedPlot){
+            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum());
+            if(enteredExitedPlot!=null){
                 System.out.println("Vehicle "+rSubs.get(i).getLatestLog().getActiveCar()+" entered the parking lot");
+                if (!enterExit)
+                    session.update(enteredExitedPlot);
+
             }
             else{
                 System.out.println(enterExit?"ParkingLot is full":"ParkingLot is empty");
                 break;
             }
+
         }
 
         for(int i=0;i<30;i+=2){
-            boolean enteredExitedPlot = enterExit? plot.entryToPLot(orders.get(i),orders.get(i).getCar().getCarNum()):plot.exitParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
-            if(enteredExitedPlot){
+            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(orders.get(i),orders.get(i).getCar().getCarNum()):plot.exitParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
+            if(enteredExitedPlot!=null){
 
                 System.out.println("Vehicle "+orders.get(i).getEntryAndExitLog().getActiveCar()+" entered the parking lot");
+                if (!enterExit)
+                    session.update(enteredExitedPlot);
+
             }
             else{
                 System.out.println(enterExit?"ParkingLot is full":"ParkingLot is empty");
@@ -119,9 +126,11 @@ public class MySQL
             }
         }
         for(int i=0;i<30;i+=2){
-            boolean enteredExitedPlot = enterExit? plot.entryToPLot(fSubs.get(i),fSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
-            if(enteredExitedPlot){
+            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(fSubs.get(i),fSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
+            if(enteredExitedPlot!=null){
                 System.out.println("Vehicle "+fSubs.get(i).getLatestLog().getActiveCar()+" entered the parking lot");
+                if (!enterExit)
+                    session.update(enteredExitedPlot);
             }
             else{
                 System.out.println(enterExit?"ParkingLot is full":"ParkingLot is empty");

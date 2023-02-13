@@ -71,6 +71,14 @@ public abstract class Subscription extends Transactions {
         }
         return null;
     }
+    public void setEntryAndExitLog(String carPlateNumber,EntryAndExitLog entryExit){
+        for (EntryAndExitLog entryAndExitLog:
+             entryAndExitLogs) {
+            if (entryAndExitLog.getActiveCar().equals(carPlateNumber))
+                entryAndExitLog=entryExit;
+        }
+
+    }
     public  String getParkingLotIdAsString(){
 
         return "All";

@@ -134,4 +134,21 @@ public class EntryAndExitLog implements Serializable {
     public LocalDateTime getEstimatedExitTime() {
         return estimatedExitTime;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof EntryAndExitLog)) {
+            return false;
+        }
+
+        EntryAndExitLog otherLog = (EntryAndExitLog) obj;
+
+        return this.activeCar.equals(otherLog.activeCar) && this.orderSubKioskEntity.equals(otherLog.orderSubKioskEntity) &&
+                this.parkingLotScheduler.equals(otherLog.parkingLotScheduler) && this.acutallEntryTime.equals(otherLog.acutallEntryTime)
+                && this.acutallExitTime.equals(otherLog.acutallExitTime) && this.estimatedExitTime.equals(otherLog.estimatedExitTime) &&
+                this.priority == otherLog.priority&& this.activeLog == otherLog.activeLog;
+    }
 }
