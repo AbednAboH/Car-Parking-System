@@ -31,7 +31,7 @@ import java.util.List;
 public class SubscriptionController {
 
     @FXML
-    private ChoiceBox<Long> ParkingLotList;
+    private ChoiceBox<Integer> ParkingLotList;
 
     @FXML
     private TextField emailInput;
@@ -92,11 +92,11 @@ public class SubscriptionController {
 
 
     private ObservableList<PricingChart> pricingChartsList = FXCollections.observableArrayList();
-    private ObservableList<Long> parkingLotsIds = FXCollections.observableArrayList();
+    private ObservableList<Integer> parkingLotsIds = FXCollections.observableArrayList();
     private ObservableList<String> subBoxData = FXCollections.observableArrayList(Constants.REGULAR_SUBSCRIPTION.getMessage(),Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage(),Constants.FULL_SUBSCRIPTION.getMessage());
     private List<ParkingLot> parkingLots;
     private ParkingLot currParkingLot;
-    private HashMap<Long,ParkingLot> pLotsMap = new HashMap<>();
+    private HashMap<Integer,ParkingLot> pLotsMap = new HashMap<>();
 
     @FXML
     void initialize(){

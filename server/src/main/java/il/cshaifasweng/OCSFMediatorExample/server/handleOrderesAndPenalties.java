@@ -50,12 +50,9 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
         DataBaseManipulation<Order> handler=new DataBaseManipulation<>();
         orders = handler.executeListQuery(Order.class,hql,params, session);
 
-        System.out.println("im here");
         for (Order order:orders) {
             int minutesToEnter=calculateMinutesToEnter(order.getDateOfOrder());
-            System.out.println(minutesToEnter);
             if ((minutesToEnter <= 30) && (minutesToEnter >= 0)&&order.getReminderSent()==REMIND){
-//                System.out.println(calculateMinutesToEnter(order.getDateOfOrder()));
                 SendEmail.sendEmail(order.getEmail(),"Reminder","You have an order in ParkingLot number: "+order.getParkingLotID().getId()+" in "+minutesToEnter+" minutes");
                 order.setReminderSent(LATE);
             }
@@ -85,7 +82,6 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
 
 
         }
-        System.out.println(orders);
         session.getTransaction().commit();
         session.close();
     }

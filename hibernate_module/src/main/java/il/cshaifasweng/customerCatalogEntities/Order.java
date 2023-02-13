@@ -108,7 +108,8 @@ public class Order extends Transactions {
         this.parkingLotID = parkingLotID;
         this.entering = entering;
         this.exiting = exiting;
-        this.car =new Car(car);
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
         this.email = email;
         this.active = true;
     }

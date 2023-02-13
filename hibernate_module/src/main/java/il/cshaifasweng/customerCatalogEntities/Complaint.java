@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Complaint implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name="ComplaintDescription")
     private String complaintDescription;
     @Column(name="TypeOfOrderSub")
@@ -76,7 +76,7 @@ public class Complaint implements Serializable {
     public String toString(){
      return "id="+id+", date="+date;
     }
-    public long getId() {
+    public int getId() {
         return id;
     }
 

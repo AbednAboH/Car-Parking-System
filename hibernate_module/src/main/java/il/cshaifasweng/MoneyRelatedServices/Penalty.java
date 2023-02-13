@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Penalty implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name = "on_late_arrival")
     private double onLateArriaval;
     @Column(name = "on_late_exit")

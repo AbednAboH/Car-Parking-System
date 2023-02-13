@@ -38,13 +38,13 @@ public class CompliantsListController {
     private TableView<Complaint> complaints;
 
     @FXML
-    private TableColumn<Complaint, Long> complaintId;
+    private TableColumn<Complaint, Integer> complaintId;
 
     @FXML
-    private TableColumn<Complaint, Long> userId;
+    private TableColumn<Complaint, Integer> userId;
 
     @FXML
-    private TableColumn<Complaint, Long> pLotIdCol;
+    private TableColumn<Complaint, Integer> pLotIdCol;
 
     @FXML
     private TableColumn<Complaint, String> complaintDescription;
@@ -87,11 +87,11 @@ public class CompliantsListController {
 
     private Complaint selected;
 
-    private long getComplaintId;
+    private int getComplaintId;
 
-    private long getUserId;
+    private int getUserId;
 
-    private long getParkingLotId;
+    private int getParkingLotId;
     private boolean isRemoved;
 
 

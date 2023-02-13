@@ -26,7 +26,7 @@ public class RegularSubscription extends Subscription {
     private LocalTime extractionDate;
     @Override
     public  String getParkingLotIdAsString(){
-        return Long.toString(desegnatedParkingLot.getId());
+        return Integer.toString(desegnatedParkingLot.getId());
     }
 //    public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate) {
 //        super(customer, hoursPerMonth, startDate, expirationDate,true, "1111100");

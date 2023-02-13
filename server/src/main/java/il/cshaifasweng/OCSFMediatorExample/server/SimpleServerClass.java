@@ -39,8 +39,8 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
-    private static Map<Long, Customer> clientsCustomersMap = new HashMap<>();
-    private static Map<Long, Employee> clientsEmployeeMap = new HashMap<>();
+    private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
+    private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
     private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
     private static  final  DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
@@ -94,29 +94,26 @@ public class SimpleServerClass extends AbstractServer {
             DataBaseManipulation.intiate(handleMessegesSession);
             AuthenticationService.intiate(handleMessegesSession);
         }
-        try {
 
+        System.out.println( messageType((Message) msg));
+        try {
             handleMessegesSession.beginTransaction();
             if (request.isBlank()) {
                 message.setMessage("Error! we got an empty message");
             } else if (request.startsWith("#LogIn")) {
                 Login(message,client);
-
             }else if (request.startsWith("#Register")) {
                 registerUser(message,client);
             } else if (request.startsWith("#intializeParkingLot")) {
                 initializeParkingLot(message, client);
             } else if (request.startsWith("#getAllParkingLots")) {
                 sendParkingLots(message, client);
-
             }else if (request.startsWith("#placeOrder")) {
                 placeOrder(message, client);
             }else if (request.startsWith("#getUser")) {
                 getUser(message, client);
-            }
-            else if (request.startsWith("#getPricingChart")) {
+            } else if (request.startsWith("#getPricingChart")) {
                 sendPricesChart(message, client);
-
             } else if (request.startsWith("#updatePrice")) {
                 System.out.println("Update");
                 updatePriceChart(message, client);
@@ -132,20 +129,15 @@ public class SimpleServerClass extends AbstractServer {
                 showOrders(message, client);
             } else if (request.startsWith("#showSubscription")) {
                 showSubscription(message, client);
-
             }else if (request.startsWith("#addSubscription")) {
                 addSubscription(message, client);
-
             } else if (request.startsWith("#cancelOrder")) {
                 cancelOrder(message, client);
-
             } else if (request.startsWith("#cancelSubscription")) {
                 cancelSubscription(message, client);
-            }
-            else if(request.startsWith("#GetRefundChart")){
+            } else if(request.startsWith("#GetRefundChart")){
                 getRefundChart(message,client);
-            }
-            else if (request.startsWith("#ConnectionAlive")) {
+            } else if (request.startsWith("#ConnectionAlive")) {
                 System.out.println("connection alive");
             } else if (request.startsWith("#getAllOrders")) {
                 System.out.println("get all orders");
@@ -166,7 +158,6 @@ public class SimpleServerClass extends AbstractServer {
                 getCustomerCars(message, client);
             } else if (request.startsWith("#CancelOrderAndGetRefund")) {
                 cancelOrderAndGetRefund(message, client);
-
             } else {
                 System.out.println("message content doesn't match any request");
             }
@@ -178,6 +169,18 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.getTransaction().commit();
             handleMessegesSession.close();
         }
+
+    }
+
+    private static int messageType(Message msg) {
+        int messageType = -1;
+        for (ServerMessegesEnum messageTypeEnum : ServerMessegesEnum.values()) {
+            messageType = messageTypeEnum.startswith(msg.getMessage());
+            if (messageType != -1) {
+                break;
+            }
+        }
+        return messageType;
     }
 
     private void cancelOrderAndGetRefund(Message message, ConnectionToClient client) {
@@ -186,7 +189,7 @@ public class SimpleServerClass extends AbstractServer {
         Order order=orderHandler.get(Integer.parseInt(instructions[2]), Order.class) ;
         order.setActive(false);
         orderHandler.update(order);
-        int customer= (int) client.getInfo("userId");
+        int customer= (Integer) client.getInfo("userId");
         Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
         refund.setTransaction_method(order.getTransaction_method());
         refund.setTransactionStatus(true);
@@ -223,7 +226,7 @@ public class SimpleServerClass extends AbstractServer {
         args = request.split("&");
         int parkingLotId;
         int customerID;
-        int orderID;
+        int  orderID;
 
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
@@ -251,7 +254,7 @@ public class SimpleServerClass extends AbstractServer {
         args = request.split("&");
         int parkingLotId;
         int customerID;
-        int subscriptionID;
+        int  subscriptionID;
 
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
@@ -345,7 +348,13 @@ public class SimpleServerClass extends AbstractServer {
 
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
         // TODO: get order that has the client id and not all orders
-        message.setObject(orderHandler.getAll(Order.class));
+        List<Order> orders = orderHandler.getAll(Order.class);
+        orders.forEach(order -> {
+            Hibernate.initialize(order.getRegisteredCustomer());
+            Hibernate.initialize(order.getParkingLotID());
+            Hibernate.initialize(order.getCar());
+        });
+        message.setObject(orders);
     }
 
     protected void registerUser(Message message,ConnectionToClient client){
@@ -362,8 +371,7 @@ public class SimpleServerClass extends AbstractServer {
         rCustomer.save(customer, RegisteredCustomer.class);
         customer = rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put(customer.getId(), customer);
-//        client.setInfo("userId", customer.getId());
-//        System.out.println(customer);
+
         message.setMessage("RegistrationSuccessful");
     }
     protected void Login(Message message,ConnectionToClient client){
@@ -380,7 +388,6 @@ public class SimpleServerClass extends AbstractServer {
             message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
-            System.out.println(user);
             assert user != null;
             if (clientsEmployeeMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
@@ -395,9 +402,7 @@ public class SimpleServerClass extends AbstractServer {
             }
         }
         else if(clientType<=5){
-            System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
-            System.out.println(user);
 
             assert user != null;
             if (clientsCustomersMap.containsKey(user.getId()))
@@ -493,7 +498,11 @@ public class SimpleServerClass extends AbstractServer {
 
         RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         Object orders =regCostumer.getOrders();
-        Hibernate.initialize(orders);
+//        Hibernate.initialize(orders);
+        for (Order order : regCostumer.getOrders()) {
+            Hibernate.initialize(order.getCar());
+        }
+
         handleMessegesSession.flush();
         message.setObject(orders);
 
@@ -519,8 +528,7 @@ public class SimpleServerClass extends AbstractServer {
         Employee user=clientsEmployeeMap.get(id);
         if (user.getClass()==ParkingLotEmployee.class){
             user=plEmployee.get(id,ParkingLotEmployee.class);
-        }
-        else if (user.getClass()==ParkingLotManager.class){
+        } else if (user.getClass()==ParkingLotManager.class){
             user=plManager.get(id,ParkingLotManager.class);
         }else if (user.getClass()==CustomerServiceEmployee.class){
             user=csEmployee.get(id,CustomerServiceEmployee.class);
@@ -540,8 +548,6 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(PL.getSpots());
         message.setMessage("#GetParkingSpots");
     }
-
-
     // todo: need to fix it!!!!!!!
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space
