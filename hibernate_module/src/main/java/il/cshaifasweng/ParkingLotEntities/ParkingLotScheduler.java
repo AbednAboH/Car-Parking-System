@@ -92,7 +92,7 @@ public class ParkingLotScheduler implements Serializable {
             entryAndExitLogList.add(entryAndExitLog);
             return entryAndExitLog;
         }
-        else return null;
+        else throw new IllegalArgumentException("Parking Lot is full");
         //todo: throw exception and handle it in the server
     }
     public EntryAndExitLog removeFromQueue() {

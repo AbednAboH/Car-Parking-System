@@ -38,13 +38,13 @@ public class CompliantsListController {
     private TableView<Complaint> complaints;
 
     @FXML
-    private TableColumn<Complaint, Integer> complaintId;
+    private TableColumn<Complaint, Long> complaintId;
 
     @FXML
-    private TableColumn<Complaint, Integer> userId;
+    private TableColumn<Complaint, Long> userId;
 
     @FXML
-    private TableColumn<Complaint, Integer> pLotIdCol;
+    private TableColumn<Complaint, Long> pLotIdCol;
 
     @FXML
     private TableColumn<Complaint, String> complaintDescription;

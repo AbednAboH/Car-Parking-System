@@ -30,7 +30,7 @@
          <children>
             <ImageView fitHeight="322.0" fitWidth="322.0" layoutX="39.0" layoutY="214.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@parking-car.png" />
+                  <Image url="@icons/parking-car.png" />
                </image>
             </ImageView>
             <TextField prefHeight="57.0" prefWidth="263.0" style="-fx-background-color: transparent; -fx-text-fill: #24a0ed;" text="CPS">

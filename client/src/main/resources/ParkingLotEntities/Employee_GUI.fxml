@@ -32,7 +32,7 @@
          <ComboBox fx:id="depthLabel" accessibleText="depth" layoutX="911.0" layoutY="380.0" onAction="#SaveSpot" prefHeight="57.0" prefWidth="133.0" promptText="depth of row" />
          <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="187.0" layoutY="22.0">
             <image>
-               <Image url="@User.png" />
+               <Image url="@../il/cshaifasweng/OCSFMediatorExample/client/icons/User.png" />
             </image>
          </ImageView>
          <Label layoutX="312.0" layoutY="42.0" text="ParkingLot Employee" textAlignment="CENTER">

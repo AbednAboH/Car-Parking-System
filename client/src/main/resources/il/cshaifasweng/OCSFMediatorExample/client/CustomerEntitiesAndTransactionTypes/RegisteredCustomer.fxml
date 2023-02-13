@@ -90,7 +90,7 @@
                         </Button>
                         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="180.0" layoutY="20.0" style="-fx-background-color: #b3a7da;" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="20.0">
                            <image>
-                              <Image url="@User.png" />
+                              <Image url="@../icons/User.png" />
                            </image>
                         </ImageView>
                         <Text layoutX="625.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Subscriptions" wrappingWidth="368.13671875" AnchorPane.leftAnchor="538.01806640625" AnchorPane.rightAnchor="474.36474609375">
@@ -181,7 +181,7 @@
                         </Button>
                         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="180.0" layoutY="20.0" style="-fx-background-color: #b3a7da;">
                            <image>
-                              <Image url="@User.png" />
+                              <Image url="@../icons/User.png" />
                            </image>
                         </ImageView>
                         <Button fx:id="editbutton" layoutX="29.0" layoutY="145.0" mnemonicParsing="false" onAction="#editInfo" prefHeight="44.0" prefWidth="264.0" snapToPixel="false" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Edit Email Or Password" textFill="WHITE" />
