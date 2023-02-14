@@ -70,8 +70,8 @@ public class SimpleServerClass extends AbstractServer {
 //            HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.SECONDS);
 //            HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
         // TODO: 06/02/2023  should be working correctly use these lines in final project !
-                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
-                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+//                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
 
     }
 
@@ -91,14 +91,15 @@ public class SimpleServerClass extends AbstractServer {
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message message = (Message) msg;
         String request = message.getMessage();
-        if (!handleMessegesSession.isOpen()){
-            handleMessegesSession = DAO.factory.openSession();
-            DataBaseManipulation.intiate(handleMessegesSession);
-            AuthenticationService.intiate(handleMessegesSession);
-        }
-        int type=messageType((Message) msg);
+
         try {
+            if (!handleMessegesSession.isOpen()){
+                DataBaseManipulation.intiate(handleMessegesSession);
+                AuthenticationService.intiate(handleMessegesSession);
+            }
             handleMessegesSession.beginTransaction();
+            int type=messageType((Message) msg);
+
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
                 case 1 -> Login(message, client);
@@ -132,13 +133,16 @@ public class SimpleServerClass extends AbstractServer {
                 case 29 -> exitParkingLot(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
+//            handleMessegesSession.getTransaction().commit();
+//            handleMessegesSession.close();
 //
             client.sendToClient(message);
+            handleMessegesSession.getTransaction().commit();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         finally{
-            handleMessegesSession.getTransaction().commit();
             handleMessegesSession.close();
         }
 
@@ -228,17 +232,25 @@ public class SimpleServerClass extends AbstractServer {
                 + "WHERE o.id = :orderID "
                 + "AND o.registeredCustomer.id = :customerId "
                 + "AND o.parkingLotID.id = :parkingLotId "
-                + "AND o.date = CURDATE()";
+                + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
         HashMap<String, Object> params = new HashMap<>();
         params.put("orderID", orderID);
         params.put("customerId", customerID);
         params.put("parkingLotId", parkingLotId);
-        List<Object> lst = rCustomer.executeQuery(Object.class, queryOnOrder, params);
-        if (lst != null && lst.size() > 0) {
-            message.setObject(lst.get(0));
+        System.out.println("queryOnOrder: " + queryOnOrder);
+        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnOrder, params);
+        if (lst == null) {
+            queryOnOrder = "SELECT registeredCustomer FROM Order o "
+                    + "WHERE o.id = :orderID "
+                    + "AND o.registeredCustomer.id = :customerId "
+                    + "AND o.parkingLotID.id = :parkingLotId "
+                    + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
+
         } else {
-            message.setObject(null);
+            message.setMessage(VERIFY_ORDER.type);
+            message.setObject(lst);
         }
+        message.setObject(lst);
     }
 
     private void verifySubscription(Message message, ConnectionToClient client) throws IOException {
@@ -264,15 +276,14 @@ public class SimpleServerClass extends AbstractServer {
         HashMap<String, Object> params = new HashMap<>();
         params.put("subscriptionId", subscriptionID);
         params.put("customerId", customerID);
-        List<Object> lst = rCustomer.executeQuery(Object.class, queryOnFull, params);
-        System.out.println(lst != null);
-        if (lst != null && lst.size() > 0) {
-            message.setObject(lst.get(0));
+        Customer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnFull, params);
+        if (lst != null ) {
+            message.setObject(lst);
         } else {
             params.put("parkingLotId", parkingLotId);
-            rCustomer.executeQuery(RegisteredCustomer.class, queryOnRegular, params);
-            if (lst != null && lst.size() > 0) {
-                message.setObject(lst.get(0));
+            lst= rCustomer.queiryData(RegisteredCustomer.class, queryOnRegular, params);
+            if (lst != null ) {
+                message.setObject(lst);
             } else {
                 message.setObject(null);
             }
