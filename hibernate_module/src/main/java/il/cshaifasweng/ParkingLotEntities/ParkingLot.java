@@ -20,7 +20,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name="floor")
     private int floor;
     @Column(name="RowsInFloor")
@@ -104,6 +104,9 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         }
         return null;
 
+    }
+    public boolean isFull(){
+        return this.getQueue().size()==this.getMaxCapacity();
     }
     public EntryAndExitLog exitParkingLot(Transactions transaction,String licensePlate){
         EntryAndExitLog entryAndExitLog;

@@ -14,7 +14,8 @@ public enum ConstantVariables {
     REGULAR_MULTI_SUBSCRIPITON(RegularSubscription.class.getSimpleName() + "TwoCars",3),
     FULL_SUBSCRIPTION(FullSubscription.class.getSimpleName(),3),
     ORDER(Order.class.getSimpleName(),4),
-    KioskBuyer("KioskBuyer",5);
+    KioskBuyer(BasicOrder.class.getSimpleName(),5);
+
 
     String type;
     int priority;
@@ -23,15 +24,15 @@ public enum ConstantVariables {
         this.type = type;
         this.priority=priority;
     }
-    boolean isSubscription(Transactions orderSubKioskEntity){
+    public boolean isSubscription(Transactions orderSubKioskEntity){
         String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
         return identifyEntranceIdentity.startsWith(REGULAR_SUBSCRIPTION.type)||identifyEntranceIdentity.startsWith(FULL_SUBSCRIPTION.type);
     }
-    boolean isOrder(Transactions orderSubKioskEntity){
+    public boolean isOrder(Transactions orderSubKioskEntity){
         String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
         return identifyEntranceIdentity.startsWith(ORDER.type);
     }
-    boolean isKioskBuyer(Transactions orderSubKioskEntity){
+    public boolean isKioskBuyer(Transactions orderSubKioskEntity){
         String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
         return identifyEntranceIdentity.startsWith(KioskBuyer.type);
     }

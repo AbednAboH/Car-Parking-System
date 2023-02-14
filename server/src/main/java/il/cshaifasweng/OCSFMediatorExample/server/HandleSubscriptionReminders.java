@@ -21,7 +21,7 @@ public class HandleSubscriptionReminders extends  TimeTriggeredThread{
         System.out.println("subscription reminders thread started");
     }
     private static final LocalTime subsReminderTime = LocalTime.of(8, 0, 0);
-    public static long getDelay() {
+    public static int getDelay() {
         // TODO: 06/02/2023 maybe add it to system management gui in the future
         LocalTime now = LocalTime.now();
         now=now.minusHours(subsReminderTime.getHour());
@@ -68,7 +68,6 @@ public class HandleSubscriptionReminders extends  TimeTriggeredThread{
         }
         session.getTransaction().commit();
         session.close();
-        System.out.println("subscriptions reminders ended");
 
     }
 

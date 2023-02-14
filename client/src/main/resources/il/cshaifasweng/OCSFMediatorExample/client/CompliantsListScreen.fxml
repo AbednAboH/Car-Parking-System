@@ -19,7 +19,7 @@
     <children>
         <ImageView fitHeight="131.0" fitWidth="200.0" layoutX="575.0" layoutY="-9.0">
             <image>
-                <Image url="@../il/cshaifasweng/OCSFMediatorExample/client/icons/parking-car.png" />
+                <Image url="@icons/parking-car.png" />
             </image>
         </ImageView>
         <Button fx:id="userOptBtn" layoutX="77.0" layoutY="22.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Hello Name" textFill="#2b0548">
@@ -94,7 +94,7 @@
         </HBox>
         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="187.0" layoutY="18.0">
             <image>
-                <Image url="@../il/cshaifasweng/OCSFMediatorExample/client/icons/User.png" />
+                <Image url="@icons/User.png" />
             </image>
         </ImageView>
     </children>

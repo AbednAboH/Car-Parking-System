@@ -58,7 +58,7 @@ public class ComplaintController {
     private ComboBox<String> orderSubscriptionBox;
 
     @FXML
-    private ComboBox<Long> parkingLot;
+    private ComboBox<Integer> parkingLot;
 
     @FXML
     private Button submitComplaint;
@@ -159,7 +159,7 @@ public class ComplaintController {
                 firstName.setText(user.getFirstName());
                 LastName.setText(user.getLastName());
                 email.setText(user.getEmail());
-                customerID.setText(Long.toString(user.getId()));
+                customerID.setText(Integer.toString(user.getId()));
 
                 message.setMessage("#getAllOrders");
                 SimpleClient.getClient().sendToServer(message);

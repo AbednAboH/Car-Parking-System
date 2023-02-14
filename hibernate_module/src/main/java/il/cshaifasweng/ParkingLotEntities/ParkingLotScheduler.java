@@ -31,7 +31,7 @@ import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 public class ParkingLotScheduler implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     // TODO: 11/02/2023 check if one to many may cause problems
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     protected List<EntryAndExitLog> entryAndExitLogList =new ArrayList<>();
@@ -55,14 +55,7 @@ public class ParkingLotScheduler implements Serializable {
         queue.offer(entryAndExitLog);
         entryAndExitLogList.add(entryAndExitLog);
     }
-    @Transient
-    DataBaseManipulation<ParkingLotScheduler> ParkingLotSchedulerDB = new DataBaseManipulation<>();
 
-    public EntryAndExitLog getVehicleFromDB(Transactions orderSubKioskEntities) {
-        String sqlQuery= "SELECT * FROM Vehicle WHERE orderSubKioskEntities_id = " + orderSubKioskEntities.getId();
-        return getParkingLotSchedulerDB().queiryData(EntryAndExitLog.class, sqlQuery, new HashMap<String,Object>());
-
-    }
     public EntryAndExitLog extractAndLog(Transactions transaction, String licensePlate) {
         if (queue.size()>0) {
             EntryAndExitLog entryAndExitLog= getLogBasedOnType(transaction, licensePlate);
@@ -141,7 +134,7 @@ public class ParkingLotScheduler implements Serializable {
         }
 
     }
-    static class VehicleComparator implements Comparator<EntryAndExitLog> {
+    static class VehicleComparator implements Comparator<EntryAndExitLog>,Serializable{
         @Override
         public int compare(EntryAndExitLog v1, EntryAndExitLog v2) {
             int result = Integer.compare(v1.getPriority(), v2.getPriority());

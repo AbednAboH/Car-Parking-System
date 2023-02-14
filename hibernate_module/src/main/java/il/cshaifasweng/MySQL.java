@@ -192,8 +192,8 @@ public class MySQL
     public static <T> void update(T entity){
         session.update(entity);
     }
-    private static <T> void deleteEntity(long fromId,long toId,Class<T> EntityClass)throws Exception{
-        for (long id=fromId;id<=toId;id++){
+    private static <T> void deleteEntity(int fromId,int toId,Class<T> EntityClass)throws Exception{
+        for (int id=fromId;id<=toId;id++){
             T entity =  session.get(EntityClass, id);
 
         if (entity!=null)
@@ -223,14 +223,14 @@ public class MySQL
         System.out.println("\n");
     }
 
-    public static <T> T getEntity(long EntityId,Class<T> EntityClass)throws Exception{
+    public static <T> T getEntity(int EntityId,Class<T> EntityClass)throws Exception{
         return session.get(EntityClass,EntityId);
     }
-    public static <T> T getEntityByName(long EntityId,String entityName)throws Exception{
+    public static <T> T getEntityByName(int EntityId,String entityName)throws Exception{
 
         return (T) getEntity(EntityId,mappedClasses.get(entityName));
     }
-    private static void addParkingLotEmployee(String firstName,String lastName, String title,String email,double salary,long parkingLotId)throws Exception{
+    private static void addParkingLotEmployee(String firstName,String lastName, String title,String email,double salary,int parkingLotId)throws Exception{
         ParkingLot pl=getEntity(parkingLotId,ParkingLot.class);
         ParkingLotEmployee employee=new ParkingLotEmployee(firstName,lastName,title,email,salary,pl);
         session.save(employee);
@@ -255,6 +255,7 @@ public class MySQL
             addParkingLotToDB(3,3,4,manager);
         initiateRefundChart();
         initiateCustomers();
+        initiateEmployees();
         session.flush();
 
     }
@@ -281,7 +282,7 @@ public class MySQL
     private static void initiateOrderList()throws Exception{
         for (RegisteredCustomer customer : getAllEntities(RegisteredCustomer.class)){
             ParkingLot parkingLot=retrieveLastAdded(ParkingLot.class);
-            for (long i=0;i<10;i++){
+            for (int i=0;i<10;i++){
                 Random random = new Random();
                 int randomNum = random.nextInt(900000000) + 100000000;
                 Order order=new Order(customer,parkingLot, LocalDate.now(),
@@ -297,6 +298,18 @@ public class MySQL
         }
         session.flush();
     }
+    private static void initiateEmployees()throws Exception{
+        for (ParkingLot parkingLot : getAllEntities(ParkingLot.class)){
+            for (int i=0;i<10;i++) {
+                ParkingLotEmployee employee = new ParkingLotEmployee("employee" + i, "Family" + i, "general employee", "employee" + i + "@email.com", 10000, parkingLot);
+                session.save(employee);
+            }
+        }
+        CustomerServiceEmployee customerServiceEmployee=new CustomerServiceEmployee("ServiceName","ServiceFamily","customerServiceEmployee","CustomeService@email.com",10000,getAllEntities(ParkingLot.class),getAllEntities(Complaint.class));
+        session.save(customerServiceEmployee);
+        session.flush();
+    }
+
     private static void initiateSubscriptions() throws Exception{
         for (RegisteredCustomer customer : getAllEntities(RegisteredCustomer.class)){
             ParkingLot parkingLot=retrieveLastAdded(ParkingLot.class);

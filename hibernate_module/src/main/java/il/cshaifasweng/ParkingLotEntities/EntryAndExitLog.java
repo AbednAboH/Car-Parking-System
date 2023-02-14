@@ -23,7 +23,7 @@ public class EntryAndExitLog implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private int id;
     // TODO: 12/02/2023 should be changed to functions rather than variables
     @Column(name = "priority")
     private int priority;
@@ -45,9 +45,7 @@ public class EntryAndExitLog implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "parking_lot_scheduler_id")
     private ParkingLotScheduler parkingLotScheduler;
-    @Transient
-    DataBaseManipulation<EntryAndExitLog> vehicleDB = new DataBaseManipulation<>();
-    public EntryAndExitLog(Transactions orderSubKioskEntity, ParkingLotScheduler parkingLotScheduler, String activeCar) {
+     public EntryAndExitLog(Transactions orderSubKioskEntity, ParkingLotScheduler parkingLotScheduler, String activeCar) {
         this.parkingLotScheduler = parkingLotScheduler;
         RegularSubscription rSub;
         FullSubscription fSub;
@@ -66,7 +64,7 @@ public class EntryAndExitLog implements Serializable {
         }
         else if(identifyEntranceIdentity.startsWith(FULL_SUBSCRIPTION.type)){
             fSub = (FullSubscription) orderSubKioskEntity;
-            long remaining=fSub.getHoursPerMonth();
+            int remaining=fSub.getHoursPerMonth();
             LocalDateTime now=LocalDateTime.now();
             this.estimatedExitTime =  now.plusHours(remaining);
             this.priority = FULL_SUBSCRIPTION.priority;

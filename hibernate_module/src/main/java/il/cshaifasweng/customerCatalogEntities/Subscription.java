@@ -26,7 +26,7 @@ public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long id;
+//    private int id;
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)
@@ -80,7 +80,6 @@ public abstract class Subscription extends Transactions {
 
     }
     public  String getParkingLotIdAsString(){
-
         return "All";
     }
     public String getCarsAsString(){

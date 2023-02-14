@@ -251,11 +251,11 @@ public class RegisteredCustomerController {
         orderID.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         orderActive.setCellValueFactory(new PropertyValueFactory<>("active"));
-        orderEntry.setCellValueFactory(new PropertyValueFactory<>("entering"));
-        orderExit.setCellValueFactory(new PropertyValueFactory<>("exiting"));
-        orderLicense.setCellValueFactory(new PropertyValueFactory<>("plateNum"));
+        orderEntry.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getDateOfOrder().toString()));
+        orderExit.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getExiting().toString()));
+        orderLicense.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getCar().getCarNum()));
         orderParchaseDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        orderPLotID.setCellValueFactory(data -> new SimpleObjectProperty<>(Long.toString(data.getValue().getParkingLotID().getId())));
+        orderPLotID.setCellValueFactory(data -> new SimpleObjectProperty<>(Integer.toString(data.getValue().getParkingLotID().getId())));
         orderPricePaid.setCellValueFactory(data -> new SimpleObjectProperty<>(Double.toString(data.getValue().getValue())));
         observableOrders.forEach(ordersTable.getItems()::add);
     }

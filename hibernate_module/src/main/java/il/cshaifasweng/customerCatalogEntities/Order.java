@@ -36,11 +36,8 @@ public class Order extends Transactions {
     @Column(name="active")
     private boolean active;
 
-    @Column(name="enteringTime")
-    private String entering;
-
     @Column(name="exitingTime")
-    private String exiting;
+    private LocalDateTime exiting;
 
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
@@ -58,8 +55,8 @@ public class Order extends Transactions {
         this.dateOfOrder= date.atTime(Integer.parseInt(entering),0);
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
-        this.entering = entering;
-        this.exiting = exiting;
+
+        this.exiting =date.atTime(Integer.parseInt(exiting),0);
         this.car =new Car(car);
         this.email = email;
         this.active = true;
@@ -74,8 +71,8 @@ public class Order extends Transactions {
         this.dateOfOrder= date.atTime(DateOfOrder.getHour(),DateOfOrder.getMinute());
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
-        this.entering = entering;
-        this.exiting = exiting;
+        this.exiting =date.atTime(Integer.parseInt(exiting),0);
+
         this.car =new Car(car);
         this.email = email;
         this.active = true;
@@ -88,8 +85,8 @@ public class Order extends Transactions {
         this.date=date;
         this.registeredCustomer = registeredCustomer;
         this.parkingLotID = parkingLotID;
-        this.entering = entering;
-        this.exiting = exiting;
+        this.exiting =date.atTime(Integer.parseInt(exiting),0);
+
         this.car =new Car(car);
 
         this.email = email;
@@ -106,9 +103,10 @@ public class Order extends Transactions {
 //        this.registeredCustomer = registeredCustomer;
         this.date=date;
         this.parkingLotID = parkingLotID;
-        this.entering = entering;
-        this.exiting = exiting;
-        this.car =new Car(car);
+        this.exiting =date.atTime(Integer.parseInt(exiting),0);
+
+        this.car.setCustomer(this.registeredCustomer);
+        this.car.setTransaction(this);
         this.email = email;
         this.active = true;
     }
@@ -121,7 +119,7 @@ public class Order extends Transactions {
 
     }
     public int getHoursOfResidency(){
-        return Integer.parseInt(exiting)-dateOfOrder.getHour();
+        return exiting.getHour()-dateOfOrder.getHour();
         // TODO: 12/02/2023  remap the exiting time to the date of order
 //        return Integer.parseInt(exiting)-Integer.parseInt(entering);
     }

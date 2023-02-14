@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1122.0" style="-fx-background-color: #FCFCFE;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.AllUsagesController">
+    <children>
+        <Text fill="#31134a" layoutX="476.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to CPS! Demo" textAlignment="CENTER" wrappingWidth="454.0">
+            <font>
+                <Font size="28.0" />
+            </font>
+        </Text>
+      <AnchorPane prefHeight="750.0" prefWidth="364.0" style="-fx-background-color: #A9A9A9;">
+         <children>
+            <TextField prefHeight="57.0" prefWidth="263.0" style="-fx-background-color: transparent; -fx-text-fill: #24a0ed;" text="CPS">
+               <font>
+                  <Font name="SansSerif Regular" size="25.0" />
+               </font>
+            </TextField>
+            <ImageView fitHeight="347.0" fitWidth="821.0" layoutX="14.0" layoutY="68.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons/parking-car.png" />
+               </image>
+            </ImageView>
+              <VBox layoutX="42.0" layoutY="472.0" prefHeight="148.0" prefWidth="288.0" spacing="15.0">
+                  <opaqueInsets>
+                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </opaqueInsets>
+                  <padding>
+                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </padding>
+              </VBox>
+         </children>
+      </AnchorPane>
+          <Button fx:id="haveOrder" layoutX="411.0" layoutY="591.0" mnemonicParsing="false" onAction="#onHaveOrder" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Login and registration" textAlignment="CENTER" textFill="#fcfcfe">
+              <font>
+                  <Font name="System Bold" size="20.0" />
+              </font>
+          </Button>
+          <Button fx:id="dontHaveOrder" layoutX="411.0" layoutY="649.0" mnemonicParsing="false" onAction="#onDontHaveOrder" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Entrance and exit screen " textAlignment="CENTER" textFill="#fcfcfe">
+              <font>
+                  <Font name="System Bold" size="20.0" />
+              </font>
+          </Button>
+      <Button fx:id="haveSub" layoutX="411.0" layoutY="525.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Jump start the server" textAlignment="CENTER" textFill="#fcfcfe">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Button>
+      <Text fill="#31134a" layoutX="397.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="here you can start the server ,log in screen,enter a parking lot ,and more , if you are unsure of how to select press the help button above:  " textAlignment="CENTER" wrappingWidth="686.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Button fx:id="haveSub1" layoutX="807.0" layoutY="525.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="edit parking lots" textAlignment="CENTER" textFill="#fcfcfe">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Button>
+      <Button fx:id="haveSub11" layoutX="807.0" layoutY="591.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="add /edit employee" textAlignment="CENTER" textFill="#fcfcfe">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Button>
+      <Button fx:id="haveSub111" layoutX="807.0" layoutY="649.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Kiosk screen" textAlignment="CENTER" textFill="#fcfcfe">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Button>
+      <Text fill="#31134a" layoutX="389.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. jump start the server starts the server with prefixed data base. " textAlignment="CENTER" wrappingWidth="686.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fill="#31134a" layoutX="389.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. edit parking lots means adding a new parking lot and a new manager for that parking lot" textAlignment="CENTER" wrappingWidth="686.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fill="#31134a" layoutX="397.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3.login works for both Registered customers and Employees , including the CEO of the company , but the registration is only for a customer . and this is only a demo , a normal user or the ceo for that matter cannot use the add/edit employee or edit parking lots , as its an external service that we have no control over ." textAlignment="CENTER" wrappingWidth="686.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fill="#31134a" layoutX="397.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4.Entrance and exit screen is the screen that should be displayed for the customer when he wants to get his car in or out of the parking lot" textAlignment="CENTER" wrappingWidth="686.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fill="#31134a" layoutX="397.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4.add/edit employee allows you to add a new employee for your specific tests " textAlignment="CENTER" wrappingWidth="686.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+    </children>
+</Pane>
