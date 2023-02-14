@@ -5,7 +5,7 @@
         <!-- Database connection settings -->
 
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/test-transaction?useSSL=true</property>
+        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/cps-mhmd?useSSL=true</property>
 
         <property name="connection.username">CpsAdmin</property>
         <property name="connection.password">@#123asad</property>
