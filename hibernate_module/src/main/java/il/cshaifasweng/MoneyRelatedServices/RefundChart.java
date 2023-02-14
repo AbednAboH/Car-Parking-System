@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class RefundChart implements Serializable {
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name = "fromTime", nullable = false,unique = true)
     private int fromTime;
     @Column(name = "toTime", nullable = false,unique = true)

@@ -170,13 +170,13 @@ public class CancelOrderController {
 
         }
         else if(order.getDateOfOrder().getDayOfYear()-date.getDayOfYear()==0){
-            if(Integer.parseInt(order.getEntering())-date.getHour()>3){
+            if(order.getHoursOfResidency()>3){
                 refundAmmount.setText(refundChart.get(2).getValue()*ammountPaid+"");
             }
-            else if(Integer.parseInt(order.getEntering())-date.getHour()>1){
+            else if(order.getHoursOfResidency()>1){
                 refundAmmount.setText(refundChart.get(1).getValue()*ammountPaid+"");
             }
-            else if(Integer.parseInt(order.getEntering())-date.getHour()>0){
+            else if(order.getHoursOfResidency()>0){
                 refundAmmount.setText(refundChart.get(0).getValue()*ammountPaid+"");
             }
             else{

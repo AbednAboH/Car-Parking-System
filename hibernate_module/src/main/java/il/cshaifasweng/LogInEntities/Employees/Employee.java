@@ -10,7 +10,7 @@ public abstract class Employee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name="firstName")
     private String firstName;
     @Column(name="LastName")
@@ -47,7 +47,7 @@ public abstract class Employee implements Serializable {
         this.salary = salary;
         this.lastName=lastName;
         this.email=email;
-        this.password=firstName+lastName;
+        this.password=firstName;
     }
     public Employee(String firstName, String title ,double salary) {
         this.firstName = firstName;
@@ -66,7 +66,7 @@ public abstract class Employee implements Serializable {
         this.id = id;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

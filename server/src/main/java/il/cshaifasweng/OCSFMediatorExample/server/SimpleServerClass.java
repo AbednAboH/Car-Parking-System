@@ -11,12 +11,11 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
-import il.cshaifasweng.ParkingLotEntities.Car;
-import il.cshaifasweng.ParkingLotEntities.ParkingLot;
-import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
+import il.cshaifasweng.ParkingLotEntities.*;
 import il.cshaifasweng.customerCatalogEntities.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +30,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import static il.cshaifasweng.OCSFMediatorExample.server.ServerMessegesEnum.*;
+import static il.cshaifasweng.ParkingLotEntities.ConstantMessegesForClient.*;
+
 @Getter
 @Setter
 public class SimpleServerClass extends AbstractServer {
@@ -39,8 +41,8 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
-    private static Map<Long, Customer> clientsCustomersMap = new HashMap<>();
-    private static Map<Long, Employee> clientsEmployeeMap = new HashMap<>();
+    private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
+    private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
     private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
     private static  final  DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
@@ -94,82 +96,43 @@ public class SimpleServerClass extends AbstractServer {
             DataBaseManipulation.intiate(handleMessegesSession);
             AuthenticationService.intiate(handleMessegesSession);
         }
+        int type=messageType((Message) msg);
         try {
-
             handleMessegesSession.beginTransaction();
-            if (request.isBlank()) {
-                message.setMessage("Error! we got an empty message");
-            } else if (request.startsWith("#LogIn")) {
-                Login(message,client);
-
-            }else if (request.startsWith("#Register")) {
-                registerUser(message,client);
-            } else if (request.startsWith("#intializeParkingLot")) {
-                initializeParkingLot(message, client);
-            } else if (request.startsWith("#getAllParkingLots")) {
-                sendParkingLots(message, client);
-
-            }else if (request.startsWith("#placeOrder")) {
-                placeOrder(message, client);
-            }else if (request.startsWith("#getUser")) {
-                getUser(message, client);
+            switch (type) {
+                case 0 -> message.setMessage("Empty message");
+                case 1 -> Login(message, client);
+                case 2 -> registerUser(message, client);
+                case 3 -> initializeParkingLot(message, client);
+                case 4 -> sendParkingLots(message, client);
+                case 5 -> placeOrder(message, client);
+                case 6 -> getUser(message, client);
+                case 7 -> sendPricesChart(message, client);
+                case 8 -> updatePriceChart(message, client);
+                case 9 -> updateSubscriptionAmount(message, client);
+                case 10 -> diretToParkingLots(message, client);
+                case 11 -> getParkingSpots(message, client);
+                case 12 -> setParkingSpots(message, client);
+                case 13 -> showOrders(message, client);
+                case 14 -> showSubscription(message, client);
+                case 15 -> addSubscription(message, client);
+                case 16 -> cancelOrder(message, client);
+                case 17 -> cancelSubscription(message, client);
+                case 18 -> getRefundChart(message, client);
+                case 19 -> System.out.println("connection alive");
+                case 20 -> getCustomersOrders(message, client);
+                case 21 -> applyCompaint(message, client);
+                case 22 -> showComplaints(message, client);
+                case 23 -> closeCompliants(message, client);
+                case 24 -> verifySubscription(message, client);
+                case 25 -> verifyOrder(message, client);
+                case 26 -> getCustomerCars(message, client);
+                case 27 -> cancelOrderAndGetRefund(message, client);
+                case 28 -> enterParkingLot(message, client);
+                case 29 -> exitParkingLot(message, client);
+                default -> System.out.println("message content doesn't match any request");
             }
-            else if (request.startsWith("#getPricingChart")) {
-                sendPricesChart(message, client);
-
-            } else if (request.startsWith("#updatePrice")) {
-                System.out.println("Update");
-                updatePriceChart(message, client);
-            } else if (request.startsWith("#updateAmount")) {
-                updateSubscriptionAmount(message, client);
-            } else if (request.startsWith("#DirectToAvailblePark")) {
-                diretToParkingLots(message, client);
-            } else if (request.startsWith("#GetParkingSpots")) {
-                getParkingSpots(message, client);
-            } else if (request.startsWith("#SetParkingSpots")) {
-                setParkingSpots(message, client);
-            } else if (request.startsWith("#showOrders")) {
-                showOrders(message, client);
-            } else if (request.startsWith("#showSubscription")) {
-                showSubscription(message, client);
-
-            }else if (request.startsWith("#addSubscription")) {
-                addSubscription(message, client);
-
-            } else if (request.startsWith("#cancelOrder")) {
-                cancelOrder(message, client);
-
-            } else if (request.startsWith("#cancelSubscription")) {
-                cancelSubscription(message, client);
-            }
-            else if(request.startsWith("#GetRefundChart")){
-                getRefundChart(message,client);
-            }
-            else if (request.startsWith("#ConnectionAlive")) {
-                System.out.println("connection alive");
-            } else if (request.startsWith("#getAllOrders")) {
-                System.out.println("get all orders");
-                getCustomersOrders(message, client);
-            } else if (request.startsWith("#applyComplaint")) {
-                applyCompaint(message, client);
-            } else if (request.startsWith("#GetAllCompliants")) {
-                System.out.println("Got the message");
-                showComplaints(message, client);
-            } else if (request.startsWith("#CloseComplaint")) {
-                System.out.println("ClosingCompliant");
-                closeCompliants(message, client);
-            } else if (request.startsWith("#verifySubscription")) {
-                verifySubscription(message, client);
-            } else if (request.startsWith("#verifyOrder")) {
-                verifyOrder(message, client);
-            } else if (request.startsWith("#GetCustomerCars")) {
-                getCustomerCars(message, client);
-            } else if (request.startsWith("#CancelOrderAndGetRefund")) {
-                cancelOrderAndGetRefund(message, client);
-
-            } else {
-                System.out.println("message content doesn't match any request");
-            }
+//
             client.sendToClient(message);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -178,26 +141,59 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.getTransaction().commit();
             handleMessegesSession.close();
         }
+
+    }
+
+    private void exitParkingLot(Message message, ConnectionToClient client) {
+
+    }
+
+    private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
+        String[] instructions=message.getMessage().split("&");
+        int KioskParkingLotId=Integer.parseInt(instructions[0]);
+        int licensePlate=Integer.parseInt(instructions[1]);
+        //todo: check if the parking lot is full
+        ParkingLot pl=pLot.get(KioskParkingLotId,ParkingLot.class);
+        if (pl.isFull()) {
+            message.setMessage(FULL_PARKING_LOT.type);
+            client.sendToClient(message);
+        }
+        //todo: check if the customer has an active order
+        //todo: check if vehicle is in the parking lot
+
+
+
+
+
+    }
+    private static int messageType(Message msg) {
+        int messageType = -1;
+        for (ServerMessegesEnum messageTypeEnum : ServerMessegesEnum.values()) {
+            messageType = messageTypeEnum.startswith(msg.getMessage());
+            if (messageType != -1) {
+                return messageType;
+            }
+        }
+        return messageType;
     }
 
     private void cancelOrderAndGetRefund(Message message, ConnectionToClient client) {
         String[] instructions=message.getMessage().split("&");
-
         Order order=orderHandler.get(Integer.parseInt(instructions[2]), Order.class) ;
         order.setActive(false);
         orderHandler.update(order);
-        int customer= (int) client.getInfo("userId");
+        int customer= (Integer) client.getInfo("userId");
         Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
         refund.setTransaction_method(order.getTransaction_method());
         refund.setTransactionStatus(true);
         handleMessegesSession.save(refund);
-        message.setMessage("#CancelOrderAndGetRefund");
+        message.setMessage(CANCEL_ORDER_AND_GET_REFUND.type);
 
     }
 
     private void getRefundChart(Message message, ConnectionToClient client) throws IOException {
         message.setObject(refundChartHandler.getAll(RefundChart.class));
-        
+
     }
     private void applyCompaint(Message message, ConnectionToClient client) throws IOException {
         Complaint complaint = (Complaint) message.getObject();
@@ -223,7 +219,7 @@ public class SimpleServerClass extends AbstractServer {
         args = request.split("&");
         int parkingLotId;
         int customerID;
-        int orderID;
+        int  orderID;
 
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
@@ -251,7 +247,7 @@ public class SimpleServerClass extends AbstractServer {
         args = request.split("&");
         int parkingLotId;
         int customerID;
-        int subscriptionID;
+        int  subscriptionID;
 
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
@@ -284,6 +280,7 @@ public class SimpleServerClass extends AbstractServer {
 
     }
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
+        System.out.println(message.getMessage());
         String request = message.getMessage();
         int complaintId;
         int userId;
@@ -345,7 +342,13 @@ public class SimpleServerClass extends AbstractServer {
 
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
         // TODO: get order that has the client id and not all orders
-        message.setObject(orderHandler.getAll(Order.class));
+        List<Order> orders = orderHandler.getAll(Order.class);
+        orders.forEach(order -> {
+            Hibernate.initialize(order.getRegisteredCustomer());
+            Hibernate.initialize(order.getParkingLotID());
+            Hibernate.initialize(order.getCar());
+        });
+        message.setObject(orders);
     }
 
     protected void registerUser(Message message,ConnectionToClient client){
@@ -362,8 +365,7 @@ public class SimpleServerClass extends AbstractServer {
         rCustomer.save(customer, RegisteredCustomer.class);
         customer = rCustomer.getLastAdded(RegisteredCustomer.class);
         clientsCustomersMap.put(customer.getId(), customer);
-//        client.setInfo("userId", customer.getId());
-//        System.out.println(customer);
+
         message.setMessage("RegistrationSuccessful");
     }
     protected void Login(Message message,ConnectionToClient client){
@@ -372,7 +374,6 @@ public class SimpleServerClass extends AbstractServer {
         String[] mess=message.getMessage().split("&");
         email=mess[1];
         password=mess[2];
-        System.out.println("get customer");
 
         int clientType=0;
         clientType=AuthenticationService.checkAuthintecatedEntityType(email,password);
@@ -380,7 +381,6 @@ public class SimpleServerClass extends AbstractServer {
             message.setMessage("#authintication failed!");
         else if(clientType<5){
             Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
-            System.out.println(user);
             assert user != null;
             if (clientsEmployeeMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
@@ -395,9 +395,7 @@ public class SimpleServerClass extends AbstractServer {
             }
         }
         else if(clientType<=5){
-            System.out.println("customer aquesition");
             RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
-            System.out.println(user);
 
             assert user != null;
             if (clientsCustomersMap.containsKey(user.getId()))
@@ -443,7 +441,7 @@ public class SimpleServerClass extends AbstractServer {
         System.out.println(ps);
         Hibernate.initialize(lot.getSpots());
         System.out.println(ps);
-        message.setMessage("#GetParkingSpots");
+        message.setMessage(GET_PARKING_SPOTS.type);
         message.setObject(lot.getSpots());
 
     }
@@ -493,7 +491,11 @@ public class SimpleServerClass extends AbstractServer {
 
         RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
         Object orders =regCostumer.getOrders();
-        Hibernate.initialize(orders);
+//        Hibernate.initialize(orders);
+        for (Order order : regCostumer.getOrders()) {
+            Hibernate.initialize(order.getCar());
+        }
+
         handleMessegesSession.flush();
         message.setObject(orders);
 
@@ -519,8 +521,7 @@ public class SimpleServerClass extends AbstractServer {
         Employee user=clientsEmployeeMap.get(id);
         if (user.getClass()==ParkingLotEmployee.class){
             user=plEmployee.get(id,ParkingLotEmployee.class);
-        }
-        else if (user.getClass()==ParkingLotManager.class){
+        } else if (user.getClass()==ParkingLotManager.class){
             user=plManager.get(id,ParkingLotManager.class);
         }else if (user.getClass()==CustomerServiceEmployee.class){
             user=csEmployee.get(id,CustomerServiceEmployee.class);
@@ -538,10 +539,8 @@ public class SimpleServerClass extends AbstractServer {
         handleMessegesSession.update(PL);
         handleMessegesSession.flush();
         message.setObject(PL.getSpots());
-        message.setMessage("#GetParkingSpots");
+        message.setMessage(GET_PARKING_SPOTS.type);
     }
-
-
     // todo: need to fix it!!!!!!!
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space

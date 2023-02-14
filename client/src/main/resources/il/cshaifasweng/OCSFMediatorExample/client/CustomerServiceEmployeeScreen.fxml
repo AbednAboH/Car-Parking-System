@@ -13,7 +13,7 @@
     <children>
         <ImageView fitHeight="148.0" fitWidth="200.0" layoutX="406.0" layoutY="19.0">
             <image>
-                <Image url="@../il/cshaifasweng/OCSFMediatorExample/client/icons/parking-car.png" />
+                <Image url="@icons/parking-car.png" />
             </image>
         </ImageView>
         <VBox layoutX="356.0" layoutY="304.0" prefHeight="148.0" prefWidth="288.0" spacing="15.0">
@@ -54,7 +54,7 @@
         </Text>
         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="175.0" layoutY="20.0">
             <image>
-                <Image url="@../il/cshaifasweng/OCSFMediatorExample/client/icons/User.png" />
+                <Image url="@icons/User.png" />
             </image>
         </ImageView>
     </children>

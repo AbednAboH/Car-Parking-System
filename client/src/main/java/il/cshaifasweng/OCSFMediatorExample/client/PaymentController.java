@@ -88,7 +88,7 @@ public class PaymentController {
         plateNumTxt.setText(order.getCar().toString());
         dateTxt.setText(order.getDateOfOrder().toString());
         pLaddress.setText(order.getParkingLotID().getId()+"");
-        parkingHoursTxt.setText(order.getEntering() + ":00 - " + order.getExiting() + ":00");
+        parkingHoursTxt.setText(order.getDateOfOrder() + " - " + order.getExiting() );
         ammountToPay.setText(Double.toString(order.getValue()));
     }
     static void fillKnownSubscription(Subscription subscription, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {

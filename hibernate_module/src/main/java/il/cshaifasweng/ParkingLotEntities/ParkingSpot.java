@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class ParkingSpot implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name="rowNum")
     private int row;
     @Column(name="floor")
@@ -104,7 +104,7 @@ public class ParkingSpot implements Serializable {
     }
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 }
