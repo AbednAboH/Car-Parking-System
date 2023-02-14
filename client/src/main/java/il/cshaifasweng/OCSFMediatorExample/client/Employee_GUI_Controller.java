@@ -6,10 +6,7 @@ import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +33,9 @@ public class Employee_GUI_Controller {
     private TableColumn<ParkingSpot, Integer> floor;
 
     @FXML
+    private TableColumn<ParkingSpot, String> statusColumn;
+
+    @FXML
     private ComboBox<Integer> floorLabel;
 
     @FXML
@@ -57,6 +57,12 @@ public class Employee_GUI_Controller {
     private Button userOptBtn;
 
     @FXML
+    private Label errorMsg;
+
+    @FXML
+    private Button markFaultyBtn;
+
+    @FXML
     private Button userOptBtn1;
 
     @FXML
@@ -71,22 +77,20 @@ public class Employee_GUI_Controller {
 
     @FXML
     void SaveSpot(ActionEvent event) {
-    int index;
-     if (Table.getSelectionModel().getSelectedItem() != null) {
+        if (Table.getSelectionModel().getSelectedItem() != null) {
+            errorMsg.setVisible(false);
             Table.getSelectionModel().getSelectedItem().setOccupied(true);
             System.out.println(Table.getSelectionModel().getSelectedItem());
             Message message = new Message("#SetParkingSpots");
-            message.setObject( Table.getSelectionModel().getSelectedItem());
+            message.setObject(Table.getSelectionModel().getSelectedItem());
             try {
                 SimpleClient.getClient().sendToServer(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            errorMsg.setVisible(true);
         }
-     else{
-         // TODO: 26/01/2023 add alert to user that he didnt choose a spot
-         System.out.println("No spot was chosen");
-     }
     }
 
     @FXML
@@ -105,33 +109,62 @@ public class Employee_GUI_Controller {
         Message message = new Message("#intializeParkingLot");
         try {
             SimpleClient.getClient().sendToServer(message);
+            message.setMessage("#GetParkingSpots");
+            SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Subscribe
-    public void GetParkingSpotsFromServer(ParkingSpotsSubscriber event){
+    public void GetParkingSpotsFromServer(ParkingSpotsSubscriber event) {
         System.out.println("Got response from server");
-        pSpots=(List<ParkingSpot>)event.getMessage().getObject();
+        pSpots = (List<ParkingSpot>) event.getMessage().getObject();
         row.setCellValueFactory(new PropertyValueFactory<>("row"));
         floor.setCellValueFactory(new PropertyValueFactory<>("floor"));
         depth.setCellValueFactory(new PropertyValueFactory<>("depth"));
-        available.setCellValueFactory(data->new SimpleObjectProperty<>(!data.getValue().isOccupied()));
+        available.setCellValueFactory(data -> new SimpleObjectProperty<>(!data.getValue().isOccupied()));
+        statusColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(getSpotStatus(data.getValue())));
         pSpots.forEach(Table.getItems()::add);
         Table.refresh();
         System.out.println("Got Parking Spots");
-
     }
+
+    private String getSpotStatus(ParkingSpot ps) {
+        if (ps.free())
+            return "Free";
+        if (ps.isFaulty())
+            return "Faulty";
+        if (ps.isOccupied())
+            return "Occupied";
+        return "Saved";
+    }
+
     @FXML
-    void initialize()throws Exception{
+    void markSpotAsFaulty(ActionEvent event) {
+        if (Table.getSelectionModel().getSelectedItem() != null) {
+            errorMsg.setVisible(false);
+            Table.getSelectionModel().getSelectedItem().setFaulty(true);
+            System.out.println(Table.getSelectionModel().getSelectedItem());
+            Message message = new Message("#SetParkingSpots");
+            message.setObject(Table.getSelectionModel().getSelectedItem());
+            try {
+                SimpleClient.getClient().sendToServer(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            errorMsg.setVisible(true);
+        }
+    }
+
+
+    @FXML
+    void initialize() throws Exception {
         EventBus.getDefault().register(this);
+        errorMsg.setVisible(false);
         Message message = new Message("#GetParkingSpots");
         SimpleClient.getClient().sendToServer(message);
-
-
-
-
     }
 
 }
