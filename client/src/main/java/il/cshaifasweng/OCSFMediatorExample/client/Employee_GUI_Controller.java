@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingSpotsSubscriber;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import static com.sun.javafx.application.PlatformImpl.runLater;
+
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
@@ -78,7 +82,7 @@ public class Employee_GUI_Controller {
     @FXML
     void SaveSpot(ActionEvent event) {
         if (Table.getSelectionModel().getSelectedItem() != null) {
-            errorMsg.setVisible(false);
+//            errorMsg.setVisible(false);
             Table.getSelectionModel().getSelectedItem().setOccupied(true);
             System.out.println(Table.getSelectionModel().getSelectedItem());
             Message message = new Message("#SetParkingSpots");
@@ -89,7 +93,7 @@ public class Employee_GUI_Controller {
                 e.printStackTrace();
             }
         } else {
-            errorMsg.setVisible(true);
+            //errorMsg.setVisible(true);
         }
     }
 
@@ -109,8 +113,6 @@ public class Employee_GUI_Controller {
         Message message = new Message("#intializeParkingLot");
         try {
             SimpleClient.getClient().sendToServer(message);
-            message.setMessage("#GetParkingSpots");
-            SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,16 +120,25 @@ public class Employee_GUI_Controller {
 
     @Subscribe
     public void GetParkingSpotsFromServer(ParkingSpotsSubscriber event) {
+
         System.out.println("Got response from server");
         pSpots = (List<ParkingSpot>) event.getMessage().getObject();
+        pSpots.forEach(ps -> System.out.println(isAvailable(ps)));
         row.setCellValueFactory(new PropertyValueFactory<>("row"));
         floor.setCellValueFactory(new PropertyValueFactory<>("floor"));
         depth.setCellValueFactory(new PropertyValueFactory<>("depth"));
-        available.setCellValueFactory(data -> new SimpleObjectProperty<>(!data.getValue().isOccupied()));
-        statusColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(getSpotStatus(data.getValue())));
-        pSpots.forEach(Table.getItems()::add);
-        Table.refresh();
-        System.out.println("Got Parking Spots");
+        available.setCellValueFactory(data -> new SimpleObjectProperty<>(isAvailable(data.getValue())));
+        //statusColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(getSpotStatus(data.getValue())));
+        refreshTable();
+    }
+
+    private void refreshTable() {
+        Platform.runLater(() -> {
+            Table.getItems().clear();
+            pSpots.forEach(Table.getItems()::add);
+            Table.refresh();
+            System.out.println("Got Parking Spots");
+        });
     }
 
     private String getSpotStatus(ParkingSpot ps) {
@@ -140,10 +151,14 @@ public class Employee_GUI_Controller {
         return "Saved";
     }
 
+    private boolean isAvailable(ParkingSpot ps){
+        return !(ps.isSaved() || ps.isOccupied() || ps.isFaulty());
+    }
+
     @FXML
     void markSpotAsFaulty(ActionEvent event) {
         if (Table.getSelectionModel().getSelectedItem() != null) {
-            errorMsg.setVisible(false);
+//            errorMsg.setVisible(false);
             Table.getSelectionModel().getSelectedItem().setFaulty(true);
             System.out.println(Table.getSelectionModel().getSelectedItem());
             Message message = new Message("#SetParkingSpots");
@@ -154,7 +169,7 @@ public class Employee_GUI_Controller {
                 e.printStackTrace();
             }
         } else {
-            errorMsg.setVisible(true);
+            //errorMsg.setVisible(true);
         }
     }
 
@@ -162,7 +177,7 @@ public class Employee_GUI_Controller {
     @FXML
     void initialize() throws Exception {
         EventBus.getDefault().register(this);
-        errorMsg.setVisible(false);
+        //errorMsg.setVisible(false);
         Message message = new Message("#GetParkingSpots");
         SimpleClient.getClient().sendToServer(message);
     }
