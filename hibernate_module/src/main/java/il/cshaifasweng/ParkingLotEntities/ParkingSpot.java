@@ -24,7 +24,7 @@ public class ParkingSpot implements Serializable {
     @Column(name="Occupied")
     private boolean occupied;
     @JoinColumn(name="entryAndExitLog_id")
-    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    @OneToOne(fetch=FetchType.LAZY,cascade ={CascadeType.MERGE})
     private EntryAndExitLog entryAndExitLog;
     @Column(name="SavedSpace")
     private boolean saved;

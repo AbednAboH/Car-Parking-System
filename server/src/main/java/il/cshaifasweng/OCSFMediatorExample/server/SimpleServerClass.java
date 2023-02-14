@@ -94,6 +94,7 @@ public class SimpleServerClass extends AbstractServer {
 
         try {
             if (!handleMessegesSession.isOpen()){
+                handleMessegesSession = DAO.factory.openSession();
                 DataBaseManipulation.intiate(handleMessegesSession);
                 AuthenticationService.intiate(handleMessegesSession);
             }
