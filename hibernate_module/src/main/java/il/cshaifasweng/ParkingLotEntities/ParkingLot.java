@@ -6,6 +6,8 @@ import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,9 +29,10 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
     private int rowsInEachFloor;
     @Column(name="RowCapacity")
     private int rowCapacity;
-
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<ParkingLotEmployee> employeeList;
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name="parkingLotManager_id")
     private ParkingLotManager manager;
