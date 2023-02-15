@@ -37,9 +37,11 @@ public enum ServerMessegesEnum {
     VERIFY_ORDER("#verifyOrder"),
     GET_CUSTOMER_CARS("#GetCustomerCars"),
     CANCEL_ORDER_AND_GET_REFUND("#CancelOrderAndGetRefund"),
-    LOGOUT("#LogOut"),
     ENTER_PARKING_LOT("#EnterParkingLot"),
-    EXIT_PARKING_LOT("#ExitParkingLot")
+    EXIT_PARKING_LOT("#ExitParkingLot"),
+    LOGOUT("#LogOut"),
+    GET_ACTIVE_ORDERS("#GetActiveOrders"),
+    GET_ALL_ORDERS_FOR_MANAGER("#GetAllOrdersForManager")
     ;
 
     final String type;

@@ -1,11 +1,21 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingSpotsSubscriber;
+import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
+import il.cshaifasweng.customerCatalogEntities.Order;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.IOException;
+import java.util.List;
 
 public class ParkingLotManagerController {
+    private List<Order> orders;
 
     @FXML
     private Button ActiveOrders;
@@ -17,7 +27,7 @@ public class ParkingLotManagerController {
     private Button acceptRequestByn;
 
     @FXML
-    private TableView<?> ordersTable;
+    private TableView<Order> ordersTable;
 
     @FXML
     private TableView<?> priceTable;
@@ -54,12 +64,28 @@ public class ParkingLotManagerController {
 
     @FXML
     void showActiveOrders(ActionEvent event) {
-
+        Message message = new Message("#GetActiveOrders");
+        try {
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void showAllOrders(ActionEvent event) {
+        Message message = new Message("#GetAllOrdersForManager");
+        try {
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Subscribe
+    public void GetOrdersFromServer(OrderHistoryResponse event) {
+        System.out.println("Got response from server");
+        orders = (List<Order>) event.getMessage().getObject();
     }
 
 }
