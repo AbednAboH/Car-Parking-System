@@ -18,6 +18,7 @@ import il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee;
 import il.cshaifasweng.LogInEntities.Employees.GlobalManager;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
+import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.MoneyRelatedServices.*;
 import il.cshaifasweng.ParkingLotEntities.*;
 import il.cshaifasweng.converters.ParkingLotScheduelerInterceptor;
@@ -33,7 +34,7 @@ import org.hibernate.service.ServiceRegistry;
 
 public class MySQL
 {
-    public static final Class[] classes=new Class[]{ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
+    public static final Class[] classes=new Class[]{User.class,ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
             , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class, RefundChart.class, EntryAndExitLog.class,ParkingLotScheduler.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
@@ -70,7 +71,7 @@ public class MySQL
             connectToDB();
             initiateParkingLot();
             EnterExiteParkingLotPrefixedValuesForTesting(true);
-//            EnterExiteParkingLotPrefixedValuesForTesting(false);
+            EnterExiteParkingLotPrefixedValuesForTesting(false);
 //            ParkingLot plot=getEntity(1,ParkingLot.class);
 //            plot.getSpots().get(0).setOccupied(true);
 //            session.update(plot.getSpots().get(0));

@@ -23,6 +23,10 @@ public class RegisteredCustomer extends Customer {
     private List<Subscription> subscriptions;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Refund> refunds;
+    @Override
+    public String getGUI(){
+        return "RegisteredCustomer";
+    }
     public RegisteredCustomer(){
 
     }

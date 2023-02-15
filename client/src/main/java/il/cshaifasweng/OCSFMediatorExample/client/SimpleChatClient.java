@@ -23,6 +23,14 @@ public class SimpleChatClient extends Application {
     private static Object user;
     private static Order currentOrder;
     private static Subscription currentSubscription;
+    private static int RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
+
+    public static int getCurrentRequest() {
+        return RequestBetweenScreens;
+    }
+    public static int setCurrentRequest(int currentRequest) {
+        return RequestBetweenScreens = currentRequest;
+    }
 
 public static Subscription getCurrentSubscription() {
         return currentSubscription;
@@ -50,7 +58,7 @@ public static Subscription getCurrentSubscription() {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 1080, 720);
+        scene = new Scene(loadFXML("parkingLotStatus"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }
@@ -62,7 +70,7 @@ public static Subscription getCurrentSubscription() {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SimpleChatClient.class.getResource(fxml + ".fxml"));
-        return fxmlLoader. load();
+        return fxmlLoader.load();
     }
     
     public static Object getUser(){

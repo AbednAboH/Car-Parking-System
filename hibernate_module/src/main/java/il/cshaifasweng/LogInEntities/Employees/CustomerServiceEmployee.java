@@ -26,6 +26,10 @@ public class CustomerServiceEmployee extends Employee {
     public CustomerServiceEmployee() {
 
     }
+    @Override
+    public String getGUI() {
+        return "CustomerServiceEmployeeScreen";
+    }
 
 
     public List<ParkingLot> getParkingLot() {

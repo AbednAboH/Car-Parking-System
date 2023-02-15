@@ -19,6 +19,10 @@ public class ParkingLotEmployee extends Employee {
         this.parkingLot=parkingLot;
     }
     public ParkingLotEmployee() {}
+    @Override
+    public String getGUI() {
+        return "Employee_GUI";
+    }
     public ParkingLot getParkingLot() {
         return parkingLot;
     }

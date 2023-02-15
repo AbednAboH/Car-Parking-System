@@ -1,28 +1,24 @@
 package il.cshaifasweng.LogInEntities.Employees;
 
+import il.cshaifasweng.LogInEntities.User;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.net.PasswordAuthentication;
 
-@MappedSuperclass
-public abstract class Employee implements Serializable {
-
-
+@Entity
+@Inheritance(strategy =InheritanceType.JOINED)
+public abstract class Employee extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name="firstName")
-    private String firstName;
-    @Column(name="LastName")
-    private String lastName;
+    protected int id;
+
     @Column(name="Title")
     private String title;
     @Column(name="Salary")
     private double salary;
-    @Column(name="Email")
-    private String email;
-    @Column
-    private String password;
+
+
     public String getLastName() {
         return lastName;
     }

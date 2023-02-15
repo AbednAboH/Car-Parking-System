@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogInSubscriber;
 import javafx.application.Platform;
@@ -122,8 +123,9 @@ public class LogInController{
                         invalidLoginCredentials.setStyle(successMessage);
                         loginUsernameTextField.setStyle(successStyle);
                         try {
-                            SimpleChatClient.setRoot("Employee_GUI");
-//                            EventBus.getDefault().unregister(LogInController.this);
+                            Object obj=SimpleChatClient.getUser();
+                            if (obj instanceof User)
+                                SimpleChatClient.setRoot(((User) obj).getGUI());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

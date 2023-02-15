@@ -99,8 +99,9 @@ public class SimpleServerClass extends AbstractServer {
                 AuthenticationService.intiate(handleMessegesSession);
             }
             handleMessegesSession.beginTransaction();
-            int type=messageType((Message) msg);
 
+            int type=messageType((Message) msg);
+            //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
                 case 1 -> Login(message, client);
@@ -130,8 +131,9 @@ public class SimpleServerClass extends AbstractServer {
                 case 25 -> verifyOrder(message, client);
                 case 26 -> getCustomerCars(message, client);
                 case 27 -> cancelOrderAndGetRefund(message, client);
-                case 28 -> enterParkingLot(message, client);
-                case 29 -> exitParkingLot(message, client);
+                case 28 -> LogOut(message, client);
+                case 29-> enterParkingLot(message, client);
+                case 30-> exitParkingLot(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
 //            handleMessegesSession.getTransaction().commit();
@@ -149,28 +151,43 @@ public class SimpleServerClass extends AbstractServer {
 
     }
 
-    private void exitParkingLot(Message message, ConnectionToClient client) {
+    private void LogOut(Message message, ConnectionToClient client) {
+        // TODO: 15/02/2023 implement log out
+    }
 
+    private void exitParkingLot(Message message, ConnectionToClient client) throws IOException {
+        EntryExitParkingLot(message,false);
     }
 
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
-        String[] instructions=message.getMessage().split("&");
-        int KioskParkingLotId=Integer.parseInt(instructions[0]);
-        int licensePlate=Integer.parseInt(instructions[1]);
-        //todo: check if the parking lot is full
-        ParkingLot pl=pLot.get(KioskParkingLotId,ParkingLot.class);
-        if (pl.isFull()) {
-            message.setMessage(FULL_PARKING_LOT.type);
-            client.sendToClient(message);
-        }
-        //todo: check if the customer has an active order
-        //todo: check if vehicle is in the parking lot
-
-
-
-
-
+        EntryExitParkingLot(message,true);
     }
+
+    private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
+        String[] instructions= message.getMessage().split("&");
+        ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
+        Transactions transaction=new Transactions();
+        String licensePlate=instructions[4];
+        switch (instructions[5]) {
+            case "Subscription"->transaction = handleMessegesSession.get(Subscription.class, Integer.parseInt(instructions[3]));
+            case "Order"->transaction = handleMessegesSession.get(Order.class, Integer.parseInt(instructions[3]));
+            case "BasicOrder"-> System.out.println("basicOrder");// TODO: 15/02/2023 implement basic order
+            default->throw new IOException("transaction type is not valid");
+        }
+        //todo: check if the parking lot is full
+        if (isEntry&&plot.isFull()) {
+            message.setMessage(FULL_PARKING_LOT.type);
+        }
+        else{
+            try {
+                EntryAndExitLog log = isEntry?plot.entryToPLot(transaction, licensePlate):plot.exitParkingLot(transaction,licensePlate);
+                handleMessegesSession.saveOrUpdate(log);
+            } catch (Exception e) {
+                message.setMessage(e.getMessage());
+            }
+        }
+    }
+
     private static int messageType(Message msg) {
         int messageType = -1;
         for (ServerMessegesEnum messageTypeEnum : ServerMessegesEnum.values()) {
@@ -549,7 +566,7 @@ public class SimpleServerClass extends AbstractServer {
         ParkingLotEmployee E = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot PL = E.getParkingLot();
         Hibernate.initialize(PL.getSpots());
-        PL.reInitiateParkingSpots();
+        PL.ExitAllCarsAndInitiateAllSpots();
         handleMessegesSession.update(PL);
         handleMessegesSession.flush();
         message.setObject(PL.getSpots());

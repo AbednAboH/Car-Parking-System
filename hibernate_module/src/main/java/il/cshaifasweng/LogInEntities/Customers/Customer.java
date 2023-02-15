@@ -1,5 +1,6 @@
 package il.cshaifasweng.LogInEntities.Customers;
 
+import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import lombok.Getter;
@@ -14,17 +15,9 @@ import java.util.List;
 @Inheritance(strategy =InheritanceType.JOINED)
 @Getter
 @Setter
-public abstract class Customer implements Serializable {
+public abstract class Customer extends User {
     @Id
     private int id;
-    @Column(name="email")
-    private String email;
-    @Column(name="firstName")
-    private String firstName;
-    @Column(name="lastName")
-    private String lastName;
-    @Column(name="password")
-    private String  password;
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> cars = new ArrayList<>();
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
