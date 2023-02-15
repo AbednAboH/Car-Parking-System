@@ -122,7 +122,7 @@ public class LogInController{
                         invalidLoginCredentials.setStyle(successMessage);
                         loginUsernameTextField.setStyle(successStyle);
                         try {
-                            SimpleChatClient.setRoot("RegisteredCustomer");
+                            SimpleChatClient.setRoot("Employee_GUI");
 //                            EventBus.getDefault().unregister(LogInController.this);
                         } catch (IOException e) {
                             e.printStackTrace();
