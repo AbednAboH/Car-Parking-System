@@ -103,6 +103,30 @@ public class ParkingSpot implements Serializable {
         return "parkingLotId="+parkingLot.getId()+" ["+floor+"]"+"["+row+"]"+"["+depth+"]= OC"+occupied+" S"+saved;
     }
 
+    public boolean ChangeFaultyStatus(){
+        if(isOccupied())
+            return false;
+        //TODO: save a spot in another parking lot
+        if(isSaved())
+        {
+            setSaved(false);
+        }
+        setFaulty(!isFaulty());
+        return true;
+    }
+
+    public boolean ChangeSavedStatus(){
+        if(isOccupied() || isFaulty() || isSaved())
+            return false;
+        //TODO: if notifying the customer is needed
+        if(isSaved())
+        {
+            setSaved(false);
+            return true;
+        }
+        setSaved(true);
+        return true;
+    }
 
     public int getId() {
         return id;
