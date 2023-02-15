@@ -55,11 +55,10 @@ public class MySQL
         configuration.configure(MySQL.class.getClassLoader().getResource("hibernate.cfg.xml"));
         for (Class cl:classes)
             configuration.addAnnotatedClass(cl);
-        Interceptor interceptor = new ParkingLotScheduelerInterceptor();
+
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
-                .applySetting(AvailableSettings.INTERCEPTOR, interceptor)
                 .build();
 
         return configuration.buildSessionFactory(serviceRegistry);
@@ -69,10 +68,12 @@ public class MySQL
         try {
 
             connectToDB();
-            initiateParkingLot();
-            EnterExiteParkingLotPrefixedValuesForTesting(true);
+//            initiateParkingLot();
+//            EnterExiteParkingLotPrefixedValuesForTesting(true);
             EnterExiteParkingLotPrefixedValuesForTesting(false);
-
+//            ParkingLot plot=getEntity(1,ParkingLot.class);
+//            plot.getSpots().get(0).setOccupied(true);
+//            session.update(plot.getSpots().get(0));
             session.getTransaction().commit();
         } catch (Exception exception) {
             if (session != null) {

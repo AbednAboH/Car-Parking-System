@@ -27,7 +27,7 @@
         <!-- Disable Hibernate's automatic session management -->
         <property name="hibernate.current_session_context_class">thread</property>
         <!-- Echo all executed SQL to stdout -->
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
 
         <!-- Drop and re-create the database schema on startup -->
 <!--        todo: change to update, this mode is for testing only !!!-->

@@ -37,22 +37,22 @@ import static il.cshaifasweng.ParkingLotEntities.ConstantMessegesForClient.*;
 @Setter
 public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-    private static final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
-    private static final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<FullSubscription> fullSubHandler = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<RegularSubscription> regularSubHandler = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<RefundChart> refundChartHandler = new DataBaseManipulation<>();
-    private static final DataBaseManipulation<ParkingSpot> pSpot = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
+    private static  final  DataBaseManipulation<ParkingLotEmployee> plEmployee = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<ParkingLotManager> plManager = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<CustomerServiceEmployee> csEmployee = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<GlobalManager> globalManager = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
+    private  static final DataBaseManipulation<ParkingSpot> pSpot=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
     static Session handleDelaysAndPenaltiesSession;
     public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
@@ -70,8 +70,8 @@ public class SimpleServerClass extends AbstractServer {
 //            HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.SECONDS);
 //            HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
         // TODO: 06/02/2023  should be working correctly use these lines in final project !
-        HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
-        HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+//                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
 
     }
 
@@ -91,14 +91,16 @@ public class SimpleServerClass extends AbstractServer {
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message message = (Message) msg;
         String request = message.getMessage();
-        if (!handleMessegesSession.isOpen()) {
-            handleMessegesSession = DAO.factory.openSession();
-            DataBaseManipulation.intiate(handleMessegesSession);
-            AuthenticationService.intiate(handleMessegesSession);
-        }
-        int type = messageType((Message) msg);
+
         try {
+            if (!handleMessegesSession.isOpen()){
+                handleMessegesSession = DAO.factory.openSession();
+                DataBaseManipulation.intiate(handleMessegesSession);
+                AuthenticationService.intiate(handleMessegesSession);
+            }
             handleMessegesSession.beginTransaction();
+            int type=messageType((Message) msg);
+
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
                 case 1 -> Login(message, client);
@@ -132,12 +134,16 @@ public class SimpleServerClass extends AbstractServer {
                 case 29 -> exitParkingLot(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
+//            handleMessegesSession.getTransaction().commit();
+//            handleMessegesSession.close();
 //
             client.sendToClient(message);
+            handleMessegesSession.getTransaction().commit();
+
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            handleMessegesSession.getTransaction().commit();
+        }
+        finally{
             handleMessegesSession.close();
         }
 
@@ -148,11 +154,11 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
-        String[] instructions = message.getMessage().split("&");
-        int KioskParkingLotId = Integer.parseInt(instructions[0]);
-        int licensePlate = Integer.parseInt(instructions[1]);
+        String[] instructions=message.getMessage().split("&");
+        int KioskParkingLotId=Integer.parseInt(instructions[0]);
+        int licensePlate=Integer.parseInt(instructions[1]);
         //todo: check if the parking lot is full
-        ParkingLot pl = pLot.get(KioskParkingLotId, ParkingLot.class);
+        ParkingLot pl=pLot.get(KioskParkingLotId,ParkingLot.class);
         if (pl.isFull()) {
             message.setMessage(FULL_PARKING_LOT.type);
             client.sendToClient(message);
@@ -161,8 +167,10 @@ public class SimpleServerClass extends AbstractServer {
         //todo: check if vehicle is in the parking lot
 
 
-    }
 
+
+
+    }
     private static int messageType(Message msg) {
         int messageType = -1;
         for (ServerMessegesEnum messageTypeEnum : ServerMessegesEnum.values()) {
@@ -175,12 +183,12 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void cancelOrderAndGetRefund(Message message, ConnectionToClient client) {
-        String[] instructions = message.getMessage().split("&");
-        Order order = orderHandler.get(Integer.parseInt(instructions[2]), Order.class);
+        String[] instructions=message.getMessage().split("&");
+        Order order=orderHandler.get(Integer.parseInt(instructions[2]), Order.class) ;
         order.setActive(false);
         orderHandler.update(order);
-        int customer = (Integer) client.getInfo("userId");
-        Refund refund = new Refund("Calcelation", Double.parseDouble(instructions[1]), rCustomer.get(customer, RegisteredCustomer.class));
+        int customer= (Integer) client.getInfo("userId");
+        Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
         refund.setTransaction_method(order.getTransaction_method());
         refund.setTransactionStatus(true);
         handleMessegesSession.save(refund);
@@ -192,11 +200,10 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(refundChartHandler.getAll(RefundChart.class));
 
     }
-
     private void applyCompaint(Message message, ConnectionToClient client) throws IOException {
         Complaint complaint = (Complaint) message.getObject();
 //        "#applyComplaint&"+firstName+"&"+LastName+"&"+customerID+"&"+email+"&"+parkingLot
-        String[] lazyElements = message.getMessage().split("&");
+        String[] lazyElements=message.getMessage().split("&");
         if (!lazyElements[5].startsWith("null"))
             complaint.setParkingLot(pLot.get(Integer.parseInt(lazyElements[5]), ParkingLot.class));
         Customer customer = customerHandler.get(Integer.parseInt(lazyElements[3]), Customer.class);
@@ -217,7 +224,7 @@ public class SimpleServerClass extends AbstractServer {
         args = request.split("&");
         int parkingLotId;
         int customerID;
-        int orderID;
+        int  orderID;
 
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
@@ -226,17 +233,25 @@ public class SimpleServerClass extends AbstractServer {
                 + "WHERE o.id = :orderID "
                 + "AND o.registeredCustomer.id = :customerId "
                 + "AND o.parkingLotID.id = :parkingLotId "
-                + "AND o.date = CURDATE()";
+                + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
         HashMap<String, Object> params = new HashMap<>();
         params.put("orderID", orderID);
         params.put("customerId", customerID);
         params.put("parkingLotId", parkingLotId);
-        List<Object> lst = rCustomer.executeQuery(Object.class, queryOnOrder, params);
-        if (lst != null && lst.size() > 0) {
-            message.setObject(lst.get(0));
+        System.out.println("queryOnOrder: " + queryOnOrder);
+        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnOrder, params);
+        if (lst == null) {
+            queryOnOrder = "SELECT registeredCustomer FROM Order o "
+                    + "WHERE o.id = :orderID "
+                    + "AND o.registeredCustomer.id = :customerId "
+                    + "AND o.parkingLotID.id = :parkingLotId "
+                    + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
+
         } else {
-            message.setObject(null);
+            message.setMessage(VERIFY_ORDER.type);
+            message.setObject(lst);
         }
+        message.setObject(lst);
     }
 
     private void verifySubscription(Message message, ConnectionToClient client) throws IOException {
@@ -245,7 +260,7 @@ public class SimpleServerClass extends AbstractServer {
         args = request.split("&");
         int parkingLotId;
         int customerID;
-        int subscriptionID;
+        int  subscriptionID;
 
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
@@ -262,22 +277,20 @@ public class SimpleServerClass extends AbstractServer {
         HashMap<String, Object> params = new HashMap<>();
         params.put("subscriptionId", subscriptionID);
         params.put("customerId", customerID);
-        List<Object> lst = rCustomer.executeQuery(Object.class, queryOnFull, params);
-        System.out.println(lst != null);
-        if (lst != null && lst.size() > 0) {
-            message.setObject(lst.get(0));
+        Customer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnFull, params);
+        if (lst != null ) {
+            message.setObject(lst);
         } else {
             params.put("parkingLotId", parkingLotId);
-            rCustomer.executeQuery(RegisteredCustomer.class, queryOnRegular, params);
-            if (lst != null && lst.size() > 0) {
-                message.setObject(lst.get(0));
+            lst= rCustomer.queiryData(RegisteredCustomer.class, queryOnRegular, params);
+            if (lst != null ) {
+                message.setObject(lst);
             } else {
                 message.setObject(null);
             }
         }
 
     }
-
     private void closeCompliants(Message message, ConnectionToClient client) throws IOException {
         System.out.println(message.getMessage());
         String request = message.getMessage();
@@ -290,13 +303,13 @@ public class SimpleServerClass extends AbstractServer {
         userId = Integer.parseInt(args[2]);
         System.out.println((args[1]));
         complaintId = Integer.parseInt(args[1]);
-        Complaint complaint = complaintHandler.get(complaintId, Complaint.class);
+        Complaint complaint = complaintHandler.get(complaintId,Complaint.class);
         complaint.setActive(false);
-        if (request.contains("With")) {
+        if(request.contains("With")){
             refundAmount = Double.parseDouble(args[3]);
-        } else if (request.contains("Full")) {
+        }else if(request.contains("Full")){
 //                TODO:Need to return the full refund but how to know if we don't have the order that was made?
-        } else {
+        }else{
 //            todo: complaintHandler.delete(complaintHandler.get(complaintId,Complaint.class),Complaint.class);
         }
         complaintHandler.update(complaint);
@@ -316,7 +329,7 @@ public class SimpleServerClass extends AbstractServer {
 
     private void addSubscription(Message message, ConnectionToClient client) throws IOException {
 
-        if (message.getObject().getClass().getSimpleName().compareTo("FullSubscription") == 0)
+        if(message.getObject().getClass().getSimpleName().compareTo("FullSubscription") == 0)
             fullSubHandler.save((FullSubscription) message.getObject(), FullSubscription.class);
         else
             regularSubHandler.save((RegularSubscription) message.getObject(), RegularSubscription.class);
@@ -324,12 +337,13 @@ public class SimpleServerClass extends AbstractServer {
     }
 
 
+
     private void showSubscription(Message message, ConnectionToClient client) {
-        RegisteredCustomer regCostumer = handleMessegesSession.get(RegisteredCustomer.class, (Integer) client.getInfo("userId"));
-        List<Subscription> subscription = regCostumer.getSubscriptions();
+        RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        List<Subscription> subscription=regCostumer.getSubscriptions();
         Hibernate.initialize(subscription);
-        for (Subscription sub : subscription
-        ) {
+        for (Subscription sub:subscription
+             ) {
             Hibernate.initialize(sub.getCarsList());
         }
 
@@ -349,7 +363,7 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(orders);
     }
 
-    protected void registerUser(Message message, ConnectionToClient client) {
+    protected void registerUser(Message message,ConnectionToClient client){
         // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
         String[] mess = message.getMessage().split("&");
         String name = mess[4], email = mess[2], password = mess[3], lastName = mess[5], iD = mess[1];
@@ -366,20 +380,19 @@ public class SimpleServerClass extends AbstractServer {
 
         message.setMessage("RegistrationSuccessful");
     }
+    protected void Login(Message message,ConnectionToClient client){
 
-    protected void Login(Message message, ConnectionToClient client) {
+        String email,password;
+        String[] mess=message.getMessage().split("&");
+        email=mess[1];
+        password=mess[2];
 
-        String email, password;
-        String[] mess = message.getMessage().split("&");
-        email = mess[1];
-        password = mess[2];
-
-        int clientType = 0;
-        clientType = AuthenticationService.checkAuthintecatedEntityType(email, password);
-        if (clientType <= 0)
+        int clientType=0;
+        clientType=AuthenticationService.checkAuthintecatedEntityType(email,password);
+        if(clientType<=0)
             message.setMessage("#authintication failed!");
-        else if (clientType < 5) {
-            Employee user = AuthenticationService.getAuthenticatedEntity(email, password);
+        else if(clientType<5){
+            Employee user=AuthenticationService.getAuthenticatedEntity(email,password);
             assert user != null;
             if (clientsEmployeeMap.containsKey(user.getId()))
                 message.setMessage("#alreadySignedIn");
@@ -388,12 +401,13 @@ public class SimpleServerClass extends AbstractServer {
 
                 clientsEmployeeMap.put(user.getId(), user);
                 client.setInfo("userId", user.getId());
-                client.setInfo("userType", user.getClass().getName());
+                client.setInfo("userType",user.getClass().getName());
                 message.setMessage("#authintication successful!");
                 message.setObject(user);
             }
-        } else if (clientType <= 5) {
-            RegisteredCustomer user = AuthenticationService.getAuthenticatedEntity(email, password);
+        }
+        else if(clientType<=5){
+            RegisteredCustomer  user=AuthenticationService.getAuthenticatedEntity(email,password);
 
             assert user != null;
             if (clientsCustomersMap.containsKey(user.getId()))
@@ -402,15 +416,14 @@ public class SimpleServerClass extends AbstractServer {
             else {
                 message.setMessage("#authintication successful!");
                 message.setObject(user);
-                clientsCustomersMap.put(user.getId(), user);
-                client.setInfo("userId", user.getId());
-                client.setInfo("userType", user.getClass().getName());
+                clientsCustomersMap.put( user.getId(), user);
+                client.setInfo("userId",user.getId());
+                client.setInfo("userType",user.getClass().getName());
 
             }
         }
 
     }
-
     public void sendToAllClients(Message message) {
         try {
             for (SubscribedClient SubscribedClient : SubscribersList) {
@@ -425,35 +438,26 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(pLot.getAll(ParkingLot.class));
 
     }
-
     public void getParkingSpots(Message message, ConnectionToClient client) throws Exception {
         ParkingLotEmployee employee = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot lot = employee.getParkingLot();
         Hibernate.initialize(lot.getSpots());
-        lot.getSpots().forEach(ps -> System.out.println(ps));
         message.setObject(lot.getSpots());
-
     }
-
-    public void setParkingSpots(Message message, ConnectionToClient client) {
+    public void setParkingSpots(Message message,ConnectionToClient client){
         ParkingLotEmployee employee = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot lot = employee.getParkingLot();
         ParkingSpot ps = pSpot.get(((ParkingSpot) message.getObject()).getId(), ParkingSpot.class);
-        lot.getSpots().forEach(parkingSpot -> {
-            if (parkingSpot.getId() == ps.getId()) parkingSpot.setSaved(true);
-        });
-        System.out.println("this is set");
-        lot.getSpots().forEach(ps1 -> System.out.println(ps1));
+        ps.setOccupied(((ParkingSpot) message.getObject()).isOccupied());
         pSpot.update(ps);
-        handleMessegesSession.flush();
-        //Hibernate.initialize(lot.getSpots());
+        System.out.println(ps);
+        Hibernate.initialize(lot.getSpots());
+        System.out.println(ps);
         message.setMessage(GET_PARKING_SPOTS.type);
         message.setObject(lot.getSpots());
-        handleMessegesSession.getTransaction().commit();
-        handleMessegesSession.getSessionFactory().close();
-    }
 
-    public void sendPricesChart(Message message, ConnectionToClient client) throws Exception {
+    }
+    public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
         message.setObject(pChart.getLastAdded(PricingChart.class));
     }
 
@@ -483,7 +487,7 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void placeOrder(Message message, ConnectionToClient client) throws Exception {
-        Order newOrder = (Order) message.getObject();
+        Order newOrder = (Order)message.getObject();
         //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
         orderHandler.save(newOrder, Order.class);
@@ -495,10 +499,10 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
     }
 
-    public void getCustomersOrders(Message message, ConnectionToClient client) throws Exception {
+    public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
 
-        RegisteredCustomer regCostumer = handleMessegesSession.get(RegisteredCustomer.class, (Integer) client.getInfo("userId"));
-        Object orders = regCostumer.getOrders();
+        RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        Object orders =regCostumer.getOrders();
 //        Hibernate.initialize(orders);
         for (Order order : regCostumer.getOrders()) {
             Hibernate.initialize(order.getCar());
@@ -508,36 +512,33 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(orders);
 
     }
-
-    public void getUser(Message message, ConnectionToClient client) throws Exception {
-        int id = (Integer) client.getInfo("userId");
-        String type = (String) client.getInfo("userType");
-        if (type.startsWith(RegisteredCustomer.class.getName()) || type.startsWith(OneTimeCustomer.class.getName()))
-            message.setObject(rCustomer.get(id, RegisteredCustomer.class));
+    public void getUser(Message message,ConnectionToClient client)throws Exception{
+        int id=(Integer) client.getInfo("userId");
+        String type=(String) client.getInfo("userType");
+        if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
+            message.setObject(rCustomer.get(id,RegisteredCustomer.class));
         else {
-            message.setObject(getEmployee(id));
+             message.setObject(getEmployee(id));
         }
 
     }
-
     public void getCustomerCars(Message message, ConnectionToClient client) throws IOException {
-        RegisteredCustomer regCostumer = handleMessegesSession.get(RegisteredCustomer.class, (Integer) client.getInfo("userId"));
-        List<Car> cars = regCostumer.getCars();
+        RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
+        List<Car> cars=regCostumer.getCars();
         Hibernate.initialize(cars);
         message.setObject(cars);
 
     }
-
     private Employee getEmployee(int id) {
-        Employee user = clientsEmployeeMap.get(id);
-        if (user.getClass() == ParkingLotEmployee.class) {
-            user = plEmployee.get(id, ParkingLotEmployee.class);
-        } else if (user.getClass() == ParkingLotManager.class) {
-            user = plManager.get(id, ParkingLotManager.class);
-        } else if (user.getClass() == CustomerServiceEmployee.class) {
-            user = csEmployee.get(id, CustomerServiceEmployee.class);
-        } else if (user.getClass() == GlobalManager.class) {
-            user = globalManager.get(id, GlobalManager.class);
+        Employee user=clientsEmployeeMap.get(id);
+        if (user.getClass()==ParkingLotEmployee.class){
+            user=plEmployee.get(id,ParkingLotEmployee.class);
+        } else if (user.getClass()==ParkingLotManager.class){
+            user=plManager.get(id,ParkingLotManager.class);
+        }else if (user.getClass()==CustomerServiceEmployee.class){
+            user=csEmployee.get(id,CustomerServiceEmployee.class);
+        }else if (user.getClass()==GlobalManager.class){
+            user=globalManager.get(id,GlobalManager.class);
         }
         return user;
     }
@@ -546,13 +547,12 @@ public class SimpleServerClass extends AbstractServer {
         ParkingLotEmployee E = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot PL = E.getParkingLot();
         Hibernate.initialize(PL.getSpots());
-        //PL.reInitiateParkingSpots();
+        PL.reInitiateParkingSpots();
         handleMessegesSession.update(PL);
         handleMessegesSession.flush();
         message.setObject(PL.getSpots());
         message.setMessage(GET_PARKING_SPOTS.type);
     }
-
     // todo: need to fix it!!!!!!!
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space
