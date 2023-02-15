@@ -61,6 +61,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new RefundChartSubscriber(message));
 		}else if(message.getMessage().startsWith("#CancelOrderAndGetRefund")){
 			EventBus.getDefault().post(new CancelationRefundSubscriber(message));
+		}else if(message.getMessage().startsWith("#GetParkingSpots")){
+			EventBus.getDefault().post(new ParkingSpotsSubscriber(message));
 		}
 		else {
 			System.out.println(message.getMessage());

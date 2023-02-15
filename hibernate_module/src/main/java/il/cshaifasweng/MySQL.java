@@ -68,9 +68,9 @@ public class MySQL
         try {
 
             connectToDB();
-//            initiateParkingLot();
-//            EnterExiteParkingLotPrefixedValuesForTesting(true);
-            EnterExiteParkingLotPrefixedValuesForTesting(false);
+            initiateParkingLot();
+            EnterExiteParkingLotPrefixedValuesForTesting(true);
+//            EnterExiteParkingLotPrefixedValuesForTesting(false);
 //            ParkingLot plot=getEntity(1,ParkingLot.class);
 //            plot.getSpots().get(0).setOccupied(true);
 //            session.update(plot.getSpots().get(0));
