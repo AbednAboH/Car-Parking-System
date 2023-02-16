@@ -582,4 +582,17 @@ public class SimpleServerClass extends AbstractServer {
         message.setObject(orderHandler.getAll(Order.class));
     }
 
+    public void rejectOnePriceRequest(Message message, ConnectionToClient client) throws Exception {
+        PricingChart pc = pChart.get((int) message.getObject(), PricingChart.class);
+        pc.setWaitForPermission(false);
+        pChart.update(pc);
+    }
+
+    public void rejectAllPriceRequests(Message message, ConnectionToClient client) throws Exception {
+        List<PricingChart> allPc = pChart.getAll(PricingChart.class);
+        allPc.forEach(pc -> {
+            pc.setWaitForPermission(false);
+            pChart.update(pc);
+        });
+    }
 }

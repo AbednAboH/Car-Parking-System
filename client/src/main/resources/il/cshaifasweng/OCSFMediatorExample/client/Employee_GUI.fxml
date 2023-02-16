@@ -30,7 +30,7 @@
          <ComboBox fx:id="floorLabel" accessibleRole="DECREMENT_BUTTON" accessibleText="row" layoutX="911.0" layoutY="144.0" onAction="#spotSelectedComboBox" prefHeight="57.0" prefWidth="133.0" promptText="Floor" />
          <ComboBox fx:id="rowLabel" accessibleText="col" layoutX="911.0" layoutY="240.0" onAction="#spotSelectedComboBox" prefHeight="57.0" prefWidth="133.0" promptText="Row" />
          <ComboBox fx:id="depthLabel" accessibleText="depth" layoutX="911.0" layoutY="330.0" onAction="#spotSelectedComboBox" prefHeight="57.0" prefWidth="133.0" promptText="Depth of row" />
-         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="187.0" layoutY="22.0">
+         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="187.0" layoutY="21.0">
             <image>
                <Image url="@icons/User.png" />
             </image>
@@ -47,7 +47,7 @@
          </Button>
          <Line endX="-43.00001525878906" endY="-89.5" layoutX="126.0" layoutY="106.0" startX="-43.0" startY="-45.0" />
          <Line endX="100.0" layoutX="129.0" layoutY="62.0" startX="-110.00001525878906" />
-         <Line endX="-153.0" endY="-27.0" layoutX="383.0" layoutY="42.0" startX="-153.0" startY="18.0" />
+         <Line endX="-153.0" endY="-27.0" layoutX="383.0" layoutY="44.0" startX="-153.0" startY="18.0" />
          <Line endX="100.0" layoutX="129.0" layoutY="17.0" startX="-110.0" />
          <Line endX="-121.5" endY="-62.5" layoutX="140.0" layoutY="80.0" startX="-121.5" startY="-18.0" />
          <Line endX="206.0" layoutX="412.0" layoutY="101.0" startX="-100.0" />
@@ -61,7 +61,7 @@
          <Button layoutX="922.0" layoutY="54.0" mnemonicParsing="false" mouseTransparent="true" pickOnBounds="false" prefHeight="55.0" prefWidth="89.0" text="Button" visible="false" />
          <Line endX="-585.5" endY="0.5" layoutX="1639.0" layoutY="561.0" startX="-736.5" startY="-0.5" />
          <Button fx:id="faultyBtn" accessibleText="save spot" alignment="CENTER" contentDisplay="CENTER" layoutX="911.0" layoutY="492.0" mnemonicParsing="false" onAction="#markUnmarkFaulty" prefHeight="57.0" prefWidth="133.0" text="Mark/Unmark as Faulty" textAlignment="CENTER" wrapText="true" />
-         <Label fx:id="userNameLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="88.0" layoutY="20.0" prefHeight="38.0" prefWidth="98.0" text="Hello, " textAlignment="CENTER" wrapText="true" />
+         <Label fx:id="userNameLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="83.0" layoutY="17.0" prefHeight="45.0" prefWidth="103.0" text="Hello, " textAlignment="CENTER" wrapText="true" />
          <Label fx:id="errorMsg" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="16.0" layoutY="582.0" prefHeight="38.0" prefWidth="551.0" text="*Action available for valid choice of parking spot according to it's status." textAlignment="CENTER" wrapText="true">
             <font>
                <Font size="16.0" />

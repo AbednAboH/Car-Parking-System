@@ -16,26 +16,16 @@
 <Scene xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ParkingLotManagerController">
     <AnchorPane prefHeight="720.0" prefWidth="1080.0">
       <children>
-         <Button fx:id="userOptBtn" layoutX="82.0" layoutY="19.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Hello Name" textFill="#2b0548">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-         <Button fx:id="userOptBtn1" layoutX="15.0" layoutY="19.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="logout" textFill="#2b0548">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="181.0" layoutY="15.0">
+         <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="182.0" layoutY="16.0">
             <image>
                <Image url="@icons/User.png" />
             </image>
          </ImageView>
-         <Line endX="-61.0" endY="-86.0" layoutX="285.0" layoutY="101.0" startX="-61.0" startY="-48.0" />
+         <Line endX="-60.49998474121094" endY="-89.5" layoutX="286.0" layoutY="104.0" startX="-60.49998474121094" startY="-47.500003814697266" />
          <Line endX="100.0" layoutX="125.0" layoutY="14.0" startX="-110.00001525878906" />
          <Line endX="-153.5" endY="-25.5" layoutX="168.0" layoutY="39.0" startX="-153.0" startY="18.0" />
          <Line endX="100.0" layoutX="125.0" layoutY="57.0" startX="-110.0" />
-         <Line endX="-121.5" endY="-62.5" layoutX="203.0" layoutY="77.0" startX="-121.00001525878906" startY="-23.0" />
+         <Line endX="-121.5" endY="-62.5" layoutX="203.0" layoutY="77.0" startX="-121.50000762939453" startY="-19.500003814697266" />
          <Label layoutX="388.0" layoutY="32.0" text="ParkingLot Manager">
             <font>
                <Font size="34.0" />
@@ -61,10 +51,20 @@
                            </Label>
                            <TableView fx:id="ordersTable" prefHeight="475.0" prefWidth="1081.0">
                              <columns>
-                               <TableColumn prefWidth="75.0" text="ID" />
-                               <TableColumn prefWidth="75.0" text="C2" />
+                               <TableColumn fx:id="orderIDcolumn" prefWidth="75.0" text="Order ID" />
+                                 <TableColumn fx:id="PLcolumn" prefWidth="75.0" text="Parking lot" />
+                               <TableColumn fx:id="customerIDcolumn" prefWidth="75.0" text="Customer ID" />
+                                 <TableColumn fx:id="emailColumn" prefWidth="97.33334350585938" text="Customer Email" />
+                                 <TableColumn fx:id="plateNumColumn" prefWidth="93.33331298828125" text="Car Plate Number" />
+                                 <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Order Date" />
+                                 <TableColumn fx:id="statusColumn" prefWidth="96.0" text="Order status" />
                              </columns>
                            </TableView>
+                           <Label fx:id="ordersCategpryLbl" layoutX="14.0" layoutY="481.0" textFill="#008b09">
+                              <font>
+                                 <Font name="System Italic" size="14.0" />
+                              </font>
+                           </Label>
                         </children>
                      </AnchorPane>
                </content>
@@ -114,6 +114,12 @@
              </Tab>
            </tabs>
          </TabPane>
+         <Button fx:id="logOutBtn" layoutX="16.0" layoutY="13.0" mnemonicParsing="false" onAction="#logOutUser" prefHeight="45.0" prefWidth="65.0" style="-fx-background-color: transparent;" text="logout" textFill="#2b0548">
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Button>
+         <Label fx:id="userNameLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="81.0" layoutY="13.0" prefHeight="45.0" prefWidth="103.0" text="Hello, " textAlignment="CENTER" wrapText="true" />
       </children>
    </AnchorPane>
 </Scene>

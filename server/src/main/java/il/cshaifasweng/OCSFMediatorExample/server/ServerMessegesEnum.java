@@ -41,7 +41,8 @@ public enum ServerMessegesEnum {
     EXIT_PARKING_LOT("#ExitParkingLot"),
     LOGOUT("#LogOut"),
     GET_ACTIVE_ORDERS("#GetActiveOrders"),
-    GET_ALL_ORDERS_FOR_MANAGER("#GetAllOrdersForManager")
+    GET_ALL_ORDERS_FOR_MANAGER("#GetAllOrdersForManager"),
+    REJECT_ALL_PRICE_REQUEST("#RejectAllPriceRequests")
     ;
 
     final String type;
