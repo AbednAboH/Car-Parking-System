@@ -37,7 +37,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
     @JoinColumn(name="parkingLotManager_id")
     private ParkingLotManager manager;
 
-    @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot",cascade =CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch=FetchType.EAGER,mappedBy = "parkingLot",cascade =CascadeType.ALL,orphanRemoval = true)
     private  List<ParkingSpot> spots=new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -250,6 +250,8 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         this.employeeList.add(employee);
 
     }
+
+
 
 
 

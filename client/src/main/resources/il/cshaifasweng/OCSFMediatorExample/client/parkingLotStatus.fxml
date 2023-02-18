@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="881.0" prefWidth="1236.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ParkingLotStatus">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="881.0" prefWidth="1236.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ParkingLotStatus">
    <children>
-      <Button layoutX="335.0" layoutY="138.0" mnemonicParsing="false" onAction="#showPlot" text="Button" />
+      <ChoiceBox fx:id="parkingLotList" layoutX="14.0" layoutY="111.0" prefHeight="26.0" prefWidth="204.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="65.0" prefHeight="41.0" prefWidth="204.0" text="Parking Lots">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="floorsList" layoutX="14.0" layoutY="236.0" prefHeight="26.0" prefWidth="204.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="173.0" prefHeight="41.0" prefWidth="204.0" text="Choose floor ">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <GridPane fx:id="matrixGrid" alignment="CENTER" hgap="10.0" layoutX="286.0" layoutY="65.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="ALWAYS" />
+         </rowConstraints>
+      </GridPane>
    </children>
 </AnchorPane>
