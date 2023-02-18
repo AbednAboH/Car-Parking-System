@@ -2,15 +2,12 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 
 import EmailSMPTServices.SendEmail;
 import il.cshaifasweng.DataManipulationThroughDB.DAO;
-import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
-import il.cshaifasweng.customerCatalogEntities.Order;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import org.hibernate.Session;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 

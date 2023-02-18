@@ -21,14 +21,11 @@ import il.cshaifasweng.LogInEntities.Employees.ParkingLotManager;
 import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.MoneyRelatedServices.*;
 import il.cshaifasweng.ParkingLotEntities.*;
-import il.cshaifasweng.converters.ParkingLotScheduelerInterceptor;
 import il.cshaifasweng.customerCatalogEntities.*;
 import org.hibernate.HibernateException;
-import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
@@ -36,7 +33,7 @@ public class MySQL
 {
     public static final Class[] classes=new Class[]{User.class,ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
-            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, Order.class, Customer.class, RefundChart.class, EntryAndExitLog.class,ParkingLotScheduler.class};
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, OnlineOrder.class, Customer.class, RefundChart.class, EntryAndExitLog.class,ParkingLotScheduler.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),
@@ -46,7 +43,7 @@ public class MySQL
             ,Map.entry("Complaint",Complaint.class),Map.entry("OneTime",OneTimeCustomer.class),Map.entry("Registered",RegisteredCustomer.class)
             ,Map.entry("Penalty",Penalty.class),Map.entry("Refund",Refund.class)
             ,Map.entry("Reports",Reports.class),Map.entry("MoneyRelatedServices",Customer.class)
-            ,Map.entry("Orders", Order.class),Map.entry("RefundChart",Refund.class),Map.entry("Scheduler",ParkingLotScheduler.class),Map.entry("Vehicle", EntryAndExitLog.class));
+            ,Map.entry("Orders", OnlineOrder.class),Map.entry("RefundChart",Refund.class),Map.entry("Scheduler",ParkingLotScheduler.class),Map.entry("Vehicle", EntryAndExitLog.class));
 
     private static Session session;
 //creates a session factory and adds all "class" type entities to the session
@@ -94,7 +91,7 @@ public class MySQL
     private static void EnterExiteParkingLotPrefixedValuesForTesting(boolean enterExit) throws Exception {
         List<RegularSubscription> rSubs=getAllEntities(RegularSubscription.class);
         List<FullSubscription> fSubs=getAllEntities(FullSubscription.class);
-        List<Order> orders=getAllEntities(Order.class);
+        List<OnlineOrder> OnlineOrders =getAllEntities(OnlineOrder.class);
         ParkingLot plot=getEntity(1,ParkingLot.class);
         for(int i=0;i<30;i+=3){
             EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(rSubs.get(i),rSubs.get(i).getCarsList().get(0).getCarNum());
@@ -112,10 +109,10 @@ public class MySQL
         }
 
         for(int i=0;i<30;i+=2){
-            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(orders.get(i),orders.get(i).getCar().getCarNum()):plot.exitParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
+            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(OnlineOrders.get(i), OnlineOrders.get(i).getCar().getCarNum()):plot.exitParkingLot(OnlineOrders.get(i), OnlineOrders.get(i).getCar().getCarNum());
             if(enteredExitedPlot!=null){
 
-                System.out.println("Vehicle "+orders.get(i).getEntryAndExitLog().getActiveCar()+" entered the parking lot");
+                System.out.println("Vehicle "+ OnlineOrders.get(i).getEntryAndExitLog().getActiveCar()+" entered the parking lot");
                 if (!enterExit)
                     session.update(enteredExitedPlot);
 
@@ -128,7 +125,7 @@ public class MySQL
             }
         }
         for(int i=0;i<30;i+=2){
-            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(fSubs.get(i),fSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(orders.get(i),orders.get(i).getCar().getCarNum());
+            EntryAndExitLog enteredExitedPlot = enterExit? plot.entryToPLot(fSubs.get(i),fSubs.get(i).getCarsList().get(0).getCarNum()):plot.exitParkingLot(OnlineOrders.get(i), OnlineOrders.get(i).getCar().getCarNum());
             if(enteredExitedPlot!=null){
                 System.out.println("Vehicle "+fSubs.get(i).getLatestLog().getActiveCar()+" entered the parking lot");
                 if (!enterExit)
@@ -287,12 +284,12 @@ public class MySQL
             for (int i=0;i<10;i++){
                 Random random = new Random();
                 int randomNum = random.nextInt(900000000) + 100000000;
-                Order order=new Order(customer,parkingLot, LocalDate.now(),
+                OnlineOrder onlineOrder =new OnlineOrder(customer,parkingLot, LocalDate.now(),
                         LocalTime.now().plusMinutes(i*2 ), Integer.toString(LocalDateTime.now().getHour()+1),Integer.toString(randomNum), customer.getEmail());
-                order.setTransaction_method("cash");
-                order.setTransactionStatus(true);
-                order.setValue(100);
-                session.save(order);
+                onlineOrder.setTransaction_method("cash");
+                onlineOrder.setTransactionStatus(true);
+                onlineOrder.setValue(100);
+                session.save(onlineOrder);
 
             }
             session.update(customer);

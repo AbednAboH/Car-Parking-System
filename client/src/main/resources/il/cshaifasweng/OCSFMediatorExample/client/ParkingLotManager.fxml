@@ -24,8 +24,8 @@
                <TableColumn prefWidth="272.0" text="availabe" />
            </columns>
          </TableView>
-         <Button fx:id="AllOrders" layoutX="544.0" layoutY="624.0" mnemonicParsing="false" onAction="#AllOrders" prefHeight="50.0" prefWidth="150.0" text=" Show all orders" />
-         <Button fx:id="ActiveOrders" layoutX="805.0" layoutY="624.0" mnemonicParsing="false" onAction="#ActiveOrders" prefHeight="50.0" prefWidth="150.0" text="reports: active orders" />
+         <Button fx:id="AllOrders" layoutX="544.0" layoutY="624.0" mnemonicParsing="false" onAction="#AllOrders" prefHeight="50.0" prefWidth="150.0" text=" Show all OnlineOrders" />
+         <Button fx:id="ActiveOrders" layoutX="805.0" layoutY="624.0" mnemonicParsing="false" onAction="#ActiveOrders" prefHeight="50.0" prefWidth="150.0" text="reports: active OnlineOrders" />
          <Button fx:id="userOptBtn" layoutX="82.0" layoutY="19.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Hello Name" textFill="#2b0548">
             <font>
                <Font size="15.0" />

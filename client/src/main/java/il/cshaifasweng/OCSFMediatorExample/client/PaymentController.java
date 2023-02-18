@@ -3,7 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -83,13 +83,13 @@ public class PaymentController {
     }
     @Subscribe
     public void orderConfirmed(){}
-    static void fillKnownOrder(Order order, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
-        emailTxt.setText(order.getEmail());
-        plateNumTxt.setText(order.getCar().toString());
-        dateTxt.setText(order.getDateOfOrder().toString());
-        pLaddress.setText(order.getParkingLotID().getId()+"");
-        parkingHoursTxt.setText(order.getDateOfOrder() + " - " + order.getExiting() );
-        ammountToPay.setText(Double.toString(order.getValue()));
+    static void fillKnownOrder(OnlineOrder onlineOrder, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
+        emailTxt.setText(onlineOrder.getEmail());
+        plateNumTxt.setText(onlineOrder.getCar().toString());
+        dateTxt.setText(onlineOrder.getDateOfOrder().toString());
+        pLaddress.setText(onlineOrder.getParkingLotID().getId()+"");
+        parkingHoursTxt.setText(onlineOrder.getDateOfOrder() + " - " + onlineOrder.getExiting() );
+        ammountToPay.setText(Double.toString(onlineOrder.getValue()));
     }
     static void fillKnownSubscription(Subscription subscription, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
         emailTxt.setText(subscription.getRegisteredCustomer().getEmail());
@@ -99,8 +99,8 @@ public class PaymentController {
         parkingHoursTxt.setText(subscription.getExpirationDate().toString());
         ammountToPay.setText(Double.toString(subscription.getValue()));
     }
-    private void fillOrderDetails(Order order) {
-        fillKnownOrder(order, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
+    private void fillOrderDetails(OnlineOrder onlineOrder) {
+        fillKnownOrder(onlineOrder, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
     }
     private void fillSubscriptionDetails(Subscription subscription) {
         fillKnownSubscription(subscription, emailTxt, plateNumTxt, dateTxt, PLaddress, parkingHoursTxt, ammountToPay);
@@ -144,11 +144,11 @@ public class PaymentController {
                 done.setDisable(true);
                 back.setDisable(true);
                 if (SimpleChatClient.getCurrentOrder() != null) {
-                    Order newOrder = SimpleChatClient.getCurrentOrder();
-                    newOrder.setTransaction_method("Credit Card");
-                    newOrder.setTransactionStatus(true);
+                    OnlineOrder newOnlineOrder = SimpleChatClient.getCurrentOrder();
+                    newOnlineOrder.setTransaction_method("Credit Card");
+                    newOnlineOrder.setTransactionStatus(true);
 
-                    Message message = new Message("#placeOrder", newOrder);
+                    Message message = new Message("#placeOrder", newOnlineOrder);
                     SimpleClient.getClient().sendToServer(message);
 
                 } else {

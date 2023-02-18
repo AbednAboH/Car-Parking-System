@@ -4,7 +4,7 @@ import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CancelationRefundSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RefundChartSubscriber;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -162,21 +162,21 @@ public class CancelOrderController {
         setRefund(observableRefundList);
     }
     public void setRefund(List<RefundChart> refundChart){
-        Order order = SimpleChatClient.getCurrentOrder();
-        double ammountPaid=order.getValue();
+        OnlineOrder onlineOrder = SimpleChatClient.getCurrentOrder();
+        double ammountPaid= onlineOrder.getValue();
         LocalDateTime date =LocalDateTime.now();
-        if(order.getDateOfOrder().getDayOfYear()-date.getDayOfYear()>0){
+        if(onlineOrder.getDateOfOrder().getDayOfYear()-date.getDayOfYear()>0){
             refundAmmount.setText(refundChart.get(2).getValue()*ammountPaid+"");
 
         }
-        else if(order.getDateOfOrder().getDayOfYear()-date.getDayOfYear()==0){
-            if(order.getHoursOfResidency()>3){
+        else if(onlineOrder.getDateOfOrder().getDayOfYear()-date.getDayOfYear()==0){
+            if(onlineOrder.getHoursOfResidency()>3){
                 refundAmmount.setText(refundChart.get(2).getValue()*ammountPaid+"");
             }
-            else if(order.getHoursOfResidency()>1){
+            else if(onlineOrder.getHoursOfResidency()>1){
                 refundAmmount.setText(refundChart.get(1).getValue()*ammountPaid+"");
             }
-            else if(order.getHoursOfResidency()>0){
+            else if(onlineOrder.getHoursOfResidency()>0){
                 refundAmmount.setText(refundChart.get(0).getValue()*ammountPaid+"");
             }
             else{

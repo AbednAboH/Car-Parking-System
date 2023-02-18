@@ -49,7 +49,7 @@
         <mapping class="il.cshaifasweng.customerCatalogEntities.FullSubscription"/>
         <mapping class="il.cshaifasweng.customerCatalogEntities.RegularSubscription"/>
         <mapping class="il.cshaifasweng.customerCatalogEntities.Complaint"/>
-        <mapping class="il.cshaifasweng.customerCatalogEntities.Order"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.OnlineOrder"/>
         <mapping class="il.cshaifasweng.MoneyRelatedServices.Penalty"/>
         <mapping class="il.cshaifasweng.MoneyRelatedServices.PricingChart"/>
         <mapping class="il.cshaifasweng.MoneyRelatedServices.Refund"/>

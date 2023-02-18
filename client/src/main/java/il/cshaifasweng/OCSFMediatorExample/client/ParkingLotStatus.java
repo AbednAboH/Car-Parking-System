@@ -92,6 +92,6 @@ public class ParkingLotStatus {
     }
 
     public void showPlot(javafx.event.ActionEvent actionEvent) {
-        
+
     }
 }

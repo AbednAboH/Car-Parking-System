@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="723.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.NewCustomerPage">
+   <children>
+      <VBox layoutY="-4.0" prefHeight="730.0" prefWidth="216.0" style="-fx-background-color: #3F2B63;">
+         <children>
+            <Pane prefHeight="81.0" prefWidth="216.0">
+               <children>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" layoutX="34.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="71.0" layoutY="21.0" prefHeight="54.0" prefWidth="108.0" text="Cps System" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Online Orders" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Subscriptions" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="334.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Offline Order" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Transactions" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="118.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Log of entrances" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="172.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Approvals " textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="226.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Refunds" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="280.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Complaints" textFill="WHITE">
+               <graphic>
+                  <ImageView blendMode="DARKEN" depthTest="ENABLE" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/threeLines.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </VBox>
+      <StackPane layoutX="232.0" layoutY="209.0" prefHeight="508.0" prefWidth="844.0">
+         <children>
+            <GridPane fx:id="subsGrid" layoutX="10.0" layoutY="10.0" prefHeight="540.0" prefWidth="844.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="265.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="414.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="84.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TableView fx:id="subsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="248.0" prefWidth="877.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" GridPane.rowIndex="1">
+                     <columns>
+                        <TableColumn fx:id="subID" prefWidth="48.0" text="ID" />
+                        <TableColumn fx:id="subTypeTable" prefWidth="128.0" text="Subscription Type" />
+                        <TableColumn fx:id="subCars" prefWidth="132.0" text="Cars in Subscription" />
+                        <TableColumn fx:id="subPLot" prefWidth="147.0" text="Designated Parking Lot" />
+                        <TableColumn fx:id="subDaysToPark" prefWidth="90.0" text="Days To Park" />
+                        <TableColumn fx:id="subParchaseDate" prefWidth="104.0" text="Parchase Date" />
+                        <TableColumn fx:id="subExpiration" prefWidth="99.0" text="Expiration Date" />
+                        <TableColumn fx:id="subHoursToPark" prefWidth="120.0" text="Hours Left To Park" />
+                     </columns>
+                  </TableView>
+                  <TextField />
+                  <Button mnemonicParsing="false" text="Button" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                     <children>
+                        <Button fx:id="addsubscriptionbutton1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#AddSubscriptions" prefHeight="44.0" prefWidth="307.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Add New Subscription" textFill="WHITE" />
+                        <Button fx:id="cancelsubsbutton1" mnemonicParsing="false" onAction="#cancelSubscription" prefHeight="44.0" prefWidth="255.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Cancel Subscription" textFill="WHITE" />
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            <GridPane fx:id="approvalGrid" layoutX="10.0" layoutY="10.0" prefHeight="0.0" prefWidth="844.0" visible="false">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="265.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="503.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TextField />
+                  <Button mnemonicParsing="false" text="Button" />
+               </children>
+            </GridPane>
+            <GridPane fx:id="transactionGrid" blendMode="DARKEN" layoutX="10.0" layoutY="10.0" pickOnBounds="false" prefHeight="298.0" prefWidth="844.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="265.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="408.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="82.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TableView fx:id="transactions" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="286.0" prefWidth="844.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" GridPane.rowIndex="1">
+                     <columns>
+                        <TableColumn fx:id="transactionID" prefWidth="48.0" text="ID" />
+                        <TableColumn fx:id="transactionType" prefWidth="128.0" text="Transaction Type" />
+                        <TableColumn fx:id="transactionValue" prefWidth="132.0" text="Transaction Value" />
+                        <TableColumn fx:id="transactionDate" prefWidth="147.0" text="Date " />
+                        <TableColumn fx:id="transactionDate1" prefWidth="147.0" text="Transaction Method" />
+                     </columns>
+                  </TableView>
+                  <TextField prefHeight="89.0" prefWidth="844.0" />
+                  <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="52.0" text="Button" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="139.0" prefWidth="844.0" GridPane.rowIndex="2" />
+                  <TableView fx:id="logs" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="132.0" prefWidth="844.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" GridPane.rowIndex="1">
+                     <columns>
+                        <TableColumn fx:id="logID" prefWidth="48.0" text="ID" />
+                        <TableColumn fx:id="PlotID" prefWidth="128.0" text="Parking Lot " />
+                        <TableColumn fx:id="entrance" prefWidth="132.0" text="Entrance " />
+                        <TableColumn fx:id="exit" prefWidth="147.0" text="Exit " />
+                        <TableColumn fx:id="transactionTypeInLogs" prefWidth="175.0" text="Using Sub/order/kiosk order" />
+                        <TableColumn fx:id="IdOfTransaction" prefWidth="175.0" text="number of sub/kiosk/order" />
+                     </columns>
+                  </TableView>
+               </children>
+            </GridPane>
+            <GridPane fx:id="orderGrid" prefHeight="315.0" prefWidth="844.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="265.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="406.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="124.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TableView fx:id="ordersTable" blendMode="SRC_ATOP" cache="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="279.0" prefWidth="844.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" stylesheets="@../../../../botton.css" tableMenuButtonVisible="true" GridPane.rowIndex="1">
+                     <columns>
+                        <TableColumn fx:id="orderID" prefWidth="52.0" text="Order id" />
+                        <TableColumn fx:id="orderParchaseDate" prefWidth="87.0" text="Parchase Date" />
+                        <TableColumn fx:id="orderEntry" prefWidth="142.0" text="Expected Entry Time" />
+                        <TableColumn fx:id="orderExit" prefWidth="121.0" text="Expected Exit time" />
+                        <TableColumn fx:id="orderLicense" prefWidth="85.0" text="License Plate" />
+                        <TableColumn fx:id="orderPLotID" prefWidth="113.0" text="Parking Lot ID" />
+                        <TableColumn fx:id="orderActive" prefWidth="52.0" text="Active" />
+                        <TableColumn fx:id="orderEmail" prefWidth="135.0" text="Email of Parchase" />
+                        <TableColumn fx:id="orderPricePaid" prefWidth="98.0" text="Price Paid" />
+                     </columns>
+                     <opaqueInsets>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </opaqueInsets>
+                     <effect>
+                        <Blend mode="BLUE" />
+                     </effect>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+                  <TextField />
+                  <Button mnemonicParsing="false" text="Button" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                     <children>
+                        <Button id="buttonCss" fx:id="placebutton" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#placeOrder" prefHeight="50.0" prefWidth="215.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Place Order" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="cancelorderbutton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="49.0" prefWidth="204.0" style="-fx-background-radius: 50; -fx-background-color: #2B0548; -fx-border-radius: 50px; -fx-font-weight: bold; -fx-font-size: 20px;" text="Cancel Order" textFill="WHITE" />
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

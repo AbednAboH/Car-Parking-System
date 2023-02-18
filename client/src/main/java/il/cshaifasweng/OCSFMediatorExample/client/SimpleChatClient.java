@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +21,7 @@ public class SimpleChatClient extends Application {
     private static Scene scene;
     private static SimpleClient client;
     private static Object user;
-    private static Order currentOrder;
+    private static OnlineOrder currentOnlineOrder;
     private static Subscription currentSubscription;
     private static int RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
 
@@ -38,15 +38,15 @@ public static Subscription getCurrentSubscription() {
 
     public static void setCurrentSubscription(Subscription currentSubscription) {
         SimpleChatClient.currentSubscription = currentSubscription;
-        currentOrder=null;
+        currentOnlineOrder =null;
 }
-    public static Order getCurrentOrder() {
-        return currentOrder;
+    public static OnlineOrder getCurrentOrder() {
+        return currentOnlineOrder;
     }
 
 
-    public static void setCurrentOrder(Order currentOrder) {
-        SimpleChatClient.currentOrder = currentOrder;
+    public static void setCurrentOrder(OnlineOrder currentOnlineOrder) {
+        SimpleChatClient.currentOnlineOrder = currentOnlineOrder;
         currentSubscription =null;
     }
     public  static Scene getScene(){

@@ -1,9 +1,8 @@
 package il.cshaifasweng.ParkingLotEntities;
 
-import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.customerCatalogEntities.FullSubscription;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.Getter;
@@ -49,7 +48,7 @@ public class EntryAndExitLog implements Serializable {
         this.parkingLotScheduler = parkingLotScheduler;
         RegularSubscription rSub;
         FullSubscription fSub;
-        Order order;
+        OnlineOrder onlineOrder;
         this.activeCar=activeCar;
         String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
         if (identifyEntranceIdentity.startsWith(REGULAR_SUBSCRIPTION.type)){
@@ -72,10 +71,10 @@ public class EntryAndExitLog implements Serializable {
 
         }
         else if(identifyEntranceIdentity.equals(ORDER.type)){
-            order=(Order) orderSubKioskEntity;
-            this.estimatedExitTime = order.getDateOfOrder().plusHours(order.getHoursOfResidency());
+            onlineOrder =(OnlineOrder) orderSubKioskEntity;
+            this.estimatedExitTime = onlineOrder.getDateOfOrder().plusHours(onlineOrder.getHoursOfResidency());
             this.priority = ORDER.priority;
-            order.getCar().setActiveCar(true);
+            onlineOrder.getCar().setActiveCar(true);
         }
         else if(identifyEntranceIdentity.equals(KioskBuyer.type)){
             // TODO: 10/02/2023 to be defined
@@ -102,9 +101,9 @@ public class EntryAndExitLog implements Serializable {
 
         }
         else if (ORDER.isOrder(orderSubKioskEntity)){
-            ((Order)orderSubKioskEntity).getCar().setActiveCar(active);
+            ((OnlineOrder)orderSubKioskEntity).getCar().setActiveCar(active);
             if(active)
-                ((Order)orderSubKioskEntity).setEntryAndExitLog(this);
+                ((OnlineOrder)orderSubKioskEntity).setEntryAndExitLog(this);
 
         }
         else if (ORDER.isKioskBuyer( orderSubKioskEntity)){

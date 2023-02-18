@@ -3,6 +3,7 @@ package il.cshaifasweng.LogInEntities.Customers;
 import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
+import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,8 @@ public abstract class Customer extends User {
     private List<Car> cars = new ArrayList<>();
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Complaint> complaint;
+    @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
+    protected List<OfflineOrder> offlineOrders = new ArrayList<>();
     public Customer() {
     }
 
