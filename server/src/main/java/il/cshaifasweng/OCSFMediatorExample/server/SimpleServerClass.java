@@ -7,6 +7,7 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
+import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
@@ -132,6 +133,11 @@ public class SimpleServerClass extends AbstractServer {
                 case 28 -> LogOut(message, client);
                 case 29-> enterParkingLot(message, client);
                 case 30-> exitParkingLot(message, client);
+                case 31-> getCustomerRefunds(message, client);
+                case 32-> getCustomerTransactions(message, client);
+                case 33->getCustomerLogs(message, client);
+                case 34-> getCustomerOfflineOrders(message, client);
+                case 35-> getOrdersToBeConfirmed(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
 //            handleMessegesSession.getTransaction().commit();
@@ -149,7 +155,53 @@ public class SimpleServerClass extends AbstractServer {
 
     }
 
+    private void getOrdersToBeConfirmed(Message message, ConnectionToClient client) {
+        // TODO: 21/02/2023 queiry !
+        RegisteredCustomer customer =getCustomer(client);
+        String hql= "FROM OnlineOrder o "
+                + "WHERE o.registeredCustomer.id = :customerId "
+                + "AND o.dateOfOrder  >=CURDATE() AND o.active = true" +
+                " AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30" +
+                " AND o.reminderSent = 3 AND agreedToPayPenalty=false";
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("customerId", customer.getId());
+//        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, hql, params);;
+        List<OnlineOrder> orders=orderHandler.executeListQuery(OnlineOrder.class,hql,params,handleMessegesSession);
+        System.out.println(orders);
+    }
+
+    private void getCustomerOfflineOrders(Message message, ConnectionToClient client) throws IOException {
+        RegisteredCustomer customer =getCustomer(client);
+        message.setObject(customer.getOfflineOrders());
+        client.sendToClient(message);
+    }
+
+    private void getCustomerLogs(Message message, ConnectionToClient client) {
+        // TODO: 21/02/2023 data base queiry
+        RegisteredCustomer customer =getCustomer(client);
+        message.setObject(customer);
+    }
+
+    private void getCustomerTransactions(Message message, ConnectionToClient client) throws IOException {
+        // TODO: 21/02/2023 might not work , transactions itself doesn't have a one to many relationship with the customer
+        RegisteredCustomer customer =getCustomer(client);
+
+        String hql= "FROM Transaction WHERE customer_id = :"+customer.getId();
+        DataBaseManipulation<Transactions> db = new DataBaseManipulation<>();
+        List<Transactions> res=db.executeListQuery(Transactions.class,hql,new HashMap<>(),handleMessegesSession);
+        message.setObject(res);
+        client.sendToClient(message);
+    }
+
+    private void getCustomerRefunds(Message message, ConnectionToClient client) throws IOException {
+        RegisteredCustomer customer =getCustomer(client);
+        message.setObject(customer.getRefunds());
+        client.sendToClient(message);
+        // TODO: 21/02/2023
+    }
+
     private void LogOut(Message message, ConnectionToClient client) {
+        client.setInfo("userId", null);
         // TODO: 15/02/2023 implement log out
     }
 
@@ -160,7 +212,9 @@ public class SimpleServerClass extends AbstractServer {
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
         EntryExitParkingLot(message,true);
     }
-
+    private RegisteredCustomer getCustomer(ConnectionToClient client){
+        return rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
+    }
     private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
         String[] instructions= message.getMessage().split("&");
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
@@ -244,7 +298,7 @@ public class SimpleServerClass extends AbstractServer {
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
         orderID = Integer.parseInt(args[3]);
-        String queryOnOrder = "SELECT registeredCustomer FROM Order o "
+        String queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
                 + "WHERE o.id = :orderID "
                 + "AND o.registeredCustomer.id = :customerId "
                 + "AND o.parkingLotID.id = :parkingLotId "
@@ -256,7 +310,7 @@ public class SimpleServerClass extends AbstractServer {
         System.out.println("queryOnOrder: " + queryOnOrder);
         RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnOrder, params);
         if (lst == null) {
-            queryOnOrder = "SELECT registeredCustomer FROM Order o "
+            queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
                     + "WHERE o.id = :orderID "
                     + "AND o.registeredCustomer.id = :customerId "
                     + "AND o.parkingLotID.id = :parkingLotId "

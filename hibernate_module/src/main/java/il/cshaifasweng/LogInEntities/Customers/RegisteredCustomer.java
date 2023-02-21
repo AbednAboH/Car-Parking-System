@@ -25,7 +25,7 @@ public class RegisteredCustomer extends Customer {
     private List<Refund> refunds;
     @Override
     public String getGUI(){
-        return "RegisteredCustomer";
+        return "newCustomerPage";
     }
     public RegisteredCustomer(){
 

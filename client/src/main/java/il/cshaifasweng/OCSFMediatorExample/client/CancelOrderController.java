@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.RefundChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CancelationRefundSubscriber;
@@ -116,7 +117,7 @@ public class CancelOrderController {
             successLbl.setVisible(true);
             warningMsg.setVisible(false);
             try {
-                SimpleChatClient.setRoot("RegisteredCustomer");
+                SimpleChatClient.setRoot(((User)SimpleChatClient.getUser()).getGUI());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

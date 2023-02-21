@@ -236,10 +236,7 @@ public class RegisteredCustomerController {
 
     @Subscribe
     public void showOrdersFromServer(OrderHistoryResponse event) {
-        System.out.println("got here");
-
         observableOnlineOrders = FXCollections.observableArrayList((List<OnlineOrder>) event.getMessage().getObject());
-//        System.out.println(observableOrders.get(0));
         SetOrdersTable();
 
     }
