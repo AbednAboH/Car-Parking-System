@@ -2,6 +2,7 @@ package il.cshaifasweng.LogInEntities.Customers;
 
 import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.ParkingLotEntities.Car;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -58,5 +60,19 @@ public abstract class Customer extends User {
     }
     public void addComplaint(Complaint complaint){
         this.complaint.add(complaint);
+    }
+
+    @OneToMany(mappedBy = "customer")
+    private List<EntryAndExitLog> entryAndExitLog;
+
+    public List<EntryAndExitLog> getEntryAndExitLog() {
+        return entryAndExitLog;
+    }
+
+    public void setEntryAndExitLog(List<EntryAndExitLog> entryAndExitLog) {
+        this.entryAndExitLog = entryAndExitLog;
+    }
+    public void addEntryAndExitLog(EntryAndExitLog entryAndExitLog){
+        this.entryAndExitLog.add(entryAndExitLog);
     }
 }

@@ -127,6 +127,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         if (this.getQueue().size()!=0){
             try {
                 entryAndExitLog=this.extractAndLog(transaction,licensePlate);
+
                 if (entryAndExitLog!=null){
                     reArrangeParkingLot();
                     sendNewPosistionsToRobot(false,licensePlate);

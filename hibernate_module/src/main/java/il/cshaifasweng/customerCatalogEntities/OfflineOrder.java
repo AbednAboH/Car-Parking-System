@@ -3,6 +3,7 @@ package il.cshaifasweng.customerCatalogEntities;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.ParkingLotEntities.Car;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,14 @@ public class OfflineOrder extends AbstractOrder {
     @ManyToOne
     @JoinColumn
     private Customer customer;
+
+    public EntryAndExitLog getEntryAndExitLog(String licensePlate){
+        return entryAndExitLog;
+    }
+    public EntryAndExitLog getEntryAndExitLog(){
+        return entryAndExitLog;
+    }
+
     public OfflineOrder(OneTimeCustomer customer, ParkingLot parkingLotID, String exiting, String car, String email) {
         this.customer = customer;
         this.date=LocalDate.now();

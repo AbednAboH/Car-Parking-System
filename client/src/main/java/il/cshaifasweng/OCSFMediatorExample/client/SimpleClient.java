@@ -61,10 +61,21 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new RefundChartSubscriber(message));
 		}else if(message.getMessage().startsWith("#CancelOrderAndGetRefund")){
 			EventBus.getDefault().post(new CancelationRefundSubscriber(message));
+			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
 		}else if(message.getMessage().startsWith("#GetParkingSpots")){
 			EventBus.getDefault().post(new ParkingSpotsSubscriber(message));
 		}
-		else {
+		else if (message.getMessage().startsWith("#getRefunds")){
+			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
+		} else if (message.getMessage().startsWith("#getTransactions")) {
+			EventBus.getDefault().post(new TransactionsSubscirber(message));
+		}else if (message.getMessage().startsWith("#getEntryAndExitLogs")) {
+			EventBus.getDefault().post(new LogsSubscriber(message));
+		}else if (message.getMessage().startsWith("#getOfflineOrders")) {
+			EventBus.getDefault().post(new offlineOrdersSubscriber(message));
+		}else if (message.getMessage().startsWith("#getToBeConfirmed")) {
+			EventBus.getDefault().post(new UnconfirmedArrivalSubscriber(message));
+		} else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
 		}

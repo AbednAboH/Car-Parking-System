@@ -138,6 +138,7 @@ public class SimpleServerClass extends AbstractServer {
                 case 33->getCustomerLogs(message, client);
                 case 34-> getCustomerOfflineOrders(message, client);
                 case 35-> getOrdersToBeConfirmed(message, client);
+                case 36-> confirmArrival(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
 //            handleMessegesSession.getTransaction().commit();
@@ -155,6 +156,15 @@ public class SimpleServerClass extends AbstractServer {
 
     }
 
+    private void confirmArrival(Message message, ConnectionToClient client) {
+        OnlineOrder order=(OnlineOrder) message.getObject(),actualOrder;
+        actualOrder=orderHandler.get(order.getId(),OnlineOrder.class);
+        actualOrder.setAgreedToPayPenalty(order.isAgreedToPayPenalty());
+        orderHandler.update(actualOrder);
+        message.setObject(actualOrder);
+
+    }
+
     private void getOrdersToBeConfirmed(Message message, ConnectionToClient client) {
         // TODO: 21/02/2023 queiry !
         RegisteredCustomer customer =getCustomer(client);
@@ -167,36 +177,47 @@ public class SimpleServerClass extends AbstractServer {
         params.put("customerId", customer.getId());
 //        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, hql, params);;
         List<OnlineOrder> orders=orderHandler.executeListQuery(OnlineOrder.class,hql,params,handleMessegesSession);
-        System.out.println(orders);
+        Hibernate.initialize(orders);
+        message.setObject(orders);
+
     }
 
     private void getCustomerOfflineOrders(Message message, ConnectionToClient client) throws IOException {
         RegisteredCustomer customer =getCustomer(client);
+        List<OfflineOrder> offlineOrders=customer.getOfflineOrders();
+        Hibernate.initialize(offlineOrders);
         message.setObject(customer.getOfflineOrders());
-        client.sendToClient(message);
     }
 
-    private void getCustomerLogs(Message message, ConnectionToClient client) {
+    private void getCustomerLogs(Message message, ConnectionToClient client) throws IOException {
         // TODO: 21/02/2023 data base queiry
         RegisteredCustomer customer =getCustomer(client);
-        message.setObject(customer);
+        List<EntryAndExitLog> logs=customer.getEntryAndExitLog();
+        Hibernate.initialize(logs);
+        message.setObject(logs);
+        System.out.println("...LOGS...");
+        System.out.println(customer.getEntryAndExitLog());
     }
 
     private void getCustomerTransactions(Message message, ConnectionToClient client) throws IOException {
         // TODO: 21/02/2023 might not work , transactions itself doesn't have a one to many relationship with the customer
         RegisteredCustomer customer =getCustomer(client);
-
-        String hql= "FROM Transaction WHERE customer_id = :"+customer.getId();
-        DataBaseManipulation<Transactions> db = new DataBaseManipulation<>();
-        List<Transactions> res=db.executeListQuery(Transactions.class,hql,new HashMap<>(),handleMessegesSession);
-        message.setObject(res);
-        client.sendToClient(message);
+        List<Transactions> transaction=new ArrayList<>(customer.getOnlineOrders());
+        List<Transactions> tr2=new ArrayList<>(customer.getOfflineOrders());
+        List<Transactions> tr3=new ArrayList<>(customer.getSubscriptions());
+        List<Transactions> tr4=new ArrayList<>(customer.getRefunds());
+        transaction.addAll(tr2);
+        transaction.addAll(tr3);
+        transaction.addAll(tr4);
+        Hibernate.initialize(transaction);
+        message.setObject(transaction);
     }
 
     private void getCustomerRefunds(Message message, ConnectionToClient client) throws IOException {
         RegisteredCustomer customer =getCustomer(client);
-        message.setObject(customer.getRefunds());
-        client.sendToClient(message);
+        List<Refund> refunds=customer.getRefunds();
+        Hibernate.initialize(refunds);
+        message.setObject(refunds);
         // TODO: 21/02/2023
     }
 
@@ -233,6 +254,7 @@ public class SimpleServerClass extends AbstractServer {
         else{
             try {
                 EntryAndExitLog log = isEntry?plot.entryToPLot(transaction, licensePlate):plot.exitParkingLot(transaction,licensePlate);
+
                 handleMessegesSession.saveOrUpdate(log);
             } catch (Exception e) {
                 message.setMessage(e.getMessage());

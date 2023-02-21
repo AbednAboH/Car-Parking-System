@@ -46,6 +46,7 @@ public enum ServerMessegesEnum {
     GET_CUSTOMER_LOGS("#getEntryAndExitLogs"),
     GET_CUSTOMER_OFFLINE_ORDERS("#getOfflineOrders"),
     GET_ORDERS_REQUIRING_Confirmation("#getToBeConfirmed"),
+    CONFIRM_CUSTOMER_ARRIVAL("#confirmCustomerArrival")
     ;
 
     final String type;

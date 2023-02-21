@@ -4,10 +4,7 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CustomerCarsSubscriber;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionResponse;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.*;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
@@ -19,11 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -42,6 +35,12 @@ import java.util.List;
 public class NewCustomerPage {
     private ObservableList<OnlineOrder> observableOnlineOrders;
     private ObservableList<Subscription> observableSubs;
+    private ObservableList<Transactions> observableTransactions;
+    private ObservableList<Refund> observableRefunds;
+    private ObservableList<OfflineOrder> observableOfflineOrders;
+    private ObservableList<EntryAndExitLog> observableLogs;
+    private ObservableList<OnlineOrder> observableToBeConfirmed;
+    
     private ObservableList<Car> carList;
     private List<Subscription> subs;
     @FXML
@@ -49,7 +48,8 @@ public class NewCustomerPage {
 
     @FXML
     private Pane Title;
-
+    @FXML
+    private Label titleOfPage;
     @FXML
     private Button addsubscriptionbutton;
 
@@ -60,7 +60,7 @@ public class NewCustomerPage {
     private TableColumn<OnlineOrder, String> approvalLicense;
 
     @FXML
-    private TableColumn<OnlineOrder, LocalDateTime> approvalOrderParDate;
+    private TableColumn<OnlineOrder, LocalDate> approvalOrderParDate;
 
     @FXML
     private TableColumn<OnlineOrder, Integer> approvalParkingLot;
@@ -126,7 +126,7 @@ public class NewCustomerPage {
     private TableColumn<EntryAndExitLog, LocalDateTime> enteredAt;
 
     @FXML
-    private TableColumn<EntryAndExitLog, LocalDateTime> exitedAt;
+    private TableColumn<EntryAndExitLog, String> exitedAt;
 
     @FXML
     private GridPane logGrid;
@@ -157,6 +157,8 @@ public class NewCustomerPage {
 
     @FXML
     private TableColumn<OfflineOrder, LocalDateTime> offlineExit;
+     @FXML
+    private TableColumn<OfflineOrder, LocalDateTime> offlineEntry;
 
     @FXML
     private TableColumn<OfflineOrder, String> offlineLisence;
@@ -310,7 +312,7 @@ public class NewCustomerPage {
     private Button transactionButton;
 
     @FXML
-    private TableColumn<Transactions, LocalDateTime> transactionDate;
+    private TableColumn<Transactions, LocalDate> transactionDate;
 
     @FXML
     private TableColumn<Transactions,String> transactionMethod;
@@ -335,6 +337,7 @@ public class NewCustomerPage {
 
     @FXML
     private TableColumn<EntryAndExitLog, Integer> logsTransactiontypeID;
+    Notifications notificationBuilder;
     @FXML
     void AddSubscriptions(ActionEvent event) {
         try {
@@ -384,8 +387,7 @@ public class NewCustomerPage {
     @FXML
     void initialize() {
         try {
-
-
+            disableAll();
             EventBus.getDefault().register(this);
             Message message = new Message("#getUser");
             SimpleClient.getClient().sendToServer(message);
@@ -398,7 +400,7 @@ public class NewCustomerPage {
             SimpleClient.getClient().sendToServer(message);
             message=new Message("#getTransactions");
             SimpleClient.getClient().sendToServer(message);
-            message=new Message("#getEntryAndExitLog");
+            message=new Message("#getEntryAndExitLogs");
             SimpleClient.getClient().sendToServer(message);
             message=new Message("#getOfflineOrders");
             SimpleClient.getClient().sendToServer(message);
@@ -446,6 +448,145 @@ public class NewCustomerPage {
         orderPricePaid.setCellValueFactory(data -> new SimpleObjectProperty<>(Double.toString(data.getValue().getValue())));
         observableOnlineOrders.forEach(ordersTable.getItems()::add);
     }
+    @FXML
+    void approveOrDenyArrival(ActionEvent event) {
+        Message message=new Message("#confirmCustomerArrival");
+        if (event.getSource()==approve){
+            if(needApprovalTable.getSelectionModel().getSelectedItem()!=null){
+                needApprovalTable.getSelectionModel().getSelectedItem().setAgreedToPayPenalty(true);
+                message.setObject(needApprovalTable.getSelectionModel().getSelectedItem());
+                try {
+                    SimpleClient.getClient().sendToServer(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                notificationBuilder = Notifications.create()
+                        .title("Error")
+                        .text("Please select a row")
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.CENTER);
+                notificationBuilder.show();
+            }
+
+        }
+        else if (event.getSource()==deny){
+            if(needApprovalTable.getSelectionModel().getSelectedItem()!=null){
+                needApprovalTable.getSelectionModel().getSelectedItem().setAgreedToPayPenalty(false);
+                message.setObject(needApprovalTable.getSelectionModel().getSelectedItem());
+
+                try {
+                    SimpleClient.getClient().sendToServer(message);
+                } catch (IOException e) {
+                     e.printStackTrace();
+                }
+            }
+            else{
+                notificationBuilder = Notifications.create()
+                        .title("Error")
+                        .text("Please select a row")
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.CENTER);
+                notificationBuilder.show();
+            }
+        }
+    }
+    @Subscribe
+    public void showTransactions(TransactionsSubscirber event) {
+        observableTransactions = FXCollections.observableArrayList((List<Transactions>) event.getMessage().getObject());
+        setTransactionsTable();
+    }
+
+    private void setTransactionsTable() {
+        if(transactions!=null&&transactions.getItems()!=null){
+            transactions.getItems().clear();
+        }
+        transactionID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        transactionType.setCellValueFactory(data->new SimpleObjectProperty<>(data.getValue().getClass().getSimpleName()));
+        transactionValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        transactionDate.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getDate()));
+        transactionMethod.setCellValueFactory(data->new SimpleObjectProperty<>(data.getValue().getTransaction_method()));
+        observableTransactions.forEach(transactions.getItems()::add);
+    }
+
+    @Subscribe
+    public void showwRefunds(CustomerRefundsSubscriber event) {
+        observableRefunds = FXCollections.observableArrayList((List<Refund>) event.getMessage().getObject());
+        setRefundsTable();
+    }
+
+    private void setRefundsTable() {
+        if(refundTable!=null&&refundTable.getItems()!=null){
+            refundTable.getItems().clear();
+        }
+        refundID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        refundValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        refundType.setCellValueFactory(data->new SimpleObjectProperty<>(data.getValue().getRefundType()));
+        refundDate.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getDate()));
+        observableRefunds.forEach(refundTable.getItems()::add);
+    }
+
+    @Subscribe
+    public void showLogs(LogsSubscriber event) {
+        observableLogs = FXCollections.observableArrayList((List<EntryAndExitLog>) event.getMessage().getObject());
+        setLogsTable();
+    }
+
+    private void setLogsTable() {
+        if(logsTable!=null&&logsTable.getItems()!=null){
+            logsTable.getItems().clear();
+        }
+        logID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        logType.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getOrderSubKioskEntity().getClass().getSimpleName()));
+        logsTransactiontypeID.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getOrderSubKioskEntity().getId()));
+        logParkingLot.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getParkingLotScheduler().getId()));
+        loggedLicense.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getActiveCar()));
+        enteredAt.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getAcutallEntryTime()));
+        exitedAt.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getAcutallExitTime()!=null?data.getValue().getAcutallExitTime().toString():"Pending"));
+        // TODO: 21/02/2023 fix this
+//        overStayedHours.setCellValueFactory(data-> new SimpleObjectProperty<>( data.getValue().getAcutallExitTime().minusHours(data.getValue().getAcutallExitTime().getHour())));
+        observableLogs.forEach(logsTable.getItems()::add);
+    }
+
+    @Subscribe
+    public void showOfflineOrders(offlineOrdersSubscriber event) {
+        observableOfflineOrders = FXCollections.observableArrayList((List<OfflineOrder>) event.getMessage().getObject());
+        setOfflineOrdersTable();
+    }
+
+    private void setOfflineOrdersTable() {
+        if(offlineOrdersTable!=null&&offlineOrdersTable.getItems()!=null){
+            offlineOrdersTable.getItems().clear();
+        }
+        offlineOrderID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        offlineEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+//        offlineEntry.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().));
+        offlineExit.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getExiting()));
+        offlineLisence.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getCar().getCarNum()));
+        offlineOrderDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        offlineParkingLot.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getParkingLotID().getId()));
+        offlinePricePaid.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getValue()));
+        observableOfflineOrders.forEach(offlineOrdersTable.getItems()::add);
+    }
+
+    @Subscribe
+    public void showToBeConfirmed(UnconfirmedArrivalSubscriber event) {
+        observableToBeConfirmed = FXCollections.observableArrayList((List<OnlineOrder>) event.getMessage().getObject());
+        setToBeConfirmedTable();
+    }
+
+    private void setToBeConfirmedTable() {
+        if (needApprovalTable != null && needApprovalTable.getItems() != null) {
+            needApprovalTable.getItems().clear();
+        }
+        approvalID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        approvalOrderParDate.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getDate()));
+        approvedEntry.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getDateOfOrder()));
+        approvalLicense.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getCar().getCarNum()));
+        approvalParkingLot.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getParkingLotID().getId()));
+    }
+
     @Subscribe
     public void setCarsFromServer(CustomerCarsSubscriber event){
         carList=FXCollections.observableArrayList((List<Car>) event.getMessage().getObject());
@@ -498,31 +639,43 @@ public class NewCustomerPage {
         if (event.getSource() == subscriptionsTab) {
             subsGrid.toFront();
             subsGrid.setVisible(true);
+            titleOfPage.setText("Subscriptions");
+
         }
         else if (event.getSource() == approvalsTab) {
             approvalsGrid.toFront();
             approvalsGrid.setVisible(true);
+            titleOfPage.setText("Online Orders that need confirmation of arrival");
+
 
         }
         else if (event.getSource() == logsTab) {
             logGrid.toFront();
             logGrid.setVisible(true);
+            titleOfPage.setText("Your Logs Of Entering And Exiting Parking Lots");
+
         }
         else if (event.getSource() == offlineOrdersTab) {
             offlineOrdersGrid.toFront();
             offlineOrdersGrid.setVisible(true);
+            titleOfPage.setText("Offline Orders that were made at the Kiosk");
+
         }
         else if (event.getSource() == refundsTab) {
             refundGrid.toFront();
             refundGrid.setVisible(true);
+            titleOfPage.setText("Your Refunds");
+
         }
         else if (event.getSource() == transactionsTab) {
             transactionGrid.toFront();
             transactionGrid.setVisible(true);
+            titleOfPage.setText("All of The transactions that where made by either you or the System");
         }
         else if (event.getSource() == onlineOrdersTab) {
             orderGrid.toFront();
             orderGrid.setVisible(true);
+            titleOfPage.setText("Online Orders that were made by you");
         }
     }
 

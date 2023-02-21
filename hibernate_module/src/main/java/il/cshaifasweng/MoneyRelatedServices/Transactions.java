@@ -15,6 +15,7 @@ public class Transactions implements Serializable {
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     protected int id;
+
     @Column(name = "value", nullable = false)
     protected double value;
     @Column(name = "date", nullable = false)
