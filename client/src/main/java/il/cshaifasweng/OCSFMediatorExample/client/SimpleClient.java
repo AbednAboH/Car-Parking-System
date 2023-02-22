@@ -39,8 +39,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().equals("cancelOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}
-		else if(message.getMessage().equals("#getUser")){
+		}else if(message.getMessage().equals("#getUser")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
@@ -64,6 +63,12 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
 		}else if(message.getMessage().startsWith("#GetParkingSpots")){
 			EventBus.getDefault().post(new ParkingSpotsSubscriber(message));
+		}else if(message.getMessage().startsWith("#GetActiveOrders")){
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if(message.getMessage().startsWith("#GetAllOrdersForManager")){
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if(message.getMessage().startsWith("#RejectAllPriceRequests")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}
 		else if (message.getMessage().startsWith("#getRefunds")){
 			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
