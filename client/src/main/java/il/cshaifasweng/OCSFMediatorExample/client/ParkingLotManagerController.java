@@ -7,7 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryRespon
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingSpotsSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
@@ -25,40 +25,40 @@ import java.util.Date;
 import java.util.List;
 
 public class ParkingLotManagerController {
-    private List<Order> orders;
+    private List<OnlineOrder> orders;
 
     @FXML
-    private Button ActiveOrders;
+    private Button ActiveOnlineOrders;
 
     @FXML
-    private Button AllOrders;
+    private Button AllOnlineOrders;
 
     @FXML
     private Button acceptRequestByn;
 
     @FXML
-    private TableView<Order> ordersTable;
+    private TableView<OnlineOrder> ordersTable;
 
     @FXML
-    private TableColumn<Order, Integer> PLcolumn;
+    private TableColumn<OnlineOrder, Integer> PLcolumn;
 
     @FXML
-    private TableColumn<Order, Integer> customerIDcolumn;
+    private TableColumn<OnlineOrder, Integer> customerIDcolumn;
 
     @FXML
-    private TableColumn<Order, Date> dateColumn;
+    private TableColumn<OnlineOrder, Date> dateColumn;
 
     @FXML
-    private TableColumn<Order, String> emailColumn;
+    private TableColumn<OnlineOrder, String> emailColumn;
 
     @FXML
-    private TableColumn<Order, Integer> orderIDcolumn;
+    private TableColumn<OnlineOrder, Integer> orderIDcolumn;
 
     @FXML
-    private TableColumn<Order, String> plateNumColumn;
+    private TableColumn<OnlineOrder, String> plateNumColumn;
 
     @FXML
-    private TableColumn<Order, String> statusColumn;
+    private TableColumn<OnlineOrder, String> statusColumn;
 
     @FXML
     private TableView<PricingChart> priceTable;
@@ -111,9 +111,9 @@ public class ParkingLotManagerController {
     }
 
     @FXML
-    void showActiveOrders(ActionEvent event) {
-        ordersCategpryLbl.setText("*Showing Active Orders.");
-        Message message = new Message("#GetActiveOrders");
+    void showActiveOnlineOrders(ActionEvent event) {
+        ordersCategpryLbl.setText("*Showing Active OnlineOrders.");
+        Message message = new Message("#GetActiveOnlineOrders");
         try {
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
@@ -122,9 +122,9 @@ public class ParkingLotManagerController {
     }
 
     @FXML
-    void showAllOrders(ActionEvent event) {
-        ordersCategpryLbl.setText("*Showing All Orders.");
-        Message message = new Message("#GetAllOrdersForManager");
+    void showAllOnlineOrders(ActionEvent event) {
+        ordersCategpryLbl.setText("*Showing All OnlineOrders.");
+        Message message = new Message("#GetAllOnlineOrdersForManager");
         try {
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
@@ -133,9 +133,9 @@ public class ParkingLotManagerController {
     }
 
     @Subscribe
-    public void GetOrdersFromServer(OrderHistoryResponse event) {
+    public void GetOnlineOrdersFromServer(OrderHistoryResponse event) {
         System.out.println("Got response from server");
-        orders = (List<Order>) event.getMessage().getObject();
+        orders = (List<OnlineOrder>) event.getMessage().getObject();
         orderIDcolumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         PLcolumn.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().getParkingLotID().getId()));
@@ -145,14 +145,14 @@ public class ParkingLotManagerController {
                 new SimpleObjectProperty<>(data.getValue().getEmail()));
         plateNumColumn.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().getCar().getCarNum()));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfOrder"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfOnlineOrder"));
         statusColumn.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().isActive() ? "Active" : "Inactive")
         );
-        refreshOrdersTable();
+        refreshOnlineOrdersTable();
     }
 
-    private void refreshOrdersTable() {
+    private void refreshOnlineOrdersTable() {
         Platform.runLater(() -> {
             ordersTable.getItems().clear();
             orders.forEach(ordersTable.getItems()::add);
@@ -162,7 +162,7 @@ public class ParkingLotManagerController {
     }
 
     @Subscribe
-    public void GetOrdersFromServer(UpdateMessageEvent event) {
+    public void GetOnlineOrdersFromServer(UpdateMessageEvent event) {
         System.out.println("Got response from server");
         if (event.getMessage().getMessage().compareTo("#RejectAllPriceRequests") == 0)
             requestsTable.getItems().clear();
@@ -186,8 +186,8 @@ public class ParkingLotManagerController {
     @FXML
     void initialize() throws Exception {
         EventBus.getDefault().register(this);
-        ordersCategpryLbl.setText("*Showing All Orders.");
-        showAllOrders(null);
+        ordersCategpryLbl.setText("*Showing All OnlineOrders.");
+        showAllOnlineOrders(null);
         String name = ((ParkingLotEmployee) SimpleChatClient.getUser()).getFirstName();
         userNameLbl.setText("Hello, " + name);
     }

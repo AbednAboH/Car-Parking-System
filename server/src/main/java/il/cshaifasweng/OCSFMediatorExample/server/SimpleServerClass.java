@@ -138,6 +138,7 @@ public class SimpleServerClass extends AbstractServer {
                 case 34-> getCustomerOfflineOrders(message, client);
                 case 35-> getOrdersToBeConfirmed(message, client);
                 case 36-> confirmArrival(message, client);
+
                 case 37 -> getActiveOrders(message, client);
                 case 38 -> getAllOrdersForManager(message, client);
                 default -> System.out.println("message content doesn't match any request");
