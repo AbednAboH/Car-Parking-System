@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +21,16 @@ public class SimpleChatClient extends Application {
     private static Scene scene;
     private static SimpleClient client;
     private static Object user;
-    private static Order currentOrder;
+    private static OnlineOrder currentOnlineOrder;
     private static Subscription currentSubscription;
+    private static int RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
+
+    public static int getCurrentRequest() {
+        return RequestBetweenScreens;
+    }
+    public static int setCurrentRequest(int currentRequest) {
+        return RequestBetweenScreens = currentRequest;
+    }
 
 public static Subscription getCurrentSubscription() {
         return currentSubscription;
@@ -30,15 +38,15 @@ public static Subscription getCurrentSubscription() {
 
     public static void setCurrentSubscription(Subscription currentSubscription) {
         SimpleChatClient.currentSubscription = currentSubscription;
-        currentOrder=null;
+        currentOnlineOrder =null;
 }
-    public static Order getCurrentOrder() {
-        return currentOrder;
+    public static OnlineOrder getCurrentOrder() {
+        return currentOnlineOrder;
     }
 
 
-    public static void setCurrentOrder(Order currentOrder) {
-        SimpleChatClient.currentOrder = currentOrder;
+    public static void setCurrentOrder(OnlineOrder currentOnlineOrder) {
+        SimpleChatClient.currentOnlineOrder = currentOnlineOrder;
         currentSubscription =null;
     }
     public  static Scene getScene(){
@@ -50,7 +58,7 @@ public static Subscription getCurrentSubscription() {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 1080, 720);
+        scene = new Scene(loadFXML("primary"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }
@@ -62,7 +70,7 @@ public static Subscription getCurrentSubscription() {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SimpleChatClient.class.getResource(fxml + ".fxml"));
-        return fxmlLoader. load();
+        return fxmlLoader.load();
     }
     
     public static Object getUser(){

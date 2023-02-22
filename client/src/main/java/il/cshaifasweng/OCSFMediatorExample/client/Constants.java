@@ -8,6 +8,7 @@ public enum Constants {
     REGULAR_SUBSCRIPTION("Regular subscription"),
     REGULAR_MULTI_SUBSCRIPITON("Regular two cars"),
     FULL_SUBSCRIPTION("Full subscription"),
+
     ;
 
     private String message;

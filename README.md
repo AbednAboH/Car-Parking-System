@@ -1,7 +1,7 @@
 # CPS system :
 * This project is a Car Parking System that allows costumers to :
   * subscribe to a monthly subscription
-  * order a spot in a specific parking lot before hand 
+  * onlineOrder a spot in a specific parking lot before hand 
   * this project also manages how the cars are inserted/extracted to the parking lot 
   * supports multiple parking lots and multiple costumers 
   * allows useres that are not registered in the system to look at a cataloge that describes the parking lot fees and available parking lots in the whole country 
@@ -45,7 +45,7 @@ Date 8.1.2023
 ## Date 11.1.23
 # remaining entities:
  *Kiosk
- *order
+ *onlineOrder
  *robot
 # authintication protocols are completed , we use a query class for authintication that resides in EntitiesLogIn
  2 options :

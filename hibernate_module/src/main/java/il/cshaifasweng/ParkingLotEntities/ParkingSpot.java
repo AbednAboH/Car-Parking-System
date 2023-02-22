@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "parkingspots")
@@ -73,6 +74,14 @@ public class ParkingSpot implements Serializable {
     public void resetEntryAndExitLog() {
         if (entryAndExitLog!=null&&entryAndExitLog.getParkingSpot()!=null)
             entryAndExitLog.setParkingSpot(null);
+        entryAndExitLog = null;
+        occupied=false;
+    }
+    public void exitLog() {
+        if (entryAndExitLog!=null&&entryAndExitLog.getParkingSpot()!=null){
+            entryAndExitLog.setParkingSpot(null);
+            entryAndExitLog.setAcutallExitTime(LocalDateTime.now());
+        }
         entryAndExitLog = null;
         occupied=false;
     }

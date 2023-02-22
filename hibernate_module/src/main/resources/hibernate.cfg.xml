@@ -5,7 +5,7 @@
         <!-- Database connection settings -->
 
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/cps-mhmd?useSSL=true</property>
+        <property name="connection.url">jdbc:mysql://cps-main.mysql.database.azure.com:3306/test-transaction?useSSL=true</property>
 
         <property name="connection.username">CpsAdmin</property>
         <property name="connection.password">@#123asad</property>
@@ -27,7 +27,7 @@
         <!-- Disable Hibernate's automatic session management -->
         <property name="hibernate.current_session_context_class">thread</property>
         <!-- Echo all executed SQL to stdout -->
-        <property name="show_sql">true</property>
+        <property name="show_sql">false</property>
 
         <!-- Drop and re-create the database schema on startup -->
 <!--        todo: change to update, this mode is for testing only !!!-->
@@ -49,7 +49,7 @@
         <mapping class="il.cshaifasweng.customerCatalogEntities.FullSubscription"/>
         <mapping class="il.cshaifasweng.customerCatalogEntities.RegularSubscription"/>
         <mapping class="il.cshaifasweng.customerCatalogEntities.Complaint"/>
-        <mapping class="il.cshaifasweng.customerCatalogEntities.Order"/>
+        <mapping class="il.cshaifasweng.customerCatalogEntities.OnlineOrder"/>
         <mapping class="il.cshaifasweng.MoneyRelatedServices.Penalty"/>
         <mapping class="il.cshaifasweng.MoneyRelatedServices.PricingChart"/>
         <mapping class="il.cshaifasweng.MoneyRelatedServices.Refund"/>

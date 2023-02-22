@@ -87,6 +87,8 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         restoreQueueFromList();
         setMaxCapacity();
         // TODO: 13/02/2023 do not allow the same car to enter twice
+        if (inParkingLot(licensePlate))
+            throw new IllegalArgumentException("Duplicate Car");
         if (this.getQueue().size()<this.getMaxCapacity()){
             try {
                 entryAndExitLog=this.EnterAndLog(transaction, licensePlate) ;
@@ -98,7 +100,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
 
             }
             catch (Exception e){
-                System.out.println("ParkingLotIsFull");
+                throw new IllegalArgumentException("Full");
 
             }
 
@@ -108,6 +110,13 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         return null;
 
     }
+    public boolean inParkingLot(String licensePlate){
+        for (EntryAndExitLog log:entryAndExitLogList)
+            if (log.getActiveCar().equals(licensePlate))
+                return true;
+        return false;
+    }
+
     public boolean isFull(){
         return this.getQueue().size()==this.getMaxCapacity();
     }
@@ -118,10 +127,11 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         if (this.getQueue().size()!=0){
             try {
                 entryAndExitLog=this.extractAndLog(transaction,licensePlate);
+
                 if (entryAndExitLog!=null){
                     reArrangeParkingLot();
                     sendNewPosistionsToRobot(false,licensePlate);
-                    System.out.println("\nnot null\n");
+
                 }
                 return entryAndExitLog;
             }
@@ -212,6 +222,13 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
                      spot.resetEntryAndExitLog();}
             });
         }
+     public void ExitAllCarsAndInitiateAllSpots(){
+                spots.forEach(spot -> {
+                    if (!spot.isSaved() && !spot.isFaulty()){
+                         spot.exitLog();
+                    }
+                });
+            }
 
     @Override
     public String toString() {

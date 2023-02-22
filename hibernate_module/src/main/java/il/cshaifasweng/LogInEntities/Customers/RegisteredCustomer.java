@@ -2,7 +2,7 @@ package il.cshaifasweng.LogInEntities.Customers;
 
 import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.ParkingLotEntities.Car;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +18,15 @@ import java.util.List;
 public class RegisteredCustomer extends Customer {
 
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private  List<Order> orders;
+    private  List<OnlineOrder> OnlineOrders;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Subscription> subscriptions;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Refund> refunds;
+    @Override
+    public String getGUI(){
+        return "newCustomerPage";
+    }
     public RegisteredCustomer(){
 
     }
@@ -47,12 +51,12 @@ public class RegisteredCustomer extends Customer {
 
     }
 
-    public void addOrder(Order newOrder){
-        orders.add(newOrder);
+    public void addOrder(OnlineOrder newOnlineOrder){
+        OnlineOrders.add(newOnlineOrder);
 
-        if (!this.getCars().contains(newOrder.getCar())){
-            newOrder.getCar().setCustomer(this);
-            this.getCars().add(newOrder.getCar());
+        if (!this.getCars().contains(newOnlineOrder.getCar())){
+            newOnlineOrder.getCar().setCustomer(this);
+            this.getCars().add(newOnlineOrder.getCar());
         }
     }
     public void addSubscription(Subscription sub){

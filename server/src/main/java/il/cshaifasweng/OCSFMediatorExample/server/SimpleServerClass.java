@@ -7,6 +7,7 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
+import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
@@ -23,12 +24,10 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import static il.cshaifasweng.OCSFMediatorExample.server.ServerMessegesEnum.*;
 import static il.cshaifasweng.ParkingLotEntities.ConstantMessegesForClient.*;
@@ -39,7 +38,7 @@ public class SimpleServerClass extends AbstractServer {
     private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
     private static  final DataBaseManipulation<PricingChart> pChart = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
-    private static  final DataBaseManipulation<Order> orderHandler = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<OnlineOrder> orderHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
@@ -99,8 +98,9 @@ public class SimpleServerClass extends AbstractServer {
                 AuthenticationService.intiate(handleMessegesSession);
             }
             handleMessegesSession.beginTransaction();
-            int type=messageType((Message) msg);
 
+            int type=messageType((Message) msg);
+            //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
                 case 1 -> Login(message, client);
@@ -130,12 +130,18 @@ public class SimpleServerClass extends AbstractServer {
                 case 25 -> verifyOrder(message, client);
                 case 26 -> getCustomerCars(message, client);
                 case 27 -> cancelOrderAndGetRefund(message, client);
-                case 28 -> enterParkingLot(message, client);
-                case 29 -> exitParkingLot(message, client);
+                case 28 -> LogOut(message, client);
+                case 29-> enterParkingLot(message, client);
+                case 30-> exitParkingLot(message, client);
+                case 31-> getCustomerRefunds(message, client);
+                case 32-> getCustomerTransactions(message, client);
+                case 33->getCustomerLogs(message, client);
+                case 34-> getCustomerOfflineOrders(message, client);
+                case 35-> getOrdersToBeConfirmed(message, client);
+                case 36-> confirmArrival(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
-//            handleMessegesSession.getTransaction().commit();
-//            handleMessegesSession.close();
+//
 //
             client.sendToClient(message);
             handleMessegesSession.getTransaction().commit();
@@ -149,28 +155,112 @@ public class SimpleServerClass extends AbstractServer {
 
     }
 
-    private void exitParkingLot(Message message, ConnectionToClient client) {
+    private void confirmArrival(Message message, ConnectionToClient client) {
+        OnlineOrder order=(OnlineOrder) message.getObject(),actualOrder;
+        actualOrder=orderHandler.get(order.getId(),OnlineOrder.class);
+        actualOrder.setAgreedToPayPenalty(order.isAgreedToPayPenalty());
+        orderHandler.update(actualOrder);
+        message.setObject(actualOrder);
 
+    }
+
+    private void getOrdersToBeConfirmed(Message message, ConnectionToClient client) {
+        // TODO: 21/02/2023 queiry !
+        RegisteredCustomer customer =getCustomer(client);
+        String hql= "FROM OnlineOrder o "
+                + "WHERE o.registeredCustomer.id = :customerId "
+                + "AND o.dateOfOrder  >=CURDATE() AND o.active = true" +
+                " AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30" +
+                " AND o.reminderSent = 3 AND agreedToPayPenalty=false";
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("customerId", customer.getId());
+//        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, hql, params);;
+        List<OnlineOrder> orders=orderHandler.executeListQuery(OnlineOrder.class,hql,params,handleMessegesSession);
+        Hibernate.initialize(orders);
+        message.setObject(orders);
+
+    }
+
+    private void getCustomerOfflineOrders(Message message, ConnectionToClient client) throws IOException {
+        RegisteredCustomer customer =getCustomer(client);
+        List<OfflineOrder> offlineOrders=customer.getOfflineOrders();
+        Hibernate.initialize(offlineOrders);
+        message.setObject(customer.getOfflineOrders());
+    }
+
+    private void getCustomerLogs(Message message, ConnectionToClient client) throws IOException {
+        // TODO: 21/02/2023 data base queiry
+        RegisteredCustomer customer =getCustomer(client);
+        List<EntryAndExitLog> logs=customer.getEntryAndExitLog();
+        Hibernate.initialize(logs);
+        message.setObject(logs);
+        System.out.println("...LOGS...");
+        System.out.println(customer.getEntryAndExitLog());
+    }
+
+    private void getCustomerTransactions(Message message, ConnectionToClient client) throws IOException {
+        // TODO: 21/02/2023 might not work , transactions itself doesn't have a one to many relationship with the customer
+        RegisteredCustomer customer =getCustomer(client);
+        List<Transactions> transaction=new ArrayList<>(customer.getOnlineOrders());
+        List<Transactions> tr2=new ArrayList<>(customer.getOfflineOrders());
+        List<Transactions> tr3=new ArrayList<>(customer.getSubscriptions());
+        List<Transactions> tr4=new ArrayList<>(customer.getRefunds());
+        transaction.addAll(tr2);
+        transaction.addAll(tr3);
+        transaction.addAll(tr4);
+        Hibernate.initialize(transaction);
+        message.setObject(transaction);
+    }
+
+    private void getCustomerRefunds(Message message, ConnectionToClient client) throws IOException {
+        RegisteredCustomer customer =getCustomer(client);
+        List<Refund> refunds=customer.getRefunds();
+        Hibernate.initialize(refunds);
+        message.setObject(refunds);
+        // TODO: 21/02/2023
+    }
+
+    private void LogOut(Message message, ConnectionToClient client) {
+        client.setInfo("userId", null);
+        // TODO: 15/02/2023 implement log out
+    }
+
+    private void exitParkingLot(Message message, ConnectionToClient client) throws IOException {
+        EntryExitParkingLot(message,false);
     }
 
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
-        String[] instructions=message.getMessage().split("&");
-        int KioskParkingLotId=Integer.parseInt(instructions[0]);
-        int licensePlate=Integer.parseInt(instructions[1]);
-        //todo: check if the parking lot is full
-        ParkingLot pl=pLot.get(KioskParkingLotId,ParkingLot.class);
-        if (pl.isFull()) {
-            message.setMessage(FULL_PARKING_LOT.type);
-            client.sendToClient(message);
-        }
-        //todo: check if the customer has an active order
-        //todo: check if vehicle is in the parking lot
-
-
-
-
-
+        EntryExitParkingLot(message,true);
     }
+    private RegisteredCustomer getCustomer(ConnectionToClient client){
+        return rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
+    }
+    private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
+        String[] instructions= message.getMessage().split("&");
+        ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
+        Transactions transaction=new Transactions();
+        String licensePlate=instructions[4];
+        switch (instructions[5]) {
+            case "Subscription"->transaction = handleMessegesSession.get(Subscription.class, Integer.parseInt(instructions[3]));
+            case "Order"->transaction = handleMessegesSession.get(OnlineOrder.class, Integer.parseInt(instructions[3]));
+            case "BasicOrder"-> System.out.println("basicOrder");// TODO: 15/02/2023 implement basic order
+            default->throw new IOException("transaction type is not valid");
+        }
+        //todo: check if the parking lot is full
+        if (isEntry&&plot.isFull()) {
+            message.setMessage(FULL_PARKING_LOT.type);
+        }
+        else{
+            try {
+                EntryAndExitLog log = isEntry?plot.entryToPLot(transaction, licensePlate):plot.exitParkingLot(transaction,licensePlate);
+
+                handleMessegesSession.saveOrUpdate(log);
+            } catch (Exception e) {
+                message.setMessage(e.getMessage());
+            }
+        }
+    }
+
     private static int messageType(Message msg) {
         int messageType = -1;
         for (ServerMessegesEnum messageTypeEnum : ServerMessegesEnum.values()) {
@@ -184,12 +274,12 @@ public class SimpleServerClass extends AbstractServer {
 
     private void cancelOrderAndGetRefund(Message message, ConnectionToClient client) {
         String[] instructions=message.getMessage().split("&");
-        Order order=orderHandler.get(Integer.parseInt(instructions[2]), Order.class) ;
-        order.setActive(false);
-        orderHandler.update(order);
+        OnlineOrder onlineOrder =orderHandler.get(Integer.parseInt(instructions[2]), OnlineOrder.class) ;
+        onlineOrder.setActive(false);
+        orderHandler.update(onlineOrder);
         int customer= (Integer) client.getInfo("userId");
         Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
-        refund.setTransaction_method(order.getTransaction_method());
+        refund.setTransaction_method(onlineOrder.getTransaction_method());
         refund.setTransactionStatus(true);
         handleMessegesSession.save(refund);
         message.setMessage(CANCEL_ORDER_AND_GET_REFUND.type);
@@ -229,7 +319,7 @@ public class SimpleServerClass extends AbstractServer {
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
         orderID = Integer.parseInt(args[3]);
-        String queryOnOrder = "SELECT registeredCustomer FROM Order o "
+        String queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
                 + "WHERE o.id = :orderID "
                 + "AND o.registeredCustomer.id = :customerId "
                 + "AND o.parkingLotID.id = :parkingLotId "
@@ -241,7 +331,7 @@ public class SimpleServerClass extends AbstractServer {
         System.out.println("queryOnOrder: " + queryOnOrder);
         RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnOrder, params);
         if (lst == null) {
-            queryOnOrder = "SELECT registeredCustomer FROM Order o "
+            queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
                     + "WHERE o.id = :orderID "
                     + "AND o.registeredCustomer.id = :customerId "
                     + "AND o.parkingLotID.id = :parkingLotId "
@@ -354,13 +444,13 @@ public class SimpleServerClass extends AbstractServer {
 
     private void showOrders(Message message, ConnectionToClient client) throws Exception {
         // TODO: get order that has the client id and not all orders
-        List<Order> orders = orderHandler.getAll(Order.class);
-        orders.forEach(order -> {
+        List<OnlineOrder> OnlineOrders = orderHandler.getAll(OnlineOrder.class);
+        OnlineOrders.forEach(order -> {
             Hibernate.initialize(order.getRegisteredCustomer());
             Hibernate.initialize(order.getParkingLotID());
             Hibernate.initialize(order.getCar());
         });
-        message.setObject(orders);
+        message.setObject(OnlineOrders);
     }
 
     protected void registerUser(Message message,ConnectionToClient client){
@@ -489,25 +579,25 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void placeOrder(Message message, ConnectionToClient client) throws Exception {
-        Order newOrder = (Order)message.getObject();
+        OnlineOrder newOnlineOrder = (OnlineOrder)message.getObject();
         //TODO: change to customerID from client saved info
         RegisteredCustomer rg = rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
-        orderHandler.save(newOrder, Order.class);
-        message.setObject(newOrder.getId());
+        orderHandler.save(newOnlineOrder, OnlineOrder.class);
+        message.setObject(newOnlineOrder.getId());
         System.out.println(message.getObject());
-        rg.addOrder(newOrder);
+        rg.addOrder(newOnlineOrder);
         rCustomer.update(rg);
-        message.setObject(newOrder.getId());
+        message.setObject(newOnlineOrder.getId());
         client.sendToClient(message);
     }
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
 
         RegisteredCustomer regCostumer= handleMessegesSession.get(RegisteredCustomer.class,(Integer) client.getInfo("userId"));
-        Object orders =regCostumer.getOrders();
+        Object orders =regCostumer.getOnlineOrders();
 //        Hibernate.initialize(orders);
-        for (Order order : regCostumer.getOrders()) {
-            Hibernate.initialize(order.getCar());
+        for (OnlineOrder onlineOrder : regCostumer.getOnlineOrders()) {
+            Hibernate.initialize(onlineOrder.getCar());
         }
 
         handleMessegesSession.flush();
@@ -549,7 +639,7 @@ public class SimpleServerClass extends AbstractServer {
         ParkingLotEmployee E = plEmployee.get((Integer) client.getInfo("userId"), ParkingLotEmployee.class);
         ParkingLot PL = E.getParkingLot();
         Hibernate.initialize(PL.getSpots());
-        PL.reInitiateParkingSpots();
+        PL.ExitAllCarsAndInitiateAllSpots();
         handleMessegesSession.update(PL);
         handleMessegesSession.flush();
         message.setObject(PL.getSpots());
