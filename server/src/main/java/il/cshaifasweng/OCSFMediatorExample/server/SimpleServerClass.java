@@ -98,7 +98,6 @@ public class SimpleServerClass extends AbstractServer {
                 AuthenticationService.intiate(handleMessegesSession);
             }
             handleMessegesSession.beginTransaction();
-
             int type=messageType((Message) msg);
             //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
@@ -139,10 +138,12 @@ public class SimpleServerClass extends AbstractServer {
                 case 34-> getCustomerOfflineOrders(message, client);
                 case 35-> getOrdersToBeConfirmed(message, client);
                 case 36-> confirmArrival(message, client);
+
+                case 37 -> getActiveOrders(message, client);
+                case 38 -> getAllOrdersForManager(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
-//
-//
+
             client.sendToClient(message);
             handleMessegesSession.getTransaction().commit();
 
@@ -236,7 +237,7 @@ public class SimpleServerClass extends AbstractServer {
         return rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
     }
     private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
-        String[] instructions= message.getMessage().split("&");
+        String[] instructions=message.getMessage().split("&");
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
         Transactions transaction=new Transactions();
         String licensePlate=instructions[4];
@@ -652,5 +653,30 @@ public class SimpleServerClass extends AbstractServer {
         client.sendToClient(message);
     }
 
+    public void getActiveOrders(Message message, ConnectionToClient client) throws Exception {
+        List<OnlineOrder> orders = (List<OnlineOrder>) orderHandler.getAll(OnlineOrder.class);
+        List<OnlineOrder> activeOrders = new ArrayList<>();
+        orders.forEach(order -> {
+            if (order.isActive()) activeOrders.add(order);
+        });
+        message.setObject(activeOrders);
+    }
 
+    public void getAllOrdersForManager(Message message, ConnectionToClient client) throws Exception {
+        message.setObject(orderHandler.getAll(OnlineOrder.class));
+    }
+
+    public void rejectOnePriceRequest(Message message, ConnectionToClient client) throws Exception {
+        PricingChart pc = pChart.get((int) message.getObject(), PricingChart.class);
+        pc.setWaitForPermission(false);
+        pChart.update(pc);
+    }
+
+    public void rejectAllPriceRequests(Message message, ConnectionToClient client) throws Exception {
+        List<PricingChart> allPc = pChart.getAll(PricingChart.class);
+        allPc.forEach(pc -> {
+            pc.setWaitForPermission(false);
+            pChart.update(pc);
+        });
+    }
 }

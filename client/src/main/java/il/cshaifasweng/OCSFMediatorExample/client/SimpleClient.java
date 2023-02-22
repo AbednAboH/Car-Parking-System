@@ -39,8 +39,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().equals("cancelOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}
-		else if(message.getMessage().equals("#getUser")){
+		}else if(message.getMessage().equals("#getUser")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().equals("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
@@ -49,7 +48,6 @@ public class SimpleClient extends AbstractClient {
 		}else if(message.getMessage().startsWith("#verifySubscription")){
 			EventBus.getDefault().post(new KioskSubscriber(message));
 		}else if(message.getMessage().startsWith("#verifyOrder")){
-			System.out.println("We got a message");
 			EventBus.getDefault().post(new KioskSubscriber(message));
 		}else if(message.getMessage().startsWith("#getAllOrders")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
@@ -58,12 +56,19 @@ public class SimpleClient extends AbstractClient {
 		}else if (message.getMessage().startsWith("#GetCustomerCars")){
 			EventBus.getDefault().post(new CustomerCarsSubscriber(message));
 		}else if(message.getMessage().startsWith("#GetRefundChart")){
+			System.out.println("We got a message");
 			EventBus.getDefault().post(new RefundChartSubscriber(message));
 		}else if(message.getMessage().startsWith("#CancelOrderAndGetRefund")){
 			EventBus.getDefault().post(new CancelationRefundSubscriber(message));
 			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
 		}else if(message.getMessage().startsWith("#GetParkingSpots")){
 			EventBus.getDefault().post(new ParkingSpotsSubscriber(message));
+		}else if(message.getMessage().startsWith("#GetActiveOrders")){
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if(message.getMessage().startsWith("#GetAllOrdersForManager")){
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		}else if(message.getMessage().startsWith("#RejectAllPriceRequests")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}
 		else if (message.getMessage().startsWith("#getRefunds")){
 			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
@@ -79,24 +84,7 @@ public class SimpleClient extends AbstractClient {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
 		}
-//		String messageString = message.getMessage();
-//		switch (messageString) {
-//			case "#authintication" -> EventBus.getDefault().post(new LogInSubscriber(message));
-//			case "#getUser" -> EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
-//			case "#getAllParkingLots" -> EventBus.getDefault().post(new ParkingLotResults(message));
-//			case "#getPricingChart" -> EventBus.getDefault().post(new SubscriptionsChartResults(message));
-//			case "#showOrders", "#getAllOrders" -> EventBus.getDefault().post(new OrderHistoryResponse(message));
-//			case "#showSubscription" -> EventBus.getDefault().post(new SubscriptionResponse(message));
-//			case "#placeOrder", "addSubscription", "cancelSubscription", "cancelOrder" -> EventBus.getDefault().post(new UpdateMessageEvent(message));
-//			case "Error! we got an empty message" -> EventBus.getDefault().post(new ErrorEvent(message));
-//			case "#GetAllCompliants", "#CloseComplaint" -> EventBus.getDefault().post(new CompliantsSubscriber(message));
-//			case "#verifySubscription", "#verifyOrder" -> EventBus.getDefault().post(new KioskSubscriber(message));
-//			case "#applyComplaint" -> EventBus.getDefault().post(new ComplaintSubscriber(message));
-//			case "#GetCustomerCars" -> EventBus.getDefault().post(new CustomerCarsSubscriber(message));
-//			case "#GetRefundChart" -> EventBus.getDefault().post(new RefundChartSubscriber(message));
-//			case "#CancelOrderAndGetRefund" -> EventBus.getDefault().post(new CancelationRefundSubscriber(message));
-//			default -> EventBus.getDefault().post(new MessageEvent(message));
-//		}
+//
 	}
 	
 	public static SimpleClient getClient() {

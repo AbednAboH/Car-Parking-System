@@ -85,8 +85,7 @@ public class Employee_GUI_Controller {
     @FXML
     void SaveSpot(ActionEvent event) {
         if (Table.getSelectionModel().getSelectedItem() != null) {
-            Table.getSelectionModel().getSelectedItem().setSaved(true);
-            System.out.println(Table.getSelectionModel().getSelectedItem());
+            Table.getSelectionModel().getSelectedItem().ChangeSavedStatus();
             updateSpot();
             initControlsState();
         }
@@ -95,8 +94,7 @@ public class Employee_GUI_Controller {
     @FXML
     void markUnmarkFaulty(ActionEvent event) {
         if (Table.getSelectionModel().getSelectedItem() != null) {
-            Table.getSelectionModel().getSelectedItem().setFaulty(!Table.getSelectionModel().getSelectedItem().isFaulty());
-            System.out.println(Table.getSelectionModel().getSelectedItem());
+            Table.getSelectionModel().getSelectedItem().ChangeFaultyStatus();
             updateSpot();
             initControlsState();
         }
@@ -113,12 +111,12 @@ public class Employee_GUI_Controller {
     }
 
     private String getSpotStatus(ParkingSpot ps) {
+        if (ps.isOccupied())
+            return "Occupied";
         if (ps.isSaved())
             return "Saved";
         if (ps.isFaulty())
             return "Faulty";
-        if (ps.isOccupied())
-            return "Occupied";
         return "Free";
     }
 
@@ -176,7 +174,7 @@ public class Employee_GUI_Controller {
         EventBus.getDefault().register(this);
         Message message = new Message("#GetParkingSpots");
         SimpleClient.getClient().sendToServer(message);
-        String name = ((ParkingLotEmployee)SimpleChatClient.getUser()).getFirstName();
+        String name = ((ParkingLotEmployee) SimpleChatClient.getUser()).getFirstName();
         userNameLbl.setText("Hello, " + name);
         faultyBtn.setDisable(true);
         SaveSpot.setDisable(true);
@@ -200,17 +198,15 @@ public class Employee_GUI_Controller {
         rowLabel.getSelectionModel().select(ps.getRow());
         floorLabel.getSelectionModel().select(ps.getFloor());
         depthLabel.getSelectionModel().select(ps.getDepth());
-        faultyBtn.setDisable(false);
-        SaveSpot.setDisable(false);
+        enableButtons();
     }
 
     @FXML
     void spotSelectedComboBox(ActionEvent event) {
         if (rowLabel.getValue() != null && floorLabel.getValue() != null
                 && depthLabel.getValue() != null) {
-            faultyBtn.setDisable(false);
-            SaveSpot.setDisable(false);
             Table.getSelectionModel().select(Table.getItems().get(findSpotIndexInTable()));
+            enableButtons();
         }
     }
 
@@ -230,6 +226,19 @@ public class Employee_GUI_Controller {
         return 0;
     }
 
+    private void enableButtons(){
+        faultyBtn.setDisable(true);
+        SaveSpot.setDisable(true);
+        ParkingSpot ps = Table.getSelectionModel().getSelectedItem();
+        if (ps != null) {
+            if (!ps.isOccupied()){
+                faultyBtn.setDisable(false);
+                if (!ps.isFaulty() && !ps.isSaved())
+                    SaveSpot.setDisable(false);
+            }
+        }
+    }
+
     @FXML
     void logOutUser(ActionEvent event) {
         try {
@@ -239,7 +248,7 @@ public class Employee_GUI_Controller {
         }
     }
 
-    private void initControlsState(){
+    private void initControlsState() {
         faultyBtn.setDisable(true);
         SaveSpot.setDisable(true);
         rowLabel.getSelectionModel().clearSelection();
