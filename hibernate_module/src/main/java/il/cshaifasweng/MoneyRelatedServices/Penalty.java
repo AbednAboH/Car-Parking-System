@@ -13,16 +13,14 @@ public class Penalty implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "on_late_arrival")
-    private double onLateArriaval;
+
     @Column(name = "on_late_exit")
     private double onLateExit;
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    public Penalty(double onLateArriaval, double onLateExit, Customer customer) {
-        this.onLateArriaval = onLateArriaval;
+    public Penalty( double onLateExit, Customer customer) {
         this.onLateExit = onLateExit;
         this.customer = customer;
     }

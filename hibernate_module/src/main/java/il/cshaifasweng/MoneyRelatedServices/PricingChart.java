@@ -31,6 +31,8 @@ public class PricingChart implements Serializable {
     private boolean WaitForPermission = true;
     @Column(name = "Approved")
     private boolean Approved = false;
+    @Column(name="penalty")
+    private double penalty=10;
 
 
     public PricingChart() {

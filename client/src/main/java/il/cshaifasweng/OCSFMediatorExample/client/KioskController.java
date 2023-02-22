@@ -48,6 +48,9 @@ public class KioskController {
 
     @FXML
     private Button haveSub;
+    @FXML
+    private Button back;
+
 
     final CountDownLatch latch = new CountDownLatch(1);
 
@@ -60,6 +63,11 @@ public class KioskController {
     void onDontHaveOrder(ActionEvent event) throws IOException {
         SimpleChatClient.setRoot("orderGUI");
     }
+    @FXML
+    void onBack(ActionEvent event) throws IOException {
+        SimpleChatClient.setRoot("EntranceAndExit");
+    }
+
 
     // TODO: 15/02/2023 Bare in mind that the client here is the kiosk window,not the client
     //  , the client thus shouldn't be registered in the server as a customer at all !

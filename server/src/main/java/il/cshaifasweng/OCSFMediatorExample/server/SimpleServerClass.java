@@ -141,8 +141,7 @@ public class SimpleServerClass extends AbstractServer {
                 case 36-> confirmArrival(message, client);
                 default -> System.out.println("message content doesn't match any request");
             }
-//            handleMessegesSession.getTransaction().commit();
-//            handleMessegesSession.close();
+//
 //
             client.sendToClient(message);
             handleMessegesSession.getTransaction().commit();
