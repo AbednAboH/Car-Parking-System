@@ -48,6 +48,8 @@ public abstract class Subscription extends Transactions {
 
     @Column(name = "allowed_days")
     private String allowedDays;
+    @Column
+    private String email;
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL)
     private List<EntryAndExitLog> entryAndExitLogs=new ArrayList<>();
 

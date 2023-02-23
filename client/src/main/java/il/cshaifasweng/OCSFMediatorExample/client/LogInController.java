@@ -82,8 +82,14 @@ public class LogInController{
     // Creation of methods which are activated on events in the forms
     @FXML
     protected void onCancelButtonClick() {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+//        Stage stage = (Stage) cancelButton.getScene().getWindow();
+//        stage.close();
+        try {
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Subscribe
@@ -124,8 +130,9 @@ public class LogInController{
                         loginUsernameTextField.setStyle(successStyle);
                         try {
                             Object obj=SimpleChatClient.getUser();
-                            if (obj instanceof User)
-                                SimpleChatClient.setRoot(((User) obj).getGUI());
+                            if (obj instanceof User){
+                                SimpleChatClient.addScreen("logInScreen");
+                                SimpleChatClient.setRoot(((User) obj).getGUI());}
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -273,6 +280,7 @@ public class LogInController{
 
         return Pattern.compile(regexPattern).matcher(mail).matches();
     }
+    // TODO: 23/02/2023 remove screen if pressed back !
 
 
 }

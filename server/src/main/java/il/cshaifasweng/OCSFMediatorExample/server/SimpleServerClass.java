@@ -138,9 +138,10 @@ public class SimpleServerClass extends AbstractServer {
                 case 34-> getCustomerOfflineOrders(message, client);
                 case 35-> getOrdersToBeConfirmed(message, client);
                 case 36-> confirmArrival(message, client);
-
                 case 37 -> getActiveOrders(message, client);
                 case 38 -> getAllOrdersForManager(message, client);
+                case 39 -> RejectAllPriceRequests(message,client);
+                case 40 -> getOnlineOrderForVerificationOfAttendance(message,client);
                 default -> System.out.println("message content doesn't match any request");
             }
 
@@ -154,6 +155,23 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.close();
         }
 
+    }
+
+    private void getOnlineOrderForVerificationOfAttendance(Message message, ConnectionToClient client) {
+        String[] orderDetails=((String) message.getObject()).split("&");
+        int orderId=Integer.parseInt(orderDetails[0]);
+        String carId=orderDetails[1];
+        message.setObject(null);
+        OnlineOrder actualOrder=orderHandler.get(orderId,OnlineOrder.class);
+        System.out.println(actualOrder );
+        if(actualOrder==null)
+            message.setMessage("#OrderNotFound");
+        else if(actualOrder.getCar().getCarNum().startsWith(carId))
+            message.setObject(actualOrder);
+        else message.setMessage("#OrderNotFound");
+    }
+
+    private void RejectAllPriceRequests(Message message, ConnectionToClient client) {
     }
 
     private void confirmArrival(Message message, ConnectionToClient client) {
@@ -222,8 +240,21 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void LogOut(Message message, ConnectionToClient client) {
-        client.setInfo("userId", null);
-        // TODO: 15/02/2023 implement log out
+        int id = (Integer) client.getInfo("userId");
+        String type = (String) client.getInfo("userType");
+        try{
+                if (type.startsWith(RegisteredCustomer.class.getName()) || type.startsWith(OneTimeCustomer.class.getName())) clientsCustomersMap.remove(id);
+                else clientsEmployeeMap.remove(id);
+                client.setInfo("userId", null);
+                client.setInfo("userType", null);
+                message.setObject("Success");
+
+        }
+        catch (Exception e){
+            message.setObject("Failed");
+        }
+        System.out.println(message.getObject());
+
     }
 
     private void exitParkingLot(Message message, ConnectionToClient client) throws IOException {
@@ -419,11 +450,24 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void addSubscription(Message message, ConnectionToClient client) throws IOException {
+        String[] instructions=message.getMessage().split("&");
 
-        if(message.getObject().getClass().getSimpleName().compareTo("FullSubscription") == 0)
-            fullSubHandler.save((FullSubscription) message.getObject(), FullSubscription.class);
-        else
-            regularSubHandler.save((RegularSubscription) message.getObject(), RegularSubscription.class);
+        RegisteredCustomer rg = rCustomer.get(Integer.parseInt(instructions[1]), RegisteredCustomer.class);
+        if (rg== null) {
+            rg = new RegisteredCustomer(Integer.parseInt(instructions[1]) ,instructions[2],instructions[3],instructions[4]);
+            rCustomer.save(rg, RegisteredCustomer.class);
+        }
+        Subscription sub=(Subscription) message.getObject();
+        sub.setRegisteredCustomer(rg);
+        if(sub.getClass().getSimpleName().compareTo("FullSubscription") == 0){
+            fullSubHandler.save((FullSubscription) sub, FullSubscription.class);
+            message.setObject(sub.getId());
+        }
+        else{
+            regularSubHandler.save((RegularSubscription) sub, RegularSubscription.class);
+            message.setObject(sub.getId());
+        }
+
 
     }
 
@@ -581,15 +625,20 @@ public class SimpleServerClass extends AbstractServer {
 
     public void placeOrder(Message message, ConnectionToClient client) throws Exception {
         OnlineOrder newOnlineOrder = (OnlineOrder)message.getObject();
+        String[] instructions=message.getMessage().split("&");
+
+        RegisteredCustomer rg = rCustomer.get(Integer.parseInt(instructions[1]), RegisteredCustomer.class);
+        if (rg== null) {
+            rg = new RegisteredCustomer(Integer.parseInt(instructions[1]) ,instructions[2],instructions[3],instructions[4]);
+            rCustomer.save(rg, RegisteredCustomer.class);
+        }
         //TODO: change to customerID from client saved info
-        RegisteredCustomer rg = rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
         orderHandler.save(newOnlineOrder, OnlineOrder.class);
         message.setObject(newOnlineOrder.getId());
         System.out.println(message.getObject());
         rg.addOrder(newOnlineOrder);
         rCustomer.update(rg);
         message.setObject(newOnlineOrder.getId());
-        client.sendToClient(message);
     }
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
@@ -606,12 +655,18 @@ public class SimpleServerClass extends AbstractServer {
 
     }
     public void getUser(Message message,ConnectionToClient client)throws Exception{
-        int id=(Integer) client.getInfo("userId");
-        String type=(String) client.getInfo("userType");
-        if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
-            message.setObject(rCustomer.get(id,RegisteredCustomer.class));
-        else {
-             message.setObject(getEmployee(id));
+        int id;
+        try{
+            id=(Integer) client.getInfo("userId");
+            String type=(String) client.getInfo("userType");
+            if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
+                message.setObject(rCustomer.get(id,RegisteredCustomer.class));
+            else {
+                 message.setObject(getEmployee(id));
+            }
+        }
+        catch (Exception e){
+           message.setObject(null);
         }
 
     }
@@ -650,7 +705,6 @@ public class SimpleServerClass extends AbstractServer {
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space
         message.setMessage("#GO TO :" + "TO BE CONTINUED");
-        client.sendToClient(message);
     }
 
     public void getActiveOrders(Message message, ConnectionToClient client) throws Exception {

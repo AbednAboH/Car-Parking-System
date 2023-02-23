@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Application;
@@ -8,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Stack;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +23,33 @@ public class SimpleChatClient extends Application {
     private static Scene scene;
     private static SimpleClient client;
     private static Object user;
+    private static RegisteredCustomer currentCustomerDetails;
     private static OnlineOrder currentOnlineOrder;
     private static Subscription currentSubscription;
     private static int RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
-
+    private static Stack<String> screenHistory = new Stack<String>();
+    private static int userID;
+    public static int getUserID() {
+        return userID;
+    }
+    public static void  setUserID(int userID){
+        SimpleChatClient.userID=userID;
+    }
+    public static String peekScreen(){
+        return screenHistory.peek();
+    }
+    public static RegisteredCustomer getRegisteredCustomerDetails(){
+        return currentCustomerDetails;
+    }
+    public static void setRegisteredCustomerDetails(RegisteredCustomer Details){
+        currentCustomerDetails=Details;
+    }
+    public static void addScreen(String screenName){
+        screenHistory.push(screenName);
+    }
+    public static String getPreviousScreen(){
+        return screenHistory.pop();
+    }
     public static int getCurrentRequest() {
         return RequestBetweenScreens;
     }
@@ -32,9 +57,9 @@ public class SimpleChatClient extends Application {
         return RequestBetweenScreens = currentRequest;
     }
 
-public static Subscription getCurrentSubscription() {
-        return currentSubscription;
-    }
+    public static Subscription getCurrentSubscription() {
+            return currentSubscription;
+        }
 
     public static void setCurrentSubscription(Subscription currentSubscription) {
         SimpleChatClient.currentSubscription = currentSubscription;
@@ -58,7 +83,7 @@ public static Subscription getCurrentSubscription() {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("logInScreen"), 1080, 720);
+        scene = new Scene(loadFXML("mainPage"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }

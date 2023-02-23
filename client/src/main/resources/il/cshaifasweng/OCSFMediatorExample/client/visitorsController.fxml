@@ -118,7 +118,10 @@
                               <TextField fx:id="carIDorderText" prefHeight="27.0" prefWidth="236.0" style="-fx-border-color: #3F2B63; -fx-background-color: #fff;" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="109.0" prefHeight="99.0" prefWidth="844.0" spacing="10.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="109.0" prefHeight="99.0" prefWidth="633.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="searchOrderButton" mnemonicParsing="false" onAction="#searchForOrder" prefHeight="25.0" prefWidth="62.0" stylesheets="@../../../../botton.css" text="Search" textFill="WHITE" />
+                           </children></HBox>
                      </children>
                   </VBox>
                     </children>
@@ -139,11 +142,7 @@
                         <TableColumn fx:id="orderParchaseDate1" prefWidth="130.0" text="Parchase Date" />
                         <TableColumn fx:id="orderEntry1" prefWidth="142.0" text="Expected Entry Time" />
                         <TableColumn fx:id="orderExit1" prefWidth="121.0" text="Expected Exit time" />
-                        <TableColumn fx:id="orderLicense1" prefWidth="85.0" text="License Plate">
-                           <graphic>
-                              <Button fx:id="orderSearchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" stylesheets="@../../../../botton.css" text="Search" textFill="WHITE" />
-                           </graphic>
-                        </TableColumn>
+                        <TableColumn fx:id="orderLicense1" prefWidth="85.0" text="License Plate" />
                         <TableColumn fx:id="orderPLotID1" prefWidth="113.0" text="Parking Lot ID" />
                         <TableColumn fx:id="orderActive1" prefWidth="55.0" text="Active" />
                         <TableColumn fx:id="orderEmail1" prefWidth="132.0" text="Email of Parchase" />
@@ -161,8 +160,8 @@
                   </TableView>
                   <HBox alignment="CENTER_LEFT" prefHeight="99.0" prefWidth="844.0" spacing="10.0" GridPane.rowIndex="2">
                      <children>
-                        <Button id="buttonCss" fx:id="approve" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#placeOrder" prefHeight="32.0" prefWidth="157.0" stylesheets="@../../../../botton.css" text="Approve Arrival" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="decline" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="33.0" prefWidth="140.0" stylesheets="@../../../../botton.css" text="Decline Arrival" textFill="WHITE" />
+                        <Button id="buttonCss" fx:id="approve" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#approveArrival" prefHeight="32.0" prefWidth="157.0" stylesheets="@../../../../botton.css" text="Approve Arrival" textFill="WHITE" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="decline" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#approveArrival" prefHeight="33.0" prefWidth="140.0" stylesheets="@../../../../botton.css" text="Decline Arrival" textFill="WHITE" />
                      </children>
                      <padding>
                         <Insets left="250.0" />
@@ -189,7 +188,7 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="109.0" prefHeight="62.0" prefWidth="844.0" spacing="10.0">
                            <children>
-                              <Button fx:id="orderSearchButton1" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" stylesheets="@../../../../botton.css" text="search" textFill="WHITE" />
+                              <Button fx:id="orderSearchButton1" mnemonicParsing="false" onAction="#searchForOrder" prefHeight="25.0" prefWidth="107.0" stylesheets="@../../../../botton.css" text="search" textFill="WHITE" />
                            </children>
                         </HBox>
                      </children>

@@ -21,27 +21,27 @@ public class SimpleClient extends AbstractClient {
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		Message message = (Message) msg;
-		if(message.getMessage().equals("#getPricingChart")){
+		if(message.getMessage().startsWith("#getPricingChart")){
 			EventBus.getDefault().post(new SubscriptionsChartResults(message));
-		}else if(message.getMessage().equals("#getAllParkingLots")){
+		}else if(message.getMessage().startsWith("#getAllParkingLots")){
 			EventBus.getDefault().post(new ParkingLotResults(message));
-		} else if (message.getMessage().equals("#showOrders")) {
+		} else if (message.getMessage().startsWith("#showOrders")) {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
-		}else if (message.getMessage().equals("#showSubscription")) {
+		}else if (message.getMessage().startsWith("#showSubscription")) {
 			EventBus.getDefault().post(new SubscriptionResponse(message));
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
-		}else if(message.getMessage().equals("#placeOrder")){
+		}else if(message.getMessage().startsWith("#placeOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}else if(message.getMessage().equals("addSubscription")){
+		}else if(message.getMessage().startsWith("#addSubscription")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}else if(message.getMessage().equals("cancelSubscription")){
+		}else if(message.getMessage().startsWith("#cancelSubscription")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}else if(message.getMessage().equals("cancelOrder")){
+		}else if(message.getMessage().startsWith("#cancelOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
-		}else if(message.getMessage().equals("#getUser")){
+		}else if(message.getMessage().startsWith("#getUser")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
-		}else if(message.getMessage().equals("Error! we got an empty message")) {
+		}else if(message.getMessage().startsWith("Error! we got an empty message")) {
 			EventBus.getDefault().post(new ErrorEvent(message));
 		}else if(message.getMessage().startsWith("#GetAllCompliants")||message.getMessage().startsWith("#CloseComplaint")) {
 			EventBus.getDefault().post(new CompliantsSubscriber(message));
@@ -72,14 +72,19 @@ public class SimpleClient extends AbstractClient {
 		}
 		else if (message.getMessage().startsWith("#getRefunds")){
 			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
+		} else if (message.getMessage().startsWith("#LogOut")){
+			EventBus.getDefault().post(new LogoutSubscriber(message));
 		} else if (message.getMessage().startsWith("#getTransactions")) {
 			EventBus.getDefault().post(new TransactionsSubscirber(message));
 		}else if (message.getMessage().startsWith("#getEntryAndExitLogs")) {
 			EventBus.getDefault().post(new LogsSubscriber(message));
 		}else if (message.getMessage().startsWith("#getOfflineOrders")) {
 			EventBus.getDefault().post(new offlineOrdersSubscriber(message));
-		}else if (message.getMessage().startsWith("#getToBeConfirmed")) {
+		}else if (message.getMessage().startsWith("#getToBeConfirmed")||message.getMessage().startsWith("#confirmCustomerArrival")) {
 			EventBus.getDefault().post(new UnconfirmedArrivalSubscriber(message));
+		}else if (message.getMessage().startsWith("#OrderNotFound")||message.getMessage().startsWith("#getOnlineOrder")) {
+			System.out.println("got here");
+			EventBus.getDefault().post(new visitorsSubscriberEvent(message));
 		} else {
 			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
