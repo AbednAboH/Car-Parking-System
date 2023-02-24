@@ -304,6 +304,8 @@ public class visitorsController {
         try {
             SimpleChatClient.addScreen("visitorsController");
             SimpleChatClient.setRoot("SubscriptionScreen");
+            EventBus.getDefault().unregister(this);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -313,6 +315,8 @@ public class visitorsController {
     void backToMain(ActionEvent event) {
         try {
             SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+            EventBus.getDefault().unregister(this);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -347,6 +351,8 @@ public class visitorsController {
         try {
             SimpleChatClient.addScreen("visitorsController");
             SimpleChatClient.setRoot("orderGUI");
+            EventBus.getDefault().unregister(this);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -370,6 +376,8 @@ public class visitorsController {
             try {
                 SimpleChatClient.addScreen("visitorsController");
                 SimpleChatClient.setRoot("complaint");
+                EventBus.getDefault().unregister(this);
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

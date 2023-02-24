@@ -1,10 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 
-import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
@@ -111,6 +111,8 @@ public class OrderController {
     @FXML
     void backToRegisteredCustomer(ActionEvent event) {
         try {
+            EventBus.getDefault().unregister(this);
+
             SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
@@ -145,6 +147,7 @@ public class OrderController {
 
                 newOnlineOrder.setValue((exitTime.getValue()-arrivalTime.getValue())*perHourPrice);
                 SimpleChatClient.setCurrentOrder(newOnlineOrder);
+                EventBus.getDefault().unregister(this);
                 SimpleChatClient.setRoot("orderPaymentGUI");
                 SimpleChatClient.addScreen("orderGUI");
             } else {

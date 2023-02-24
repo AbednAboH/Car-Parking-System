@@ -98,6 +98,7 @@ public class CompliantsListController {
     @FXML
     void onBack(ActionEvent event) throws Exception {
 //        SimpleChatClient.setRoot();
+        EventBus.getDefault().unregister(this);
         SimpleChatClient.setRoot("CustomerServiceEmployeeScreen");
     }
 
@@ -108,6 +109,7 @@ public class CompliantsListController {
 
     @FXML
     void onLogout(ActionEvent event) throws Exception {
+        EventBus.getDefault().unregister(this);
         SimpleChatClient.setRoot("LogInScreen");
         Message message = new Message("#LogOut");
         SimpleClient.getClient().sendToServer(message);

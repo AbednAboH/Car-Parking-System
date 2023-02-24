@@ -4,6 +4,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import java.io.IOException;
 import java.util.List;
 
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;

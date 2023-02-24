@@ -4,6 +4,7 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ComplaintSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionResponse;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
@@ -70,6 +71,7 @@ public class ComplaintController {
     @FXML
     void backButton(ActionEvent event) {
         try {
+            EventBus.getDefault().unregister(this);
            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
@@ -287,6 +289,7 @@ public class ComplaintController {
         System.out.println("Complaint Was Sent Successfuly");
         status.setVisible(true);
         try {
+            EventBus.getDefault().unregister(this);
             SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();

@@ -176,7 +176,8 @@ public class ParkingLotManagerController {
     @FXML
     void logOutUser(ActionEvent event) {
         try {
-            SimpleChatClient.setRoot("logInScreen");
+            EventBus.getDefault().unregister(this);
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }

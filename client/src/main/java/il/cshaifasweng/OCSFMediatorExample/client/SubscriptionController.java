@@ -4,6 +4,7 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -212,6 +213,7 @@ public class SubscriptionController {
             SimpleChatClient.setCurrentSubscription(subscription);
             SimpleChatClient.setUserID(Integer.parseInt(this.cusomerID.getText()));
             SimpleChatClient.addScreen("SubscriptionScreen");
+            EventBus.getDefault().unregister(this);
             SimpleChatClient.setRoot("orderPaymentGUI");
         }
         else {
@@ -222,6 +224,7 @@ public class SubscriptionController {
 
     @FXML
     void goBack(ActionEvent event) throws IOException {
+        EventBus.getDefault().unregister(this);
         SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
     }
 

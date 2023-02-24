@@ -56,7 +56,6 @@ public class SimpleClient extends AbstractClient {
 		}else if (message.getMessage().startsWith("#GetCustomerCars")){
 			EventBus.getDefault().post(new CustomerCarsSubscriber(message));
 		}else if(message.getMessage().startsWith("#GetRefundChart")){
-			System.out.println("We got a message");
 			EventBus.getDefault().post(new RefundChartSubscriber(message));
 		}else if(message.getMessage().startsWith("#CancelOrderAndGetRefund")){
 			EventBus.getDefault().post(new CancelationRefundSubscriber(message));
@@ -83,10 +82,8 @@ public class SimpleClient extends AbstractClient {
 		}else if (message.getMessage().startsWith("#getToBeConfirmed")||message.getMessage().startsWith("#confirmCustomerArrival")) {
 			EventBus.getDefault().post(new UnconfirmedArrivalSubscriber(message));
 		}else if (message.getMessage().startsWith("#OrderNotFound")||message.getMessage().startsWith("#getOnlineOrder")) {
-			System.out.println("got here");
 			EventBus.getDefault().post(new visitorsSubscriberEvent(message));
 		} else {
-			System.out.println(message.getMessage());
 			EventBus.getDefault().post(new MessageEvent(message));
 		}
 //

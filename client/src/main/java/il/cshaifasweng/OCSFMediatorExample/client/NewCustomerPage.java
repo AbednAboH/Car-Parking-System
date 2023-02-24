@@ -344,6 +344,8 @@ public class NewCustomerPage {
     @FXML
     void AddSubscriptions(ActionEvent event) {
         try {
+            EventBus.getDefault().unregister(this);
+
             SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("SubscriptionScreen");
         } catch (IOException e) {
@@ -365,6 +367,8 @@ public class NewCustomerPage {
 
 
         try {
+            EventBus.getDefault().unregister(this);
+
             SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("CancelOrder");
 
@@ -395,6 +399,8 @@ public class NewCustomerPage {
     @FXML
     void placeOrder(ActionEvent event) {
         try {
+            EventBus.getDefault().unregister(this);
+
             SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("orderGUI");
         } catch (IOException e) {
@@ -720,19 +726,10 @@ public class NewCustomerPage {
         if(msg.startsWith("Success")){
 
             try {
+                EventBus.getDefault().unregister(this);
                 SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
             } catch (IOException e) {
-                runLater(()->{
-                    Notifications notificationBuilder;
-                    notificationBuilder = Notifications.create()
-                            .title("Failed")
-                            .text("Failed to go back to previous screen, please try again later")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.CENTER);
-                    notificationBuilder.showError();
-                });
-
+                System.out.println("Failed to go back to previous screen");
             }
 
         }

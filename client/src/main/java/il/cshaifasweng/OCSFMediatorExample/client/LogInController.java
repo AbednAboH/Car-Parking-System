@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 
 public class LogInController{
-
+    LogInSubscriber logInSubscriber ;
     protected
     String successMessage = String.format("-fx-text-fill: GREEN;");
     String errorMessage = String.format("-fx-text-fill: RED;");
@@ -67,11 +67,11 @@ public class LogInController{
     public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
     void initialize(){
-        EventBus.getDefault().register(LogInController.this);
-
         try {
             // Check if the connection with the server is alive.
             Message message = new Message("#ConnectionAlive");
+            EventBus.getDefault().register(this);
+
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             showErrorMessage(Constants.INTERNAL_ERROR);
@@ -85,6 +85,7 @@ public class LogInController{
 //        Stage stage = (Stage) cancelButton.getScene().getWindow();
 //        stage.close();
         try {
+            EventBus.getDefault().unregister(this);
             SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         }
         catch (IOException e) {
@@ -131,6 +132,7 @@ public class LogInController{
                         try {
                             Object obj=SimpleChatClient.getUser();
                             if (obj instanceof User){
+                                EventBus.getDefault().unregister(this);
                                 SimpleChatClient.addScreen("logInScreen");
                                 SimpleChatClient.setRoot(((User) obj).getGUI());}
                         } catch (IOException e) {
@@ -167,15 +169,6 @@ public class LogInController{
     @FXML
     protected void onSignUpButtonClick() {
 
-//        male.setToggleGroup(toggleGroup);
-//        female.setToggleGroup(toggleGroup);
-//        // Set one of the radio buttons as the default selection
-//        male.setSelected(true);
-//        // Create a horizontal box to hold the radio buttons
-//        HBox hbox = new HBox(male, female);
-//        toggleGroup.selectedToggleProperty().addListener((ov, oldToggle, newToggle) -> {
-//            selected = (RadioButton) newToggle;
-//        });
         String username = signUpUsernameTextField.getText();
         String lastName = signUpLastNameTextField.getText();
         String id = signUpIDTextField.getText();

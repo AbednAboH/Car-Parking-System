@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -91,6 +92,7 @@ public class CancelOrderController {
     void backToOrder(ActionEvent event) {
         try{
             backProgress.setVisible(true);
+            EventBus.getDefault().unregister(this);
             SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         }
         catch (IOException e){
@@ -118,6 +120,7 @@ public class CancelOrderController {
             successLbl.setVisible(true);
             warningMsg.setVisible(false);
             try {
+                EventBus.getDefault().unregister(this);
                 SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
             } catch (IOException e) {
                 throw new RuntimeException(e);

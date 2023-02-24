@@ -49,12 +49,12 @@ public class OfflineOrderController {
 
     @FXML
     void backToRegisteredCustomer(ActionEvent event) {
+        EventBus.getDefault().unregister(this);
         SimpleChatClient.getPreviousScreen();
     }
 
     @FXML
     void goToPayment(ActionEvent event) {
-
 
     }
 
@@ -65,7 +65,6 @@ public class OfflineOrderController {
     @FXML
     void initialize(){
         EventBus.getDefault().register(this);
-
 
     }
 }
