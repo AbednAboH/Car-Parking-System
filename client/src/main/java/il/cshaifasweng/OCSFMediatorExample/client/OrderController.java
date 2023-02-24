@@ -8,7 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerS
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -115,12 +115,12 @@ public class OrderController {
                 String end = exitTime.getValue() + "";
                 // TODO: 1/17/2023 get might get us in trouble , indexes of parking lots aren't linear and don't always start with 1  
                 ParkingLot pl = PLresults.get((int)idx - 1);
-                Order newOrder = new Order(rg, pl, dateChoice.getValue(), start, end,
+                OnlineOrder newOnlineOrder = new OnlineOrder(rg, pl, dateChoice.getValue(), start, end,
                         plateNum.getText(), emailInput.getText());
                 System.out.println(dateChoice.getValue());
-                newOrder.setValue((exitTime.getValue()-arrivalTime.getValue())*perHourPrice);
-                System.out.println(newOrder.getCar());
-                SimpleChatClient.setCurrentOrder(newOrder);
+                newOnlineOrder.setValue((exitTime.getValue()-arrivalTime.getValue())*perHourPrice);
+                System.out.println(newOnlineOrder.getCar());
+                SimpleChatClient.setCurrentOrder(newOnlineOrder);
                 SimpleChatClient.setRoot("orderPaymentGUI");
             } else {
                 warningMsg.setVisible(true);
@@ -170,23 +170,23 @@ public class OrderController {
     void initialize() {
         try {
             EventBus.getDefault().register(this);
-            Order myOrder = SimpleChatClient.getCurrentOrder();
+            OnlineOrder myOnlineOrder = SimpleChatClient.getCurrentOrder();
             initInfoView();
-            if (myOrder != null)
-                fillOrderDetails(myOrder);
+            if (myOnlineOrder != null)
+                fillOrderDetails(myOnlineOrder);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void fillOrderDetails(Order order) {
-        emailInput.setText(order.getEmail());
-        plateNum.setText(order.getCar().toString());
-        dateChoice.setValue(order.getDate());
-        exitTime.getValueFactory().setValue(order.getExiting().getHour());
-        arrivalTime.getValueFactory().setValue(order.getDateOfOrder().getHour());
-        plChoice.setValue(order.getParkingLotID().getId());
+    private void fillOrderDetails(OnlineOrder onlineOrder) {
+        emailInput.setText(onlineOrder.getEmail());
+        plateNum.setText(onlineOrder.getCar().toString());
+        dateChoice.setValue(onlineOrder.getDate());
+        exitTime.getValueFactory().setValue(onlineOrder.getExiting().getHour());
+        arrivalTime.getValueFactory().setValue(onlineOrder.getDateOfOrder().getHour());
+        plChoice.setValue(onlineOrder.getParkingLotID().getId());
     }
 
     private void initInfoView() throws IOException {

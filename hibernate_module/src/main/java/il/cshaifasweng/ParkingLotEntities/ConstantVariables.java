@@ -1,9 +1,10 @@
 package il.cshaifasweng.ParkingLotEntities;
 
 
+import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.customerCatalogEntities.FullSubscription;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
 
 public enum ConstantVariables {
@@ -13,8 +14,8 @@ public enum ConstantVariables {
     REGULAR_SUBSCRIPTION(RegularSubscription.class.getSimpleName(),3),
     REGULAR_MULTI_SUBSCRIPITON(RegularSubscription.class.getSimpleName() + "TwoCars",3),
     FULL_SUBSCRIPTION(FullSubscription.class.getSimpleName(),3),
-    ORDER(Order.class.getSimpleName(),4),
-    KioskBuyer(BasicOrder.class.getSimpleName(),5);
+    ORDER(OnlineOrder.class.getSimpleName(),4),
+    KioskBuyer(OfflineOrder.class.getSimpleName(),5);
 
 
     String type;

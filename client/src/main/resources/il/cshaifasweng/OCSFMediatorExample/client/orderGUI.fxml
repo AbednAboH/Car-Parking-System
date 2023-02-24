@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
    <children>
       <Label layoutX="285.0" layoutY="42.0" prefHeight="55.0" prefWidth="371.0" text="Order a Parking Spot ">
          <font>
@@ -22,13 +22,13 @@
       <Label layoutX="96.0" layoutY="445.0" text="Plate number:" />
       <Label layoutX="591.0" layoutY="445.0" text="Email:" />
       <Label layoutX="102.0" layoutY="254.0" text="Parking lot:" />
-      <DatePicker fx:id="dateChoice" layoutX="212.0" layoutY="161.0" prefWidth="176.0" />
-      <ChoiceBox fx:id="plChoice" layoutX="212.0" layoutY="250.0" prefHeight="25.0" prefWidth="176.0" />
+      <DatePicker fx:id="dateChoice" blendMode="DARKEN" layoutX="212.0" layoutY="161.0" prefWidth="176.0" />
+      <ChoiceBox fx:id="plChoice" layoutX="212.0" layoutY="250.0" prefHeight="25.0" prefWidth="176.0" stylesheets="@../../../../botton.css" />
       <Spinner fx:id="arrivalTime" editable="true" layoutX="175.0" layoutY="342.0" prefHeight="25.0" prefWidth="57.0" />
       <Spinner fx:id="exitTime" layoutX="328.0" layoutY="341.0" prefHeight="25.0" prefWidth="57.0" />
       <TextField fx:id="plateNum" layoutX="177.0" layoutY="441.0" onInputMethodTextChanged="#plateNumTxtChange" />
-      <TextField fx:id="emailInput" layoutX="631.0" layoutY="441.0" />
-      <Button fx:id="submit" layoutX="757.0" layoutY="624.0" mnemonicParsing="false" onAction="#goToPayment" text="Continue to payment">
+      <TextField fx:id="emailInput" layoutX="631.0" layoutY="441.0" stylesheets="@../../../../botton.css" />
+      <Button fx:id="submit" layoutX="757.0" layoutY="624.0" mnemonicParsing="false" onAction="#goToPayment" stylesheets="@../../../../botton.css" text="Continue to payment" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font></Button>
@@ -81,10 +81,12 @@
             <Font size="38.0" />
          </font>
       </Label>
-      <Button fx:id="back" layoutX="556.0" layoutY="624.0" mnemonicParsing="false" onAction="#backToRegisteredCustomer" text="Back" textAlignment="CENTER" textFill="#260404">
+      <Button fx:id="back" layoutX="556.0" layoutY="624.0" mnemonicParsing="false" onAction="#backToRegisteredCustomer" stylesheets="@../../../../botton.css" text="Back" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
       </Button>
+      <TextField fx:id="customerID" layoutX="177.0" layoutY="491.0" />
+      <Label layoutX="96.0" layoutY="495.0" text="CustomerID:" />
    </children>
 </AnchorPane>

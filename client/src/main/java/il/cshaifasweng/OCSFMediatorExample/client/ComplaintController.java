@@ -7,7 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryRespon
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionResponse;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +25,7 @@ import java.util.List;
 
 
 public class ComplaintController {
-    private List<Order> orders;
+    private List<OnlineOrder> OnlineOrders;
     private List<Subscription> subscriptions;
     @FXML
     private Label ComplaintID;
@@ -121,7 +121,7 @@ public class ComplaintController {
         if (Ordersubscription.getValue() != null) {
             if (Ordersubscription.getValue().startsWith("Order")) {
                 orderSubscriptionBox.getItems().clear();
-                for (Order or : orders)
+                for (OnlineOrder or : OnlineOrders)
                     orderSubscriptionBox.getItems().add(or.toString());
             } else if (Ordersubscription.getValue().startsWith("Subscription")) {
                 orderSubscriptionBox.getItems().clear();
@@ -276,7 +276,7 @@ public class ComplaintController {
     @FXML
     @Subscribe
     public void getAllOrders(OrderHistoryResponse event) {
-        orders = (List<Order>) event.getMessage().getObject();
+        OnlineOrders = (List<OnlineOrder>) event.getMessage().getObject();
 
     }
 

@@ -27,7 +27,7 @@ import java.util.List;
 public class RegisteredCustomerController {
     RegisteredCustomer rg = new RegisteredCustomer();
 
-    private ObservableList<Order> observableOrders;
+    private ObservableList<OnlineOrder> observableOnlineOrders;
     private ObservableList<Subscription> observableSubs;
     private ObservableList<Car> carList;
     private List<Subscription> subs;
@@ -79,32 +79,32 @@ public class RegisteredCustomerController {
     @FXML
     private Button logoutbutton;
     @FXML
-    private TableView<Order> ordersTable;
+    private TableView<OnlineOrder> ordersTable;
     @FXML
-    private TableColumn<Order, Boolean> orderActive;
+    private TableColumn<OnlineOrder, Boolean> orderActive;
     @FXML
-    private TableColumn<Order, Integer> orderID;
+    private TableColumn<OnlineOrder, Integer> orderID;
 
     @FXML
-    private TableColumn<Order, String> orderEmail;
+    private TableColumn<OnlineOrder, String> orderEmail;
 
     @FXML
-    private TableColumn<Order, String> orderEntry;
+    private TableColumn<OnlineOrder, String> orderEntry;
 
     @FXML
-    private TableColumn<Order, String> orderExit;
+    private TableColumn<OnlineOrder, String> orderExit;
 
     @FXML
-    private TableColumn<Order, String> orderLicense;
+    private TableColumn<OnlineOrder, String> orderLicense;
 
     @FXML
-    private TableColumn<Order, String> orderPLotID;
+    private TableColumn<OnlineOrder, String> orderPLotID;
 
     @FXML
-    private TableColumn<Order, String> orderParchaseDate;
+    private TableColumn<OnlineOrder, String> orderParchaseDate;
 
     @FXML
-    private TableColumn<Order, String> orderPricePaid;
+    private TableColumn<OnlineOrder, String> orderPricePaid;
 
     @FXML
     private TextField passwordtxt;
@@ -236,10 +236,7 @@ public class RegisteredCustomerController {
 
     @Subscribe
     public void showOrdersFromServer(OrderHistoryResponse event) {
-        System.out.println("got here");
-
-        observableOrders = FXCollections.observableArrayList((List<Order>) event.getMessage().getObject());
-//        System.out.println(observableOrders.get(0));
+        observableOnlineOrders = FXCollections.observableArrayList((List<OnlineOrder>) event.getMessage().getObject());
         SetOrdersTable();
 
     }
@@ -257,7 +254,7 @@ public class RegisteredCustomerController {
         orderParchaseDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         orderPLotID.setCellValueFactory(data -> new SimpleObjectProperty<>(Integer.toString(data.getValue().getParkingLotID().getId())));
         orderPricePaid.setCellValueFactory(data -> new SimpleObjectProperty<>(Double.toString(data.getValue().getValue())));
-        observableOrders.forEach(ordersTable.getItems()::add);
+        observableOnlineOrders.forEach(ordersTable.getItems()::add);
     }
 
     @Subscribe

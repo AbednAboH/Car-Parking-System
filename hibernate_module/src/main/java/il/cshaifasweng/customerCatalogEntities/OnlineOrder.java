@@ -1,7 +1,6 @@
 package il.cshaifasweng.customerCatalogEntities;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
-import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -16,41 +15,21 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Table(name = "orders")
-public class Order extends Transactions {
+public class OnlineOrder extends AbstractOrder {
     final int MAX_REMINDER_SENT=3;
     final int REMIND=0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="registeredCustomer_id")
     private RegisteredCustomer registeredCustomer;
-    @OneToOne
-    @JoinColumn(name="EntryAndExitLog_id")
-    private EntryAndExitLog entryAndExitLog;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="parkingLot_id")
-    private ParkingLot parkingLotID;
-
-//    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name="dateOfOrder")
-    private LocalDateTime dateOfOrder;
+    protected LocalDateTime dateOfOrder;
 
-    @Column(name="active")
-    private boolean active;
-
-    @Column(name="exitingTime")
-    private LocalDateTime exiting;
-
-
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
-    private Car car;
-
-    @Column(name="email")
-    private String email;
     @Column(name="ReminderSent")
     private int reminderSent=REMIND;
     @Column(name="agreedToPayPenalty")
     private boolean agreedToPayPenalty=false;
-    public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
-                 String entering, String exiting, String car, String email) {
+    public OnlineOrder(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
+                       String entering, String exiting, String car, String email) {
         this.registeredCustomer = registeredCustomer;
         this.dateOfOrder= date.atTime(Integer.parseInt(entering),0);
         this.date=LocalDate.now();
@@ -65,8 +44,8 @@ public class Order extends Transactions {
 
 
     }
-    public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
-                 LocalTime DateOfOrder, String exiting, String car, String email) {
+    public OnlineOrder(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
+                       LocalTime DateOfOrder, String exiting, String car, String email) {
         this.registeredCustomer = registeredCustomer;
         this.dateOfOrder= date.atTime(DateOfOrder.getHour(),DateOfOrder.getMinute());
         this.date=LocalDate.now();
@@ -80,8 +59,8 @@ public class Order extends Transactions {
         this.car.setTransaction(this);
 
     }
-    public Order(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
-                 String entering, String exiting, String car, String email, boolean localBuilder) {
+    public OnlineOrder(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
+                       String entering, String exiting, String car, String email, boolean localBuilder) {
         this.date=date;
         this.registeredCustomer = registeredCustomer;
         this.parkingLotID = parkingLotID;
@@ -98,8 +77,8 @@ public class Order extends Transactions {
 
 
     }
-    public Order(ParkingLot parkingLotID, LocalDate date,
-                 String entering, String exiting, String car, String email) {
+    public OnlineOrder(ParkingLot parkingLotID, LocalDate date,
+                       String entering, String exiting, String car, String email) {
 //        this.registeredCustomer = registeredCustomer;
         this.date=date;
         this.parkingLotID = parkingLotID;
@@ -115,7 +94,7 @@ public class Order extends Transactions {
         return "order id: "+id+" at"+date;
     }
 
-    public Order() {
+    public OnlineOrder() {
 
     }
     public int getHoursOfResidency(){

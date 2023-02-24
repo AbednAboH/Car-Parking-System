@@ -1,9 +1,9 @@
 package il.cshaifasweng.ParkingLotEntities;
 
 
-import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
-import il.cshaifasweng.customerCatalogEntities.Order;
+import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import lombok.*;
 
@@ -109,14 +109,9 @@ public class ParkingLotScheduler implements Serializable {
         if (FULL_SUBSCRIPTION.isSubscription(transaction))
             entryAndExitLog= ((Subscription) transaction).getEntryAndExitLog(licensePlate);
         else if(ORDER.isOrder(transaction))
-            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
+            entryAndExitLog= ((OnlineOrder) transaction).getEntryAndExitLog(licensePlate);
         else if(KioskBuyer.isKioskBuyer(transaction)){
-            System.out.println("Kiosk  not implemented yet!!!!!!");
-            //TODO: Kiosk Order Not implemented
-            // TODO entryAndExitLog= ((BasicOrder)transaction).getEntryAndExitLog( licensePlate);
-
-
-            entryAndExitLog= ((Order) transaction).getEntryAndExitLog(licensePlate);
+            entryAndExitLog= ((OfflineOrder) transaction).getEntryAndExitLog(licensePlate);
         } else
             throw new IllegalArgumentException("Transaction is not a subscription or an order or a kiosk buyer");
         return entryAndExitLog;
@@ -126,9 +121,9 @@ public class ParkingLotScheduler implements Serializable {
         if (FULL_SUBSCRIPTION.isSubscription(transaction))
             ((Subscription) transaction).setEntryAndExitLog(licensePlate,entryAndExitLog);
         else if(ORDER.isOrder(transaction))
-            ((Order) transaction).setEntryAndExitLog(entryAndExitLog);
+            ((OnlineOrder) transaction).setEntryAndExitLog(entryAndExitLog);
         else if(KioskBuyer.isKioskBuyer(transaction)){
-            System.out.println("Kiosk  not implemented yet!!!!!!");
+            ((OfflineOrder) transaction).setEntryAndExitLog(entryAndExitLog);
             //TODO: Kiosk Order Not implemented
             // TODO entryAndExitLog= ((BasicOrder)transaction).setEntryAndExitLog( entryAndExitLog);
         }

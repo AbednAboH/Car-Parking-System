@@ -12,15 +12,14 @@ import java.util.List;
 @Table(name = "one_time_customer")
 public class OneTimeCustomer extends Customer {
 
-    @Column(name = "exit_time")
-    private LocalTime exitTime;
+
 
     public OneTimeCustomer(){
     }
 
     public OneTimeCustomer(int id, String email, Car cars, LocalTime exitTime) {
         super(id, email, cars);
-        this.exitTime = exitTime;
+
     }
     public OneTimeCustomer(int id,String email,String firstName,String lastName,String password) {
         super(id,email,firstName,lastName, password);

@@ -11,10 +11,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CancelOrderController">
     <children>
-        <AnchorPane fx:id="paymentWindow" layoutX="85.0" layoutY="377.0" prefHeight="329.0" prefWidth="956.0">
+        <AnchorPane fx:id="paymentWindow" layoutX="85.0" layoutY="377.0" prefHeight="329.0" prefWidth="867.0">
             <children>
-                <Button fx:id="done" layoutX="281.0" layoutY="270.0" mnemonicParsing="false" onAction="#cancelOrder" text="Cancel Order" />
-                <Button fx:id="back" layoutX="65.0" layoutY="270.0" mnemonicParsing="false" onAction="#backToOrder" text="Back" />
+                <Button fx:id="done" layoutX="281.0" layoutY="270.0" mnemonicParsing="false" onAction="#cancelOrder" stylesheets="@../../../../botton.css" text="Cancel Order" textFill="WHITE" />
+                <Button fx:id="back" layoutX="65.0" layoutY="270.0" mnemonicParsing="false" onAction="#backToOrder" stylesheets="@../../../../botton.css" text="Back" textFill="WHITE" />
                 <Label layoutX="11.0" text="Order Cancelation">
                     <font>
                         <Font size="30.0" />
@@ -25,7 +25,7 @@
                         <Font size="15.0" />
                     </font>
                 </Label>
-                <Label layoutX="73.0" layoutY="51.0" text="Your order will be Canceled ,with the refund ammount alluded to below:">
+                <Label layoutX="64.0" layoutY="45.0" text="Your onlineOrder will be Canceled ,with the refund ammount alluded to below:">
                     <font>
                         <Font size="15.0" />
                     </font>
@@ -50,12 +50,12 @@
                   <Font size="15.0" />
                </font>
             </Label>
-              <Label fx:id="successLbl" layoutX="448.0" layoutY="262.0" text="Order submitted! Save order details. " textFill="#1b8207" visible="false">
+              <Label fx:id="successLbl" layoutX="448.0" layoutY="262.0" text="Order submitted! Save onlineOrder details. " textFill="#1b8207" visible="false">
                <font>
                   <Font name="Baskerville Old Face" size="36.0" />
                </font>
             </Label>
-            <TableView fx:id="refundCriteriaTable" layoutX="607.0" layoutY="104.0" prefHeight="120.0" prefWidth="374.0">
+            <TableView fx:id="refundCriteriaTable" layoutX="607.0" layoutY="104.0" prefHeight="120.0" prefWidth="374.0" stylesheets="@../../../../botton.css">
               <columns>
                 <TableColumn fx:id="hoursBeforeParking" prefWidth="158.0" text="Hours Before Parking Time" />
                 <TableColumn fx:id="refundPercentage" prefWidth="215.0" text="Refund Percentage of Paid Ammount" />

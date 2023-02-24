@@ -39,7 +39,16 @@ public enum ServerMessegesEnum {
     CANCEL_ORDER_AND_GET_REFUND("#CancelOrderAndGetRefund"),
     LOGOUT("#LogOut"),
     ENTER_PARKING_LOT("#EnterParkingLot"),
-    EXIT_PARKING_LOT("#ExitParkingLot")
+    EXIT_PARKING_LOT("#ExitParkingLot"),
+    GET_CUSTOMER_REFUNDS("#getRefunds"),
+    GET_CUSTOMER_TRANSACTIONS("#getTransactions"),
+    GET_CUSTOMER_LOGS("#getEntryAndExitLogs"),
+    GET_CUSTOMER_OFFLINE_ORDERS("#getOfflineOrders"),
+    GET_ORDERS_REQUIRING_Confirmation("#getToBeConfirmed"),
+    CONFIRM_CUSTOMER_ARRIVAL("#confirmCustomerArrival"),
+    GET_ACTIVE_ORDERS("#GetActiveOrders"),
+    GET_ALL_ORDERS_FOR_MANAGER("#GetAllOrdersForManager"),
+    REJECT_ALL_PRICE_REQUEST("#RejectAllPriceRequests")
     ;
 
     final String type;

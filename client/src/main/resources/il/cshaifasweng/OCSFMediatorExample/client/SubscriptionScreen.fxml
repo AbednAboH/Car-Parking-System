@@ -28,11 +28,11 @@
         <Spinner fx:id="exitTime" layoutX="143.0" layoutY="133.0" prefHeight="25.0" prefWidth="57.0" />
         <TextField fx:id="plateNum" layoutX="122.0" layoutY="258.0" />
         <TextField fx:id="plateNumTwo" layoutX="471.0" layoutY="258.0" />
-        <Button fx:id="submit" layoutX="767.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToPayment" text="Continue to payment" />
+        <Button fx:id="submit" layoutX="767.0" layoutY="681.0" mnemonicParsing="false" onAction="#goToPayment" stylesheets="@../../../../botton.css" text="Continue to payment" textFill="WHITE" />
         <Label fx:id="timeFormat" disable="true" layoutX="240.0" layoutY="137.0" text="*Format: HH:00 (00-23)" />
         <Label layoutX="81.0" layoutY="404.0" text="*Make sure to insert the right information before going to payment" />
         <Label fx:id="minFormat" layoutX="202.0" layoutY="137.0" text=":00" />
-      <TableView fx:id="pricingChart" layoutX="632.0" layoutY="51.0" prefHeight="203.0" prefWidth="448.0">
+      <TableView fx:id="pricingChart" layoutX="632.0" layoutY="51.0" prefHeight="203.0" prefWidth="448.0" stylesheets="@../../../../botton.css">
         <columns>
             <TableColumn fx:id="nameCol" prefWidth="143.0" text="Name" />
             <TableColumn fx:id="byHourCol" prefWidth="69.0" text="By Hour" />
@@ -41,7 +41,7 @@
         </columns>
       </TableView>
       <ChoiceBox fx:id="subType" layoutX="171.0" layoutY="69.0" prefHeight="25.0" prefWidth="176.0" />
-      <Label fx:id="plateNumSec" layoutX="293.0" layoutY="262.0" text="Plate number for second entryAndExitLog:" />
+      <Label fx:id="plateNumSec" layoutX="293.0" layoutY="262.0" text="Plate number for second car:" />
       <TextField fx:id="emailInput" layoutX="120.0" layoutY="326.0" />
       <Label layoutX="97.0" layoutY="474.0" prefHeight="45.0" prefWidth="436.0" text="Total Price: ">
          <font>
@@ -53,7 +53,7 @@
             <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="back" layoutX="23.0" layoutY="681.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="97.0" text="Back" />
+      <Button fx:id="back" layoutX="23.0" layoutY="681.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="97.0" stylesheets="@../../../../botton.css" text="Back" textFill="WHITE" />
       <Label layoutX="678.0" layoutY="266.0" prefHeight="34.0" prefWidth="307.0" text="Hours per month for entryAndExitLog: " visible="false">
          <font>
             <Font size="18.0" />
@@ -93,6 +93,8 @@
             </Label>
          </children>
       </VBox>
+      <TextField layoutX="471.0" layoutY="318.0" />
+      <Label layoutX="369.0" layoutY="322.0" text="customer ID:" />
     </children>
 
 

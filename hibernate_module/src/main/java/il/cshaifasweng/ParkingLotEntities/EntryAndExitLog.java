@@ -1,11 +1,8 @@
 package il.cshaifasweng.ParkingLotEntities;
 
-import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
+import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
-import il.cshaifasweng.customerCatalogEntities.FullSubscription;
-import il.cshaifasweng.customerCatalogEntities.Order;
-import il.cshaifasweng.customerCatalogEntities.RegularSubscription;
-import il.cshaifasweng.customerCatalogEntities.Subscription;
+import il.cshaifasweng.customerCatalogEntities.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +36,8 @@ public class EntryAndExitLog implements Serializable {
     private LocalDateTime acutallExitTime;
     @ManyToOne( cascade = CascadeType.ALL)
     private Transactions orderSubKioskEntity;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Customer customer;
     @OneToOne
     @JoinColumn(name = "parking_spot_id")
      private ParkingSpot parkingSpot;
@@ -49,7 +48,8 @@ public class EntryAndExitLog implements Serializable {
         this.parkingLotScheduler = parkingLotScheduler;
         RegularSubscription rSub;
         FullSubscription fSub;
-        Order order;
+        OnlineOrder onlineOrder;
+        OfflineOrder offlineOrder;
         this.activeCar=activeCar;
         String identifyEntranceIdentity = orderSubKioskEntity.getClass().getSimpleName();
         if (identifyEntranceIdentity.startsWith(REGULAR_SUBSCRIPTION.type)){
@@ -61,6 +61,7 @@ public class EntryAndExitLog implements Serializable {
             else
                 this.priority = REGULAR_MULTI_SUBSCRIPITON.priority;
             rSub.getCar(this.activeCar).setActiveCar(true);
+            this.customer=rSub.getRegisteredCustomer();
         }
         else if(identifyEntranceIdentity.startsWith(FULL_SUBSCRIPTION.type)){
             fSub = (FullSubscription) orderSubKioskEntity;
@@ -68,18 +69,24 @@ public class EntryAndExitLog implements Serializable {
             LocalDateTime now=LocalDateTime.now();
             this.estimatedExitTime =  now.plusHours(remaining);
             this.priority = FULL_SUBSCRIPTION.priority;
+            this.customer=fSub.getRegisteredCustomer();
             fSub.getCar(this.activeCar).setActiveCar(true);
 
         }
         else if(identifyEntranceIdentity.equals(ORDER.type)){
-            order=(Order) orderSubKioskEntity;
-            this.estimatedExitTime = order.getDateOfOrder().plusHours(order.getHoursOfResidency());
+            onlineOrder =(OnlineOrder) orderSubKioskEntity;
+            this.estimatedExitTime = onlineOrder.getDateOfOrder().plusHours(onlineOrder.getHoursOfResidency());
             this.priority = ORDER.priority;
-            order.getCar().setActiveCar(true);
+            this.customer=onlineOrder.getRegisteredCustomer();
+            onlineOrder.getCar().setActiveCar(true);
         }
         else if(identifyEntranceIdentity.equals(KioskBuyer.type)){
             // TODO: 10/02/2023 to be defined
             this.priority = KioskBuyer.priority;
+            offlineOrder = (OfflineOrder) orderSubKioskEntity;
+            this.estimatedExitTime= offlineOrder.getExiting();
+            offlineOrder.getCar().setActiveCar(true);
+            this.customer=offlineOrder.getCustomer();
 
         }
         else
@@ -102,16 +109,22 @@ public class EntryAndExitLog implements Serializable {
 
         }
         else if (ORDER.isOrder(orderSubKioskEntity)){
-            ((Order)orderSubKioskEntity).getCar().setActiveCar(active);
+            ((OnlineOrder)orderSubKioskEntity).getCar().setActiveCar(active);
             if(active)
-                ((Order)orderSubKioskEntity).setEntryAndExitLog(this);
+                ((OnlineOrder)orderSubKioskEntity).setEntryAndExitLog(this);
+            else
+                ((OnlineOrder)orderSubKioskEntity).setActive(false);
+
 
         }
         else if (ORDER.isKioskBuyer( orderSubKioskEntity)){
 
             // TODO: 12/02/2023 to be defined same line as below
-//            if(active)
-//                ((Order)orderSubKioskEntity).setEntryAndExitLog(this);
+             ((OfflineOrder)orderSubKioskEntity).getCar().setActiveCar(active);
+            if(active)
+                ((OfflineOrder)orderSubKioskEntity).setEntryAndExitLog(this);
+            else
+                ((OfflineOrder)orderSubKioskEntity).setActive(false);
         }
         else
             System.out.println("Error Unable To Identify Entrance Identity");
