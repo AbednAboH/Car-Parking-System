@@ -33,5 +33,14 @@ public class MainPageController {
             throw new RuntimeException(e);
         }
     }
+    @FXML
+    void initialize() {
+        SimpleChatClient.setRegisteredCustomerDetails(null);
+        SimpleChatClient.setUser(null);
+        SimpleChatClient.setCurrentOrder(null);
+        SimpleChatClient.setCurrentSubscription(null);
+        SimpleChatClient.setCurrentRequest(null);
+        SimpleChatClient.setUserID(null);
+    }
 
 }
