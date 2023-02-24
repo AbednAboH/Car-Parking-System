@@ -366,9 +366,7 @@ public class NewCustomerPage {
 
         try {
             SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
-
             SimpleChatClient.setRoot("CancelOrder");
-            EventBus.getDefault().unregister(this);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -396,7 +394,6 @@ public class NewCustomerPage {
 
     @FXML
     void placeOrder(ActionEvent event) {
-        EventBus.getDefault().unregister(this);
         try {
             SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("orderGUI");
@@ -451,7 +448,6 @@ public class NewCustomerPage {
         orderID.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         orderActive.setCellValueFactory(new PropertyValueFactory<>("active"));
-
         orderEntry.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getDateOfOrder()));
         orderExit.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getExiting()));
         orderLicense.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getCar().getCarNum()));
@@ -557,7 +553,7 @@ public class NewCustomerPage {
         enteredAt.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getAcutallEntryTime()));
         exitedAt.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getAcutallExitTime()!=null?data.getValue().getAcutallExitTime().toString():"Pending"));
         // TODO: 21/02/2023 fix this
-//        overStayedHours.setCellValueFactory(data-> new SimpleObjectProperty<>( data.getValue().getAcutallExitTime().minusHours(data.getValue().getAcutallExitTime().getHour())));
+        overStayedHours.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getDifferenceBetweenEstimatedAndActualExitTime()));
         observableLogs.forEach(logsTable.getItems()::add);
     }
 
@@ -721,17 +717,8 @@ public class NewCustomerPage {
     @Subscribe
     public void LogOutStatus(LogoutSubscriber event){
         String msg= (String) event.getMessage().getObject();
-        if(msg.equals("Success")){
-            runLater(()->{
-                Notifications notificationBuilder;
-                notificationBuilder = Notifications.create()
-                    .title("Success")
-                    .text("You have been logged out successfully")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.CENTER);
-                notificationBuilder.showConfirm();
-            });
+        if(msg.startsWith("Success")){
+
             try {
                 SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
             } catch (IOException e) {

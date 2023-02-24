@@ -160,7 +160,7 @@ public class PaymentController {
 
     @FXML
     void cvvTxtChange(ActionEvent event) {
-        // TODO: 23/02/2023 this might be the problem , check it out please  
+        // TODO: 23/02/2023 this might be the problem , check it out please
         String txt = cvvInput.getText();
         if (!txt.matches("-?([1-9][0-9]*)?")
                 || txt.length() > 3){
@@ -237,6 +237,7 @@ public class PaymentController {
             if (SimpleChatClient.getCurrentOrder()!=null){
                 Notifications notificationBuilder = Notifications.create()
                     .title("Order Placed")
+                        .hideAfter(Duration.seconds(400))
                     .text("Your order has been placed successfully\nYour Order ID is: "+(int)event.getObject())
                     .position(Pos.CENTER);
                 notificationBuilder.showConfirm();
@@ -245,7 +246,7 @@ public class PaymentController {
                 Notifications notificationBuilder = Notifications.create()
                     .title("Subscription Added")
                     .text("Your subscription has been added successfully\nYour Subscription ID is: "+(int)event.getObject())
-                    .position(Pos.CENTER);
+                    .position(Pos.CENTER).hideAfter(Duration.seconds(400));
                 notificationBuilder.showConfirm();
             }
         }

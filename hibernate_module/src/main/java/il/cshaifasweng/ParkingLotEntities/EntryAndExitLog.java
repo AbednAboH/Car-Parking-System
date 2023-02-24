@@ -8,8 +8,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 @Entity
@@ -144,6 +146,11 @@ public class EntryAndExitLog implements Serializable {
 
     public LocalDateTime getEstimatedExitTime() {
         return estimatedExitTime;
+    }
+    public double getDifferenceBetweenEstimatedAndActualExitTime(){
+         if (acutallExitTime==null)
+             return Duration.between(LocalDateTime.now(),estimatedExitTime).toMinutes();
+        return Duration.between( acutallExitTime,estimatedExitTime).toMinutes();
     }
     @Override
     public boolean equals(Object obj) {

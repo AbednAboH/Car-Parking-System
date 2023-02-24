@@ -147,7 +147,6 @@ public class OrderController {
                 SimpleChatClient.setCurrentOrder(newOnlineOrder);
                 SimpleChatClient.setRoot("orderPaymentGUI");
                 SimpleChatClient.addScreen("orderGUI");
-                System.out.println(SimpleChatClient.peekScreen());
             } else {
                 warningMsg.setVisible(true);
             }
