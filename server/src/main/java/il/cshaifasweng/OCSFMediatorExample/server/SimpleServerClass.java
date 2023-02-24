@@ -262,6 +262,11 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
+        // TODO: 24/02/2023 check if car is already in the parking lot
+        // TODO: 24/02/2023 check if the entrance and exit work on offline orders
+        // TODO: 24/02/2023 make sure that each one that exits the parking lot holding an order is charged
+        // TODO: 24/02/2023 make sure to update the Subscriptions days left +hours left , when they exit the parking lot
+        // TODO: 24/02/2023 figure out the way to charge the customer , wheither to update his current balance or to create a new transaction that is included in the entry And exitlog
         EntryExitParkingLot(message,true);
     }
     private RegisteredCustomer getCustomer(ConnectionToClient client){
@@ -499,7 +504,7 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     protected void registerUser(Message message,ConnectionToClient client){
-        // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
+        // TODO: 24/02/2023 check for existing custoemr profile when Registering , if exists then update the profile with the new info , +new password , should'nt be hard
         String[] mess = message.getMessage().split("&");
         String name = mess[4], email = mess[2], password = mess[3], lastName = mess[5], iD = mess[1];
         if (AuthenticationService.checkEmailExistance(email)) {
@@ -705,6 +710,7 @@ public class SimpleServerClass extends AbstractServer {
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space
         message.setMessage("#GO TO :" + "TO BE CONTINUED");
+
     }
 
     public void getActiveOrders(Message message, ConnectionToClient client) throws Exception {

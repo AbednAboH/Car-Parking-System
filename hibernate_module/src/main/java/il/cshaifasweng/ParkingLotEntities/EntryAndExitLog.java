@@ -148,9 +148,18 @@ public class EntryAndExitLog implements Serializable {
         return estimatedExitTime;
     }
     public double getDifferenceBetweenEstimatedAndActualExitTime(){
-         if (acutallExitTime==null)
-             return Duration.between(LocalDateTime.now(),estimatedExitTime).toMinutes();
-        return Duration.between( acutallExitTime,estimatedExitTime).toMinutes();
+        if( getOrderSubKioskEntity().getClass().getSimpleName().equals(OnlineOrder.class.getSimpleName()))
+            return calculateDifferenceInTime(Objects.requireNonNullElseGet(acutallExitTime, LocalDateTime::now), estimatedExitTime);
+        else return 0;
+    }
+    public int calculateDifferenceInTime(LocalDateTime c,LocalDateTime d){
+         int diffYears= c.getYear() - d.getYear();
+        int diffMonths= c.getMonthValue() - d.getMonthValue();
+        int diffDays= c.getDayOfMonth() - d.getDayOfMonth();
+         int diffHours= c.getHour() - d.getHour();
+        int diffMinutes= c.getMinute() - d.getMinute();
+        int actualTime=diffYears*365*24*60+diffMonths*30*24*60+diffDays*24*60+diffHours*60+diffMinutes;
+        return Math.max(actualTime, 0);
     }
     @Override
     public boolean equals(Object obj) {

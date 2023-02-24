@@ -70,12 +70,7 @@ public class ComplaintController {
     @FXML
     void backButton(ActionEvent event) {
         try {
-            if (SimpleChatClient.getUser() != null) {
-                SimpleChatClient.setRoot("RegisteredCustomer");
-            } else {
-                SimpleChatClient.setRoot("KioskScreen");
-                // TODO: 04/02/2023 add homescreen for all users as an option 
-            }
+           SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -292,10 +287,7 @@ public class ComplaintController {
         System.out.println("Complaint Was Sent Successfuly");
         status.setVisible(true);
         try {
-            if (SimpleChatClient.getUser() == null)
-                SimpleChatClient.setRoot("HomePage");
-            else
-                SimpleChatClient.setRoot("RegisteredCustomer");
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }

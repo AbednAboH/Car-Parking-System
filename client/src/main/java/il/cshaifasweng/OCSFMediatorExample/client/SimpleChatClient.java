@@ -26,13 +26,13 @@ public class SimpleChatClient extends Application {
     private static RegisteredCustomer currentCustomerDetails;
     private static OnlineOrder currentOnlineOrder;
     private static Subscription currentSubscription;
-    private static int RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
+    private static Integer RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
     private static Stack<String> screenHistory = new Stack<String>();
-    private static int userID;
+    private static Integer userID;
     public static int getUserID() {
         return userID;
     }
-    public static void  setUserID(int userID){
+    public static void  setUserID(Integer userID){
         SimpleChatClient.userID=userID;
     }
     public static String peekScreen(){
@@ -53,8 +53,8 @@ public class SimpleChatClient extends Application {
     public static int getCurrentRequest() {
         return RequestBetweenScreens;
     }
-    public static int setCurrentRequest(int currentRequest) {
-        return RequestBetweenScreens = currentRequest;
+    public static void setCurrentRequest(Integer currentRequest) {
+        RequestBetweenScreens = currentRequest;
     }
 
     public static Subscription getCurrentSubscription() {

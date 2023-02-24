@@ -77,6 +77,7 @@ public class Employee_GUI_Controller {
         try {
             Message message = new Message("#DirectToAvailblePark");
             SimpleClient.getClient().sendToServer(message);
+            SimpleChatClient.addScreen("Employee_GUI");
         } catch (IOException e) {
             e.printStackTrace();
         }
