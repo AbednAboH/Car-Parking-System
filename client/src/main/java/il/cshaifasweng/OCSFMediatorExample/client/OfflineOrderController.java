@@ -8,6 +8,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputMethodEvent;
 import javafx.stage.Screen;
+import org.greenrobot.eventbus.EventBus;
 
 import javax.persistence.criteria.CriteriaBuilder;
 
@@ -63,6 +64,8 @@ public class OfflineOrderController {
     }
     @FXML
     void initialize(){
+        EventBus.getDefault().register(this);
+
 
     }
 }

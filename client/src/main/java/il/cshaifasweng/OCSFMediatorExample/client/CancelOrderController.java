@@ -91,7 +91,7 @@ public class CancelOrderController {
     void backToOrder(ActionEvent event) {
         try{
             backProgress.setVisible(true);
-            SimpleChatClient.setRoot(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         }
         catch (IOException e){
             e.printStackTrace();
@@ -118,7 +118,7 @@ public class CancelOrderController {
             successLbl.setVisible(true);
             warningMsg.setVisible(false);
             try {
-                SimpleChatClient.setRoot(((User)SimpleChatClient.getUser()).getGUI());
+                SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

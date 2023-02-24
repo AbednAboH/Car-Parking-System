@@ -314,7 +314,7 @@ public class SimpleServerClass extends AbstractServer {
         OnlineOrder onlineOrder =orderHandler.get(Integer.parseInt(instructions[2]), OnlineOrder.class) ;
         onlineOrder.setActive(false);
         orderHandler.update(onlineOrder);
-        int customer= (Integer) client.getInfo("userId");
+        int customer=onlineOrder.getRegisteredCustomer().getId();
         Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
         refund.setTransaction_method(onlineOrder.getTransaction_method());
         refund.setTransactionStatus(true);
