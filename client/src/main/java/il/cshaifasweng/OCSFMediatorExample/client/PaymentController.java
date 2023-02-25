@@ -117,6 +117,7 @@ public class PaymentController {
 
     @FXML
     void backToOrder(ActionEvent event) throws IOException {
+        EventBus.getDefault().unregister(this);
       SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
     }
 

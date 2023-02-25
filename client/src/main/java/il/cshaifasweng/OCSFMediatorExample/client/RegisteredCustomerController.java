@@ -230,6 +230,7 @@ public class RegisteredCustomerController {
     @FXML
     void AddSubscriptions(ActionEvent event) throws IOException {
         // TODO: 23/01/2023 place subscription screen
+        EventBus.getDefault().unregister(this);
         SimpleChatClient.setRoot("SubscriptionScreen");
     }
 

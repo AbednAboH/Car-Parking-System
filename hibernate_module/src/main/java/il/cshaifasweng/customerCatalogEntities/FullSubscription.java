@@ -1,6 +1,7 @@
 package il.cshaifasweng.customerCatalogEntities;
 
 import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import lombok.Data;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -36,7 +38,23 @@ public class FullSubscription extends Subscription {
 
     public FullSubscription() {
     }
+    public boolean hasParkedConsicutively(){
+        int counter = 0;
+        List<EntryAndExitLog> logs = this.getEntryAndExitLogs();
+        logs=this.getEntryAndExitLogs().stream().filter(entryAndExitLog -> {
+            return entryAndExitLog.getAcutallEntryTime().isAfter(LocalDateTime.now().minusDays(consecutiveParkingDays));
+        }).toList();
+        return logs.size()>=consecutiveParkingDays;
 
+    }
+    public boolean hasParkedToday(){
+        List<EntryAndExitLog> logs = this.getEntryAndExitLogs();
+        logs=this.getEntryAndExitLogs().stream().filter(entryAndExitLog -> {
+            return entryAndExitLog.getAcutallEntryTime().toLocalDate().equals(LocalDate.now());
+        }).toList();
+        return logs.size()>=1;
+
+    }
 
 
     public boolean isValid(){

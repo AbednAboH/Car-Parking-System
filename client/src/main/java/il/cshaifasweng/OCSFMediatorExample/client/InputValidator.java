@@ -7,6 +7,8 @@ public class InputValidator {
     private static final String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
     private static final String PHONE_REGEX = "^(\\+972|05|0)[2-9]\\d{7,8}$";
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+    private static final String eightCaharachtersOneLetter = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+
     private static final String PLATE_REGEX = "^(\\d{2}-\\d{3}-\\d{2}|\\d{3}-\\d{2}-\\d{3}|\\d{3}-\\d{3}|\\d{2}\\d{3}\\d{2}|\\d{3}\\d{2}\\d{3}|\\d{5}\\d{3}|\\d{9})$";
     private static final String NUMBERS_REGEX = "^\\d+$";
     private static final String NAME_REGEX = "^[a-z ,.'-]+$";
@@ -14,10 +16,14 @@ public class InputValidator {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
+    private static final Pattern PASSWORD_PATTERN_eightCaharachtersOneLetter = Pattern.compile(eightCaharachtersOneLetter);
     private static final Pattern PLATE_PATTERN = Pattern.compile(PLATE_REGEX);
     private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBERS_REGEX);
     private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
-
+    public static boolean isValidPassRegular(String password) {
+        Matcher matcher = PASSWORD_PATTERN_eightCaharachtersOneLetter.matcher(password);
+        return matcher.matches();
+    }
     public static boolean isValidEmail(String email) {
         Matcher matcher = EMAIL_PATTERN.matcher(email);
         return matcher.matches();

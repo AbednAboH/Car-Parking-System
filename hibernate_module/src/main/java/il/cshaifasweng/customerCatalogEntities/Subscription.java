@@ -24,9 +24,6 @@ import java.util.List;
 @Setter
 public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)
@@ -55,7 +52,24 @@ public abstract class Subscription extends Transactions {
 
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList=new ArrayList<>();
-//    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
+
+    @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Transactions> renewalsHistory=new ArrayList<>();
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private OneTimePass oneTimePass;
+    public void RenewContranct(String transactionMethode,double value){
+        Transactions transactions=new Transactions();
+        transactions.setTransaction_method(transactionMethode);
+        transactions.setValue(value);
+        transactions.setDate(LocalDate.now());
+        transactions.setTransactionStatus(true);
+        renewalsHistory.add(transactions);
+        if (this.expirationDate.isBefore(LocalDate.now()))
+            this.expirationDate=transactions.getDate().plusMonths(1);
+        else
+            this.expirationDate=this.expirationDate.plusMonths(1);
+
+    }
     public void setEntryAndExitLogs(EntryAndExitLog entryAndExitLog){
         this.entryAndExitLogs.add(entryAndExitLog);
     }

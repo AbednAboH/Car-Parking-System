@@ -16,13 +16,13 @@ public class Transactions implements Serializable {
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     protected int id;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value")
     protected double value;
-    @Column(name = "date", nullable = false)
+    @Column(name = "date")
     protected LocalDate date;
-    @Column(name = "payment_method", nullable = false)
+    @Column(name = "payment_method")
     protected String transaction_method;
-    @Column(name = "payment_status", nullable = false)
+    @Column(name = "payment_status")
     protected boolean transactionStatus;
     // TODO: 11/02/2023 maybe add a field for the vihecl , not necessary as refund might be used here , so here the transaction is not related to a vehicle
     public String getGUI() {

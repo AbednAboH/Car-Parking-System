@@ -27,6 +27,9 @@ public class RegisteredCustomer extends Customer {
     public String getGUI(){
         return "newCustomerPage";
     }
+    public boolean isCustomerByDefinition(){
+        return subscriptions.size()>0;
+    }
     public RegisteredCustomer(){
 
     }

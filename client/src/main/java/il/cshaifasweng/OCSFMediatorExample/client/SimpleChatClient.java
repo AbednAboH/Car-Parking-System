@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Application;
@@ -29,6 +30,13 @@ public class SimpleChatClient extends Application {
     private static Integer RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
     private static Stack<String> screenHistory = new Stack<String>();
     private static Integer userID;
+    private static ParkingLot currentKioskID;
+    public static void setCurrentKioskID(ParkingLot kioskID){
+        currentKioskID=kioskID;
+    }
+    public static ParkingLot getCurrentKioskID(){
+        return currentKioskID;
+    }
     public static int getUserID() {
         return userID;
     }
@@ -83,7 +91,7 @@ public class SimpleChatClient extends Application {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("mainPage"), 1080, 720);
+        scene = new Scene(loadFXML("EntranceAndExitPageSetup"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }
