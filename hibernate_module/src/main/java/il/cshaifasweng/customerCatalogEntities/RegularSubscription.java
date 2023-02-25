@@ -28,9 +28,7 @@ public class RegularSubscription extends Subscription {
     public  String getParkingLotIdAsString(){
         return Integer.toString(desegnatedParkingLot.getId());
     }
-//    public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate) {
-//        super(customer, hoursPerMonth, startDate, expirationDate,true, "1111100");
-//    }
+
 
     public RegularSubscription(Customer customer, int hoursPerMonth, LocalDate startDate, LocalDate expirationDate, List<String> cars, int value,
                                String transaction_method, boolean transactionStatus, ParkingLot desegnatedParkingLot, LocalTime extractionDate) {

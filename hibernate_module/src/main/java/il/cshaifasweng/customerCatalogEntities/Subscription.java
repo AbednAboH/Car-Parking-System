@@ -24,9 +24,6 @@ import java.util.List;
 @Setter
 public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)
@@ -67,7 +64,10 @@ public abstract class Subscription extends Transactions {
         transactions.setDate(LocalDate.now());
         transactions.setTransactionStatus(true);
         renewalsHistory.add(transactions);
-        this.expirationDate=transactions.getDate().plusMonths(1);
+        if (this.expirationDate.isBefore(LocalDate.now()))
+            this.expirationDate=transactions.getDate().plusMonths(1);
+        else
+            this.expirationDate=this.expirationDate.plusMonths(1);
 
     }
     public void setEntryAndExitLogs(EntryAndExitLog entryAndExitLog){
