@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import static il.cshaifasweng.OCSFMediatorExample.client.currentClientScreenRequest.*;
 
 public class KioskController {
-    int KioskID = 3;
+    int KioskID = SimpleChatClient.getCurrentKioskID().getId();
     @FXML
     private Button Exit;
 

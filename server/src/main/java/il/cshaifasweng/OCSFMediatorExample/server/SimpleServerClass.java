@@ -144,6 +144,9 @@ public class SimpleServerClass extends AbstractServer {
                 case 41 -> setNewKioskOrder(message,client);
                 case 42 -> checkKioskEmployeeCreditentials(message,client);
                 default -> System.out.println("message content doesn't match any request");
+                // TODO: 25/02/2023 add case for updating subscription end date
+                // TODO: 25/02/2023 add case for giving one time pass
+
             }
 
             client.sendToClient(message);
@@ -179,9 +182,7 @@ public class SimpleServerClass extends AbstractServer {
 
     private void setNewKioskOrder(Message message, ConnectionToClient client) {
         OfflineOrder order=(OfflineOrder) message.getObject();
-        // TODO: 24/02/2023 check if if customer is registered or not , if he is a one time cusotmer or not !!
         Customer customer =order.getCustomer();
-        // TODO: 24/02/2023 check if parking lot is full or not
         ParkingLot pl=order.getParkingLotID();
         pl=handleMessegesSession.get(ParkingLot.class,pl.getId());
         if (pl.isFull()){
@@ -315,18 +316,19 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
-        // TODO: 24/02/2023 check if car is already in the parking lot
-        // TODO: 24/02/2023 check if the entrance and exit work on offline orders
-        // TODO: 24/02/2023 make sure that each one that exits the parking lot holding an order is charged
-        // TODO: 24/02/2023 make sure to update the Subscriptions days left +hours left , when they exit the parking lot
-        // TODO: 24/02/2023 figure out the way to charge the customer , wheither to update his current balance or to create a new transaction that is included in the entry And exitlog
-        // TODO: 25/02/2023 Make sure to check one time Entry and exit , might be done in verify also !
+
         EntryExitParkingLot(message,true);
     }
     private RegisteredCustomer getCustomer(ConnectionToClient client){
         return rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
     }
     private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
+        // TODO: 24/02/2023 check if car is already in the parking lot
+        // TODO: 24/02/2023 check if the entrance and exit work on offline orders
+        // TODO: 24/02/2023 make sure that each one that exits the parking lot holding an order is charged
+        // TODO: 24/02/2023 make sure to update the Subscriptions days left +hours left , when they exit the parking lot
+        // TODO: 24/02/2023 figure out the way to charge the customer , wheither to update his current balance or to create a new transaction that is included in the entry And exitlog
+        // TODO: 25/02/2023 Make sure to check one time Entry and exit , might be done in verify also !
         String[] instructions=message.getMessage().split("&");
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
         Transactions transaction=new Transactions();

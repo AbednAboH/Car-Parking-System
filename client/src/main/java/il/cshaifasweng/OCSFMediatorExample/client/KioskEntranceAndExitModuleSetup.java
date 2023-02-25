@@ -19,18 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sun.javafx.application.PlatformImpl.runLater;
-import static il.cshaifasweng.OCSFMediatorExample.client.KioskEntranceAndExitModuleSetup.checkSameFields;
 
-public class KisoskSetup {
-
-    @FXML
-    private Button EnterAsVisitor;
-
+public class KioskEntranceAndExitModuleSetup {
     @FXML
     private TextField employeeID;
 
     @FXML
     private TextField employeePass;
+
 
     @FXML
     private ComboBox<Integer> pLotCombo;
@@ -38,11 +34,12 @@ public class KisoskSetup {
     @Subscribe
     public void onConfirmingCredintials(UpdateMessageEvent message){
         if(message.getMessage().getObject().equals("true")){
-            runLater(()->{Notifications notificationBuilder = Notifications.create()
-                    .title("Success")
-                    .text("You have entered the system")
-                    .hideAfter(javafx.util.Duration.seconds(5))
-                    .position(Pos.CENTER);
+            runLater(()->{
+                Notifications notificationBuilder = Notifications.create()
+                        .title("Success")
+                        .text("You have entered the system")
+                        .hideAfter(javafx.util.Duration.seconds(5))
+                        .position(Pos.CENTER);
                 notificationBuilder.showInformation();
 
 
@@ -54,9 +51,9 @@ public class KisoskSetup {
                         }
                     }
                     System.out.println(SimpleChatClient.getCurrentKioskID().getId());
-                    SimpleChatClient.setRoot("OfflineOrder");
+                    SimpleChatClient.setRoot("EntranceAndExitModule");
                     EventBus.getDefault().unregister(this);
-                    SimpleChatClient.addScreen("KioskSetupPage");
+                    SimpleChatClient.addScreen("KioskEntranceAndExitModuleSetup");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -102,6 +99,19 @@ public class KisoskSetup {
     public boolean checkInputs(){
         return checkSameFields(employeePass, employeeID, pLotCombo);
     }
+
+    static boolean checkSameFields(TextField employeePass, TextField employeeID, ComboBox<Integer> pLotCombo) {
+        boolean input= InputValidator.isValidPassRegular(employeePass.getText()) && InputValidator.isValidNumber(employeeID.getText());
+        if(pLotCombo.getSelectionModel()!=null&& pLotCombo.getSelectionModel().getSelectedItem()!=null){
+            input= input;
+        }
+        else{
+            input= false;
+        }
+
+        return input;
+    }
+
     public String checkInputsWithString(){
         String out="";
         out+=InputValidator.isValidPassRegular(employeePass.getText())?"":"Invalid Password\n";
