@@ -52,12 +52,14 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Subscription> SubscriptionHandler = new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<ParkingSpot> pSpot=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
     static Session handleDelaysAndPenaltiesSession;
     public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(3);
     public ScheduledFuture<?> HandleOnTimeOrderDelays, HandleSubsReminders;
+
 
     public SimpleServerClass(int port) {
         super(port);
@@ -143,6 +145,7 @@ public class SimpleServerClass extends AbstractServer {
                 case 40 -> getOnlineOrderForVerificationOfAttendance(message,client);
                 case 41 -> setNewKioskOrder(message,client);
                 case 42 -> checkKioskEmployeeCreditentials(message,client);
+                case 43 -> getSubscriptionOrder(message,client);
                 default -> System.out.println("message content doesn't match any request");
                 // TODO: 25/02/2023 add case for updating subscription end date
                 // TODO: 25/02/2023 add case for giving one time pass
@@ -159,6 +162,20 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.close();
         }
 
+    }
+
+    private void getSubscriptionOrder(Message message, ConnectionToClient client) {
+        String[] orderDetails=((String) message.getObject()).split("&");
+        int subscriotionId=Integer.parseInt(orderDetails[0]);
+        String carId=orderDetails[1];
+        message.setObject(null);
+        Subscription actualSubcription=SubscriptionHandler.get(subscriotionId,Subscription.class);
+        System.out.println(actualSubcription );
+        if(actualSubcription==null)
+            message.setMessage("#SubcriptionNotFound");
+        else if(actualSubcription.getCar(carId) != null)
+            message.setObject(actualSubcription);
+        else message.setMessage("#SubcriptionNotFound");
     }
 
     private void checkKioskEmployeeCreditentials(Message message, ConnectionToClient client) {
@@ -782,6 +799,8 @@ public class SimpleServerClass extends AbstractServer {
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space
         message.setMessage("#GO TO :" + "TO BE CONTINUED");
+
+
 
     }
 

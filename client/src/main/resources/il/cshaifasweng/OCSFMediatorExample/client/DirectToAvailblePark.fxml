@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@../../../../botton.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.DirectToAvailbleParkController">
    <children>
-      <Label layoutX="163.0" layoutY="162.0" prefHeight="30.0" prefWidth="90.0" text="Order ID:">
+      <Label layoutX="115.0" layoutY="162.0" prefHeight="30.0" prefWidth="138.0" text="Transaction ID:">
          <font>
             <Font size="20.0" />
          </font>
@@ -25,7 +25,7 @@
       </Button>
       <TableView fx:id="orderTable" layoutX="163.0" layoutY="301.0" prefHeight="80.0" prefWidth="545.0">
         <columns>
-          <TableColumn fx:id="orderIDcolumn" prefWidth="93.0" text="Order ID" />
+          <TableColumn fx:id="orderIDcolumn" prefWidth="93.0" text="Transaction ID" />
           <TableColumn fx:id="customerIDcolumn" prefWidth="114.0" text="Customer ID" />
             <TableColumn fx:id="carNumberColumn" prefWidth="114.0" text="Car number" />
             <TableColumn fx:id="PLcolumn" prefWidth="114.0" text="Current Parkinglot" />
@@ -36,7 +36,7 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="directBtn" layoutX="787.0" layoutY="498.0" mnemonicParsing="false" onAction="#direct" prefHeight="50.0" prefWidth="100.0" text="Direct" textFill="WHITE">
+      <Button fx:id="directBtn" layoutX="787.0" layoutY="532.0" mnemonicParsing="false" onAction="#direct" prefHeight="50.0" prefWidth="100.0" text="Direct" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>

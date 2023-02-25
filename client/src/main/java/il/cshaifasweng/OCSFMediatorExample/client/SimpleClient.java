@@ -85,6 +85,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new UnconfirmedArrivalSubscriber(message));
 		}else if (message.getMessage().startsWith("#OrderNotFound")||message.getMessage().startsWith("#getOnlineOrder")) {
 			EventBus.getDefault().post(new visitorsSubscriberEvent(message));
+		}else if (message.getMessage().startsWith("#SubcriptionNotFound")||message.getMessage().startsWith("#getSubscriptionOrder")) {
+			EventBus.getDefault().post(new SubscriptionSubscriber(message));
 		} else {
 			EventBus.getDefault().post(new MessageEvent(message));
 		}

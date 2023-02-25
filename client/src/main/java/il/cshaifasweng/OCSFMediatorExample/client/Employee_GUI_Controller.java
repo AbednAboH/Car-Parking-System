@@ -25,7 +25,7 @@ import java.util.List;
 public class Employee_GUI_Controller {
     private List<ParkingSpot> pSpots;
     @FXML
-    private Button DirectToAvailblePark;
+    private Button DirectToAvailablePark;
 
     @FXML
     private Button SaveSpot;
@@ -73,12 +73,11 @@ public class Employee_GUI_Controller {
     private Button logOutBtn;
 
     @FXML
-    void DirectToAvailblePark(ActionEvent event) {
+    void DirectToAvailablePark(ActionEvent event) {
         try {
-            Message message = new Message("#DirectToAvailblePark");
-            SimpleClient.getClient().sendToServer(message);
             SimpleChatClient.addScreen("Employee_GUI");
-        } catch (IOException e) {
+            SimpleChatClient.setRoot("DirectToAvailablePark");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
