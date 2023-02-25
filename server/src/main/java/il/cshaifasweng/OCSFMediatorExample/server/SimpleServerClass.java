@@ -169,7 +169,7 @@ public class SimpleServerClass extends AbstractServer {
         int subscriotionId=Integer.parseInt(orderDetails[0]);
         String carId=orderDetails[1];
         message.setObject(null);
-        Subscription actualSubcription=SubscriptionHandler.get(subscriotionId,Subscription.class);
+        RegularSubscription actualSubcription= handleMessegesSession.get(RegularSubscription.class, subscriotionId);
         System.out.println(actualSubcription );
         if(actualSubcription==null)
             message.setMessage("#SubcriptionNotFound");
@@ -797,11 +797,15 @@ public class SimpleServerClass extends AbstractServer {
     }
     // todo: need to fix it!!!!!!!
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
-        // TODO: get all parkinglots find nearenest that has space
-        message.setMessage("#GO TO :" + "TO BE CONTINUED");
-
-
-
+        if(message.getObject() instanceof OnlineOrder){
+            OnlineOrder order = (OnlineOrder) message.getObject();
+            //OneTimePass newPass = order.getOneTimePass();
+//            handleMessegesSession.save(newPass);
+            handleMessegesSession.saveOrUpdate(order);
+        }else {
+            Subscription sub = (Subscription) message.getObject();
+            handleMessegesSession.saveOrUpdate(sub);
+        }
     }
 
     public void getActiveOrders(Message message, ConnectionToClient client) throws Exception {
