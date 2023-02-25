@@ -1,6 +1,7 @@
 package il.cshaifasweng.customerCatalogEntities;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -28,6 +29,10 @@ public class OnlineOrder extends AbstractOrder {
     private int reminderSent=REMIND;
     @Column(name="agreedToPayPenalty")
     private boolean agreedToPayPenalty=false;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Transactions extraTransaction;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private OneTimePass oneTimePass;
     public OnlineOrder(RegisteredCustomer registeredCustomer, ParkingLot parkingLotID, LocalDate date,
                        String entering, String exiting, String car, String email) {
         this.registeredCustomer = registeredCustomer;

@@ -33,7 +33,7 @@ public class MySQL
 {
     public static final Class[] classes=new Class[]{User.class,ParkingLot.class, ParkingSpot.class, ParkingLotManager.class, ParkingLotEmployee.class,
             GlobalManager.class,PricingChart.class, CustomerServiceEmployee.class, FullSubscription.class, RegularSubscription.class, Subscription.class, Car.class, Complaint.class
-            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, OnlineOrder.class, Customer.class, RefundChart.class, EntryAndExitLog.class,ParkingLotScheduler.class, OfflineOrder.class};
+            , OneTimeCustomer.class, RegisteredCustomer.class, Penalty.class, Refund.class, Reports.class, OnlineOrder.class, Customer.class, RefundChart.class, EntryAndExitLog.class,ParkingLotScheduler.class, OfflineOrder.class,OneTimePass.class};
     private static final Map<String,Class> mappedClasses=Map.ofEntries(Map.entry("Lot",ParkingLot.class),
             Map.entry("Manager",ParkingLotManager.class),Map.entry("Spot",ParkingSpot.class),
             Map.entry("Employee",ParkingLotEmployee.class),Map.entry("CEO",GlobalManager.class),

@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,18 +27,20 @@ public class OfflineOrder extends AbstractOrder {
     public EntryAndExitLog getEntryAndExitLog(){
         return entryAndExitLog;
     }
-
-    public OfflineOrder(OneTimeCustomer customer, ParkingLot parkingLotID, String exiting, String car, String email) {
+    @Column
+    private LocalDateTime entryTimeLimit;
+    public OfflineOrder(Customer customer, ParkingLot parkingLotID, LocalDateTime exiting, String car, String email) {
         this.customer = customer;
         this.date=LocalDate.now();
         this.parkingLotID = parkingLotID;
-        this.exiting =date.atTime(Integer.parseInt(exiting),0);
+        this.exiting =exiting;
         this.car =new Car(car);
         this.email = email;
         this.active = true;
         this.car.setCustomer(this.customer);
         this.car.setTransaction(this);
         this.transactionStatus=false;
+        entryTimeLimit=LocalDateTime.now().plusMinutes(10);
 
     }
     public OfflineOrder(){

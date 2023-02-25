@@ -12,14 +12,14 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #3F2263;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OfflineOrder">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #3F2263;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OfflineOrderController">
    <children>
       <Label layoutX="351.0" layoutY="42.0" prefHeight="55.0" prefWidth="235.0" text="Kiosk Parking Order " textFill="WHITE">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Button fx:id="submit" layoutX="757.0" layoutY="624.0" mnemonicParsing="false" onAction="#goToPayment" stylesheets="@../../../../botton.css" text="Continue to payment" textFill="WHITE">
+      <Button fx:id="submit" layoutX="757.0" layoutY="624.0" mnemonicParsing="false" onAction="#goToPayment" stylesheets="@../../../../botton.css" text="Submit Kiosk Order" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font></Button>
@@ -33,14 +33,9 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="back" layoutX="556.0" layoutY="624.0" mnemonicParsing="false" onAction="#backToRegisteredCustomer" stylesheets="@../../../../botton.css" text="Back" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font size="21.0" />
-         </font>
-      </Button>
       <VBox layoutX="33.0" layoutY="97.0" prefHeight="508.0" prefWidth="505.0" style="-fx-background-color: #3F2B63;">
          <children>
-            <Label prefHeight="64.0" prefWidth="505.0" text="please enter the estimated time that you want to exit the parking lot:" textFill="WHITE" wrapText="true">
+            <Label prefHeight="64.0" prefWidth="505.0" text="Please enter the estimated time that you want to exit the parking lot:" textFill="WHITE" wrapText="true">
                <font>
                   <Font size="18.0" />
                </font>

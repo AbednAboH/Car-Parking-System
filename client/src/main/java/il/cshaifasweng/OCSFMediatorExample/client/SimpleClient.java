@@ -39,6 +39,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().startsWith("#cancelOrder")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
+		}else if(message.getMessage().startsWith("#checkCredentials")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().startsWith("#getUser")){
 			EventBus.getDefault().post(new RegisteredCutomerSubscriber(message));
 		}else if(message.getMessage().startsWith("Error! we got an empty message")) {
@@ -77,7 +79,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new TransactionsSubscirber(message));
 		}else if (message.getMessage().startsWith("#getEntryAndExitLogs")) {
 			EventBus.getDefault().post(new LogsSubscriber(message));
-		}else if (message.getMessage().startsWith("#getOfflineOrders")) {
+		}else if (message.getMessage().startsWith("#getOfflineOrders")||message.getMessage().startsWith("#setOfflineOrder")) {
 			EventBus.getDefault().post(new offlineOrdersSubscriber(message));
 		}else if (message.getMessage().startsWith("#getToBeConfirmed")||message.getMessage().startsWith("#confirmCustomerArrival")) {
 			EventBus.getDefault().post(new UnconfirmedArrivalSubscriber(message));

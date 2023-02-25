@@ -50,6 +50,8 @@ public enum ServerMessegesEnum {
     GET_ALL_ORDERS_FOR_MANAGER("#GetAllOrdersForManager"),
     REJECT_ALL_PRICE_REQUEST("#RejectAllPriceRequests"),
     GET_ONLINE_ORDER("#getOnlineOrder"),
+    SET_OFFLINE_ORDER("#setOfflineOrder"),
+    CHECK_EMPLOYEE_CREDENTIALS("#checkCredentials")
     ;
 
     final String type;
