@@ -2,9 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
-import il.cshaifasweng.customerCatalogEntities.Order;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
@@ -23,8 +23,10 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.hibernate.Hibernate;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,13 +43,16 @@ public class ParkingLotStatus {
     AnchorPane anchorPane;
 
     @FXML
-    Button testButton;
+    Button backButton;
 
     @FXML
     ChoiceBox<Integer> parkingLotList;
 
     @FXML
     ChoiceBox<Integer> floorsList;
+
+    @FXML
+    Label totalNumberOfSpots;
 
     @FXML
     void showPlot(ActionEvent event) {
@@ -60,7 +65,6 @@ public class ParkingLotStatus {
 //    };
 
     private int[][] matrix;
-
     private int rows;
     private int cols;
     private ArrayList<ParkingLot> parkingLots = new ArrayList<>();
@@ -141,7 +145,7 @@ public class ParkingLotStatus {
         titleLabel.setStyle("-fx-font-size: 18pt");
         titleLabel.setAlignment(Pos.CENTER);
         grid.add(titleLabel, 0, 0, 2, 1);
-
+        totalNumberOfSpots.setText(String.valueOf(rows*cols));
         VBox matrixContainer = new VBox(10);
         matrixContainer.setAlignment(Pos.CENTER);
         for (int i = 0; i < rows; i++) {
@@ -173,6 +177,7 @@ public class ParkingLotStatus {
         grid.add(matrixContainer, 0, 1, 2, 1);
 
         Button closePopup = new Button("Close");
+        closePopup.setTextFill(Color.WHITE);
         closePopup.setOnAction(e -> anchorPane.getChildren().remove(grid));
         HBox buttonContainer = new HBox(10);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
@@ -227,12 +232,12 @@ public class ParkingLotStatus {
 
     @Subscribe
     public void SubscriptionEvents(ParkingLotResults event){
-        System.out.println("Hello");
         if(event.getMessage() != null) {
             if(event.getMessage().getMessage().startsWith("#getAllParkingLots")){
                 System.out.println("Hello");
                 parkingLots = (ArrayList<ParkingLot>) event.getMessage().getObject();
                 parkingLotIntegerHashMap = parkingLots.stream().collect(Collectors.toMap(ParkingLot::getId, Function.identity()));
+//                parkingLots.stream().forEach(plot -> Hibernate.initialize(plot));
                 addParkingLotsId();
             }
         }
@@ -261,7 +266,7 @@ public class ParkingLotStatus {
         });
     }
 
-    public void showPlot(javafx.event.ActionEvent actionEvent) {
-
+    public void goBack(javafx.event.ActionEvent event) throws IOException {
+        SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
     }
 }

@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="881.0" prefWidth="1236.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ParkingLotStatus">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="881.0" prefWidth="1236.0" stylesheets="@../../../../botton.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ParkingLotStatus">
    <children>
-      <ChoiceBox fx:id="parkingLotList" layoutX="14.0" layoutY="111.0" prefHeight="26.0" prefWidth="204.0" />
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="65.0" prefHeight="41.0" prefWidth="204.0" text="Parking Lots">
+      <ChoiceBox fx:id="parkingLotList" layoutX="14.0" layoutY="152.0" prefHeight="26.0" prefWidth="204.0" stylesheets="@../../../../botton.css" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="76.0" prefHeight="41.0" prefWidth="204.0" text="Parking Lots">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="floorsList" layoutX="14.0" layoutY="236.0" prefHeight="26.0" prefWidth="204.0" />
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="173.0" prefHeight="41.0" prefWidth="204.0" text="Choose floor ">
+      <ChoiceBox fx:id="floorsList" layoutX="15.0" layoutY="297.0" prefHeight="26.0" prefWidth="204.0" stylesheets="@../../../../botton.css" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="225.0" prefHeight="41.0" prefWidth="204.0" text="Choose floor ">
          <font>
             <Font size="21.0" />
          </font>
@@ -30,5 +33,40 @@
             <RowConstraints vgrow="ALWAYS" />
          </rowConstraints>
       </GridPane>
+      <Button fx:id="backButton" layoutX="23.0" layoutY="676.0" mnemonicParsing="false" onAction="#goBack" prefHeight="49.0" prefWidth="187.0" text="Go Back" textFill="WHITE" />
+      <Label layoutX="294.0" layoutY="88.0" prefHeight="34.0" prefWidth="356.0" stylesheets="@../../../../botton.css" text="Total Number of spots in floor:">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+      <Label fx:id="totalNumberOfSpots" layoutX="658.0" layoutY="88.0" prefHeight="34.0" prefWidth="150.0" stylesheets="@../../../../botton.css">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="41.0" fitWidth="49.0" layoutX="23.0" layoutY="366.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/car-green.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="41.0" fitWidth="49.0" layoutX="23.0" layoutY="420.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/car-black.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="41.0" fitWidth="49.0" layoutX="23.0" layoutY="474.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/car-yellow.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="41.0" fitWidth="49.0" layoutX="23.0" layoutY="530.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/car-red.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="90.0" layoutY="378.0" prefHeight="17.0" prefWidth="101.0" text="Avilable" />
+      <Label layoutX="90.0" layoutY="432.0" prefHeight="17.0" prefWidth="101.0" text="Saved" />
+      <Label layoutX="90.0" layoutY="486.0" prefHeight="17.0" prefWidth="101.0" text="Occupied" />
+      <Label layoutX="90.0" layoutY="542.0" prefHeight="17.0" prefWidth="134.0" text="Unavaible due to failure" />
    </children>
 </AnchorPane>
