@@ -136,7 +136,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
                 return entryAndExitLog;
             }
             catch (Exception e){
-                System.out.println(e.getMessage());
+                throw new IllegalArgumentException(e.getMessage());
 
             }
 

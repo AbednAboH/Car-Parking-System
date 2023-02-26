@@ -153,7 +153,7 @@ public class KioskController {
                 OnlineOrder order = (OnlineOrder) SimpleChatClient.getOrderToBePaid();
                 if (order.getEntryAndExitLog().getEstimatedExitTime().isBefore(LocalDateTime.now())){
                     EventBus.getDefault().unregister(this);
-                    SimpleChatClient.setRoot("CustomerPayment");
+                    SimpleChatClient.setRoot("orderPaymentGUI");
                     SimpleChatClient.addScreen("KioskScreen");
 
                 }
@@ -164,7 +164,7 @@ public class KioskController {
             else if (SimpleChatClient.getOrderToBePaid() instanceof OfflineOrder){
                 if (((OfflineOrder) SimpleChatClient.getOrderToBePaid()).getEntryAndExitLog().getEstimatedExitTime().isBefore(LocalDateTime.now())){
                     EventBus.getDefault().unregister(this);
-                    SimpleChatClient.setRoot("CustomerPayment");
+                    SimpleChatClient.setRoot("orderPaymentGUI");
                     SimpleChatClient.addScreen("KioskScreen");
                 }
                 else {

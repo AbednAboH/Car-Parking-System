@@ -242,8 +242,8 @@ public class PaymentController {
                 RegisteredCustomer customer =(RegisteredCustomer) SimpleChatClient.getUser();
                 if(customer == null)
                     customer = SimpleChatClient.getRegisteredCustomerDetails();
-                String customerDet =customer.getId()+"&"+customer.getEmail()+"&"+customer.getFirstName()+"&"+customer.getLastName();
                 if (SimpleChatClient.getCurrentOrder() != null) {
+                    String customerDet =customer.getId()+"&"+customer.getEmail()+"&"+customer.getFirstName()+"&"+customer.getLastName();
                     OnlineOrder newOnlineOrder = SimpleChatClient.getCurrentOrder();
                     newOnlineOrder.setTransaction_method("Credit Card");
                     newOnlineOrder.setTransactionStatus(true);
@@ -251,6 +251,7 @@ public class PaymentController {
                     SimpleClient.getClient().sendToServer(message);
 
                 } else  if (SimpleChatClient.getCurrentSubscription()!=null){
+                    String customerDet =customer.getId()+"&"+customer.getEmail()+"&"+customer.getFirstName()+"&"+customer.getLastName();
                     Subscription subscription = SimpleChatClient.getCurrentSubscription();
                     subscription.setTransaction_method("Credit Card");
                     subscription.setTransactionStatus(true);
@@ -345,9 +346,9 @@ public class PaymentController {
         doneIndecator.setVisible(false);
         try {
             SimpleChatClient.setRegisteredCustomerDetails(null);
-            EventBus.getDefault().unregister(this);
             if (SimpleChatClient.getCurrentOrder()!=null){
                 SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                EventBus.getDefault().unregister(this);
 
                 Notifications notificationBuilder = Notifications.create()
                     .title("Order Placed")
@@ -358,6 +359,7 @@ public class PaymentController {
             }
             else if (SimpleChatClient.getCurrentSubscription()!=null){
                 SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                EventBus.getDefault().unregister(this);
 
                 Notifications notificationBuilder = Notifications.create()
                     .title("Subscription Added")
@@ -368,16 +370,24 @@ public class PaymentController {
             else if(SimpleChatClient.getOrderToBePaid()!=null){
                 Notifications notificationBuilder = Notifications.create()
                         .title("Payment Done")
-                        .text("Your Payment has been Performed Successfully \nYour Payment ID is: "+(int)event.getObject()+
+                        .text("Your Payment has been Performed Successfully \nYour Payment ID is: "+((AbstractOrder)event.getObject()).getId()+
                                 "\nYour Car Will now be Extracted from the parking lot")
                         .position(Pos.CENTER).hideAfter(Duration.seconds(400));
                 notificationBuilder.showConfirm();
                 AbstractOrder order = (AbstractOrder) event.getObject();
-                if (order instanceof OnlineOrder)
-                    SimpleClient.getClient().sendToServer("#ExitParkingLot&"+order.getParkingLotID().getId() + "&" + 1 + "&"+order.getId()+"&" + order.getEntryAndExitLog().getActiveCar() + "&OnlineOrder");
-                else if (order instanceof OfflineOrder)
-                    SimpleClient.getClient().sendToServer("#ExitParkingLot&"+order.getParkingLotID().getId() + "&" + 1 + "&"+order.getId()+"&" + order.getEntryAndExitLog().getActiveCar() + "&OfflineOrder");
+                System.out.println(order.getClass().getSimpleName());
+                if (order instanceof OnlineOrder) {
+                    System.out.println("OnlineOrder send to server");
+                    Message message = new Message();
+                    message.setMessage("#ExitParkingLot&" + order.getParkingLotID().getId() + "&" + 1 + "&" + order.getId() + "&" + order.getEntryAndExitLog().getActiveCar() + "&OnlineOrder");
+                    SimpleClient.getClient().sendToServer(message);
+                }else if (order instanceof OfflineOrder) {
+                    System.out.println("OfflineOrder send to server");
+                    Message message = new Message();
+                    message.setMessage("#ExitParkingLot&" + order.getParkingLotID().getId() + "&" + 1 + "&" + order.getId() + "&" + order.getEntryAndExitLog().getActiveCar() + "&OfflineOrder");
+                    SimpleClient.getClient().sendToServer(message);
 
+                }
             }
         }
         catch (IOException e) {
@@ -457,11 +467,13 @@ public class PaymentController {
             fillEntryExit(SimpleChatClient.getOrderToBePaid(), emailTxt1, plateNumTxt1, dateTxt11, PLaddress1, parkingHoursTxt1, ammountToPay1);
             AbstractOrder order = (AbstractOrder) SimpleChatClient.getOrderToBePaid();
             if (order instanceof OnlineOrder){
-                int difference=order.getEntryAndExitLog().calculateDifferenceInTime(order.getEntryAndExitLog().getEstimatedExitTime(), order.getEntryAndExitLog().getAcutallEntryTime());
+                double difference=order.getEntryAndExitLog().calculateDifferenceInTime(LocalDateTime.now(), order.getEntryAndExitLog().getEstimatedExitTime());
+                difference=difference/60;
                 newPayment.setText(difference*PCresult.getOrderBeforeHandPrice()+"");
             }
             else if (order instanceof OfflineOrder){
-                int difference=order.getEntryAndExitLog().calculateDifferenceInTime(order.getEntryAndExitLog().getEstimatedExitTime(), order.getEntryAndExitLog().getAcutallEntryTime());
+                double difference=order.getEntryAndExitLog().calculateDifferenceInTime(LocalDateTime.now(), order.getEntryAndExitLog().getEstimatedExitTime());
+                difference=difference/60;
                 newPayment.setText(difference*PCresult.getKioskPrice()+"");
             }
         });

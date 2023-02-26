@@ -99,6 +99,7 @@ public class SimpleServerClass extends AbstractServer {
             }
             handleMessegesSession.beginTransaction();
             int type=messageType((Message) msg);
+            System.out.println(((Message) msg).getMessage());
             //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
@@ -208,12 +209,18 @@ public class SimpleServerClass extends AbstractServer {
             }
             else {
                 message.setMessage(VERIFY_OFFLINE_ORDER.type);
-                message.setObject(handleMessegesSession.get(OfflineOrder.class,orderID));
+                OfflineOrder offlineOrder=handleMessegesSession.get(OfflineOrder.class,orderID);
+                Hibernate.initialize(offlineOrder.getEntryAndExitLog());
+                Hibernate.initialize(offlineOrder.getCar());
+                message.setObject(offlineOrder);
 
             }
         } else {
             message.setMessage(VERIFY_OFFLINE_ORDER.type);
-            message.setObject(handleMessegesSession.get(OfflineOrder.class,orderID));
+            OfflineOrder offlineOrder=handleMessegesSession.get(OfflineOrder.class,orderID);
+            Hibernate.initialize(offlineOrder.getEntryAndExitLog());
+            Hibernate.initialize(offlineOrder.getCar());
+            message.setObject(offlineOrder);
 
         }
     }
@@ -369,6 +376,7 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void exitParkingLot(Message message, ConnectionToClient client) throws IOException {
+        System.out.println("exitParkingLot");
         EntryExitParkingLot(message,false);
     }
 
@@ -390,6 +398,7 @@ public class SimpleServerClass extends AbstractServer {
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
         Transactions transaction;
         String licensePlate=instructions[4];
+
         switch (instructions[5]) {
             case "Subscription"->transaction = handleMessegesSession.get(Subscription.class, Integer.parseInt(instructions[3]));
             case "OnlineOrder"->transaction = handleMessegesSession.get(OnlineOrder.class, Integer.parseInt(instructions[3]));
@@ -500,6 +509,9 @@ public class SimpleServerClass extends AbstractServer {
           message.setMessage(null);
         } else {
             message.setMessage(VERIFY_ORDER.type);
+            OnlineOrder order = orderHandler.get(orderID, OnlineOrder.class);
+            Hibernate.initialize(order.getCar());
+            Hibernate.initialize(order.getEntryAndExitLog());
             message.setObject(orderHandler.get(orderID, OnlineOrder.class));
         }
     }
