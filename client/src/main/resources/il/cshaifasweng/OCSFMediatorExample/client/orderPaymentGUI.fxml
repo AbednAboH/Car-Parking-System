@@ -15,8 +15,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PaymentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PaymentController">
    <children>
       <GridPane layoutX="1.0" layoutY="10.0" prefHeight="710.0" prefWidth="1074.0">
          <columnConstraints>
@@ -29,7 +30,7 @@
          <children>
             <StackPane>
                <children>
-                  <Pane fx:id="orderPane">
+                  <Pane fx:id="orderPane" style="-fx-background-color: #b3a7bc;" visible="false">
                      <children>
                         <VBox prefHeight="371.0" prefWidth="1074.0">
                            <children>
@@ -132,7 +133,7 @@
                         </VBox>
                      </children>
                   </Pane>
-                  <Pane fx:id="subscriptionPane" layoutX="10.0" layoutY="10.0">
+                  <Pane fx:id="subscriptionPane" layoutX="10.0" layoutY="10.0" style="-fx-background-color: #b3a7ba;" visible="false">
                      <children>
                         <VBox prefHeight="371.0" prefWidth="1074.0">
                            <children>
@@ -240,11 +241,205 @@
                         </VBox>
                      </children>
                   </Pane>
+                  <GridPane fx:id="entryExitGrid" prefHeight="389.0" prefWidth="1074.0" style="-fx-background-color: 319468556;">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1018.0" minWidth="10.0" prefWidth="528.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="682.0" minWidth="10.0" prefWidth="546.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="79.0" minHeight="10.0" prefHeight="79.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="348.0" minHeight="10.0" prefHeight="292.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <VBox prefHeight="371.0" prefWidth="1074.0" style="-fx-background-color: #b3a7ba;" GridPane.rowIndex="1">
+                           <children>
+                              <HBox prefHeight="92.0" prefWidth="528.0">
+                                 <children>
+                                    <VBox prefHeight="91.0" prefWidth="491.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="These are the actual entry and exit time of your order !" />
+                                          <Text layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="please note that you are being charged according to the actual exit time ," />
+                                          <Text layoutX="10.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" the initial entry time doesn't change the ammount you are being propted to pay ." />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="50.0" prefWidth="1074.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Actual Entry Time:">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="actualEntryTime" disable="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1074.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Actual Exit Time:">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="actualExitTime" disable="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" layoutX="10.0" layoutY="198.0" prefHeight="47.0" prefWidth="1074.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Expected Exit time:">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="expectedExit" disable="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" layoutX="10.0" layoutY="245.0" prefHeight="47.0" prefWidth="1074.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Ammount To Pay">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="newPayment" disable="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #3F2B69;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <HBox prefHeight="46.0" prefWidth="546.0">
+                                 <children>
+                                    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Original Order that you entered the parking lot with " wrappingWidth="306.13671875" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="41.0" prefWidth="546.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Order forDate:" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="dateTxt11" disable="true" prefHeight="25.0" prefWidth="175.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="36.0" prefWidth="546.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Parking Hours:" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="parkingHoursTxt1" disable="true" prefHeight="25.0" prefWidth="175.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="40.0" prefWidth="546.0" spacing="14.0">
+                                 <children>
+                                    <Label text="In Parking lot:" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="PLaddress1" disable="true" prefHeight="25.0" prefWidth="175.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="39.0" prefWidth="546.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Plate number:" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="plateNumTxt1" disable="true" prefHeight="31.0" prefWidth="174.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="35.0" prefWidth="546.0" spacing="60.0">
+                                 <children>
+                                    <Label text="Email:" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="emailTxt1" disable="true" prefHeight="31.0" prefWidth="180.0">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="40.0" prefWidth="546.0" spacing="10.0">
+                                 <children>
+                                    <Label text="Originally Paid:" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="ammountToPay1" disable="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <HBox alignment="CENTER" prefHeight="88.0" prefWidth="525.0" style="-fx-background-color: #b3a7b0;">
+                           <children>
+                              <Label text="Entry and Exit Details">
+                                 <font>
+                                    <Font size="30.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #3F2B63;" GridPane.columnIndex="1">
+                           <children>
+                              <Label text="Order details" textFill="#f8f8f8">
+                                 <font>
+                                    <Font size="30.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
                </children>
             </StackPane>
             <Pane stylesheets="@../../../../botton.css" GridPane.rowIndex="1">
                <children>
-                  <VBox prefHeight="346.0" prefWidth="1074.0">
+                  <VBox prefHeight="346.0" prefWidth="1074.0" style="-fx-background-color: #b3a7cc;">
                      <children>
                         <HBox alignment="CENTER" prefHeight="68.0" prefWidth="1074.0" stylesheets="@../../../../botton.css">
                            <children>
@@ -305,7 +500,7 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="28.0" prefWidth="1074.0">
                            <children>
-                              <Label text="Re-check info! You can click the back button to change it.">
+                              <Label fx:id="backInfo" text="Re-check info! You can click the back button to change it.">
                                  <font>
                                     <Font size="15.0" />
                                  </font>

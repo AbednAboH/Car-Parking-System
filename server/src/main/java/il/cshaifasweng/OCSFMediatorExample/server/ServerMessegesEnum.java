@@ -52,7 +52,8 @@ public enum ServerMessegesEnum {
     GET_ONLINE_ORDER("#getOnlineOrder"),
     SET_OFFLINE_ORDER("#setOfflineOrder"),
     CHECK_EMPLOYEE_CREDENTIALS("#checkCredentials"),
-    GET_SUBSCRIPTION_ORDER("#getSubscriptionOrder")
+    VERIFY_OFFLINE_ORDER("#verifyOfflineOrder"),
+    updatePrice("#updateOrderWhenExiting");
     ;
 
     final String type;

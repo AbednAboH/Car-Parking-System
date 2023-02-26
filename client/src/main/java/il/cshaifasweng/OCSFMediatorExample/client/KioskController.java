@@ -4,13 +4,13 @@ import com.sun.xml.bind.v2.TODO;
 import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.Transactions;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.EntranceExitResponse;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.KioskSubscriber;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
+import il.cshaifasweng.customerCatalogEntities.AbstractOrder;
+import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -27,13 +27,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 
 import static il.cshaifasweng.OCSFMediatorExample.client.currentClientScreenRequest.*;
+import static javafx.application.Platform.runLater;
 
 public class KioskController {
     int KioskID = SimpleChatClient.getCurrentKioskID().getId();
@@ -61,11 +64,13 @@ public class KioskController {
 
     @FXML
     void onDontHaveOrder(ActionEvent event) throws IOException {
-        SimpleChatClient.setRoot("orderGUI");
+        // TODO: 25/02/2023 check this one out in the Server
+        popupWindow("Enter Parking Lot Using order", "OfflineOrder", "#verifyOfflineOrder");
     }
+
     @FXML
     void onBack(ActionEvent event) throws IOException {
-        SimpleChatClient.setRoot("EntranceAndExit");
+        SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
     }
 
 
@@ -73,7 +78,7 @@ public class KioskController {
     //  , the client thus shouldn't be registered in the server as a customer at all !
     @FXML
     void onHaveOrder(ActionEvent event) {
-        popupWindow("Enter Parking Lot Using order", "Order", "#verifyOrder");
+        popupWindow("Enter Parking Lot Using order", "OnlineOrder", "#verifyOrder");
     }
 
     private void popupWindow(String title, String type, String verifyType) {
@@ -118,7 +123,7 @@ public class KioskController {
             sendMessagesToServer(verifyType + "&" + KioskID + "&" + userTextField.getText() + "&" + passTextField.getText() + "&" + carTextField.getText());
             try {
                 latch.await();
-                if (SimpleChatClient.getUser() != null) {
+                if (SimpleChatClient.getOrderToBePaid() != null) {
                     popUp.close();
                     sendParkingRequest(KioskID + "&" + userTextField.getText() + "&" + passTextField.getText() + "&" + carTextField.getText() + "&" + type);
                 } else {
@@ -137,12 +142,31 @@ public class KioskController {
     private void sendParkingRequest(String request) throws Exception {
         if (SimpleChatClient.getCurrentRequest() == ENTER_PARKING.ordinal()) {
             sendMessagesToServerWithObject("#EnterParkingLot&" + request);
-            SimpleChatClient.setCurrentRequest(NONE.ordinal());
-            SimpleChatClient.setRoot("EntranceAndExit");
+
         } else if (SimpleChatClient.getCurrentRequest() == EXIT_PARKING.ordinal()) {
-            sendMessagesToServerWithObject("#ExitParkingLot&" + request);
-            SimpleChatClient.setCurrentRequest(NONE.ordinal());
-            SimpleChatClient.setRoot("EntranceAndExit");
+            // TODO: 25/02/2023 make customer pay for difference in price !!!!!!!!!
+            if (SimpleChatClient.getOrderToBePaid() instanceof OnlineOrder) {
+                OnlineOrder order = (OnlineOrder) SimpleChatClient.getOrderToBePaid();
+                if (order.getEntryAndExitLog() != null && order.getEntryAndExitLog().getEstimatedExitTime().isBefore(LocalDateTime.now())) {
+                    EventBus.getDefault().unregister(this);
+                    SimpleChatClient.setRoot("orderPaymentGUI");
+                    SimpleChatClient.addScreen("KioskScreen");
+
+                } else {
+                    sendMessagesToServerWithObject("#ExitParkingLot&" + request);
+                }
+            } else if (SimpleChatClient.getOrderToBePaid() instanceof OfflineOrder) {
+                if (((OfflineOrder) SimpleChatClient.getOrderToBePaid()).getEntryAndExitLog() != null) {
+                    EventBus.getDefault().unregister(this);
+                    SimpleChatClient.setRoot("orderPaymentGUI");
+                    SimpleChatClient.addScreen("KioskScreen");
+                } else {
+                    sendMessagesToServerWithObject("#ExitParkingLot&" + request);
+                }
+
+            } else
+                sendMessagesToServerWithObject("#ExitParkingLot&" + request);
+
 
         } else throw new Exception("Invalid invalid Screen Request");
     }
@@ -154,15 +178,74 @@ public class KioskController {
 
     @Subscribe
     public void getMessage(KioskSubscriber event) {
-        if (event.getMessage().getMessage().startsWith("#verifySubscription") || event.getMessage().getMessage().startsWith("#verifyOrder")) {
+        if (event.getMessage().getMessage().startsWith("#verifySubscription") || event.getMessage().getMessage().startsWith("#verifyOrder") || event.getMessage().getMessage().startsWith("#verifyOfflineOrder")) {
             System.out.println("Message");
             System.out.println((event.getMessage().getObject()));
             if (event.getMessage().getObject() != null) {
-                SimpleChatClient.setUser(event.getMessage().getObject());
+                SimpleChatClient.setOrderToBePaid((Transactions) event.getMessage().getObject());
             }
             latch.countDown();
             return;
         }
+    }
+
+    @Subscribe
+    public void getResponse(EntranceExitResponse response) {
+        if (response.getMessage().getObject() instanceof EntryAndExitLog) {
+            if (response.getMessage().getMessage().startsWith("#EnterParkingLot")) {
+                runLater(() -> {
+                    Notifications notificationBuilder = Notifications.create()
+                            .title("Parking Lot")
+                            .text("You have entered the parking lot successfully")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(30))
+                            .position(Pos.CENTER);
+                    notificationBuilder.showConfirm();
+                    SimpleChatClient.setCurrentRequest(NONE.ordinal());
+                    try {
+                        EventBus.getDefault().unregister(this);
+                        SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
+                runLater(() -> {
+                    Notifications notificationBuilder = Notifications.create()
+                            .title("Parking Lot")
+                            .text("You have exited the parking lot successfully")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(30))
+                            .position(Pos.CENTER);
+                    notificationBuilder.showConfirm();
+                    SimpleChatClient.setCurrentRequest(NONE.ordinal());
+                    try {
+                        EventBus.getDefault().unregister(this);
+                        SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        } else {
+            runLater(() -> {
+                Notifications notificationBuilder = Notifications.create()
+                        .title("Parking Lot")
+                        .text((String) response.getMessage().getObject())
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(30))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+                try {
+                    EventBus.getDefault().unregister(this);
+                    SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+
     }
 
     void sendMessagesToServer(String request) {

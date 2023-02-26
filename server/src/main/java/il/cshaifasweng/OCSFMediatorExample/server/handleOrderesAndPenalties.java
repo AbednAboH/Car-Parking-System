@@ -15,7 +15,7 @@ import java.util.Map;
 public class handleOrderesAndPenalties extends  TimeTriggeredThread{
     // TODO: 06/02/2023 add session and check the option to add another field in all transaction entities, or paid entities , for entrance and exit form the parking lot ,
     // TODO: 06/02/2023 meaning actuall arival time , and exit time ,this might be troublesome for subscriptions , as they enter multiple times
-    // // TODO: 06/02/2023 maybe change the name to currently using for subscriptions , and is using for orders !! this way entrance and exit can be attended
+    // TODO: 06/02/2023 maybe change the name to currently using for subscriptions , and is using for orders !! this way entrance and exit can be attended
     // TODO: 25/02/2023 check if the order's owner has a subscription , if he does then don't send him a reminder , and don't charge him a penalty !
     public handleOrderesAndPenalties(SimpleServerClass server) {
         super(server);

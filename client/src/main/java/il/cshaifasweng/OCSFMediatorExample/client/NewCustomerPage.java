@@ -690,6 +690,13 @@ public class NewCustomerPage {
             orderGrid.toFront();
             orderGrid.setVisible(true);
             titleOfPage.setText("Online Orders that were made by you");
+        }else if (event.getSource() == complaintsTab) {
+            SimpleChatClient.addScreen("newCustomerPage");
+            try {
+                SimpleChatClient.setRoot("complaint");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

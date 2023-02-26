@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="726.0" prefWidth="1101.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.NewCustomerPage">
+<AnchorPane prefHeight="726.0" prefWidth="1101.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.NewCustomerPage">
    <children>
       <VBox layoutY="-4.0" prefHeight="730.0" prefWidth="216.0" style="-fx-background-color: #3F2B63;">
          <children>
@@ -38,7 +38,7 @@
             <Button fx:id="logsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="118.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Log of entrances" textFill="WHITE" />
             <Button fx:id="approvalsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="172.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Approvals " textFill="WHITE" />
             <Button fx:id="refundsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="226.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Refunds" textFill="WHITE" />
-            <Button fx:id="complaintsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="280.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Complaints" textFill="WHITE" />
+            <Button fx:id="complaintsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="280.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Complain" textFill="WHITE" />
          </children>
       </VBox>
       <StackPane fx:id="stackedpane" layoutX="232.0" layoutY="209.0" prefHeight="508.0" prefWidth="844.0">

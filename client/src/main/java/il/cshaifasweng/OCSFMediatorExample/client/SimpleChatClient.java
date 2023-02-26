@@ -1,7 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.customerCatalogEntities.AbstractOrder;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Application;
@@ -21,16 +23,24 @@ import org.greenrobot.eventbus.Subscribe;
 @Setter
 public class SimpleChatClient extends Application {
 
-    private static Scene scene;
-    private static SimpleClient client;
-    private static Object user;
-    private static RegisteredCustomer currentCustomerDetails;
-    private static OnlineOrder currentOnlineOrder;
-    private static Subscription currentSubscription;
+    protected static Scene scene;
+    protected static SimpleClient client;
+    protected static Object user;
+    protected static RegisteredCustomer currentCustomerDetails;
+    protected static OnlineOrder currentOnlineOrder;
+    protected static Subscription currentSubscription;
     private static Integer RequestBetweenScreens=currentClientScreenRequest.NONE.ordinal();
-    private static Stack<String> screenHistory = new Stack<String>();
-    private static Integer userID;
-    private static ParkingLot currentKioskID;
+    protected static Stack<String> screenHistory = new Stack<String>();
+    protected static Integer userID;
+    protected static ParkingLot currentKioskID;
+
+    protected static Transactions orderToBePaid;
+    public static Transactions getOrderToBePaid() {
+        return orderToBePaid;
+    }
+    public static void setOrderToBePaid(Transactions abstractOrder) {
+        SimpleChatClient.orderToBePaid = abstractOrder;
+    }
     public static void setCurrentKioskID(ParkingLot kioskID){
         currentKioskID=kioskID;
     }
@@ -101,7 +111,7 @@ public class SimpleChatClient extends Application {
         scene.setRoot(loadFXML(fxml));
     }
 
-    private static Parent loadFXML(String fxml) throws IOException {
+    protected static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SimpleChatClient.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
