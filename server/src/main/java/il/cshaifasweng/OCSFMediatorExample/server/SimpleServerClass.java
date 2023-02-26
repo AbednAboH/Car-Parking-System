@@ -71,6 +71,7 @@ public class SimpleServerClass extends AbstractServer {
 //         TODO: 06/02/2023  should be working correctly use these lines in final project !
 //                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
 //                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), 0, TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
 //                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleOfflineOrdersTimeLimit(this), 0, 1, TimeUnit.MINUTES);
 
     }

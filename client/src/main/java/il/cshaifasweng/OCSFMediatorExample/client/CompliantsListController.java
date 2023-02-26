@@ -13,7 +13,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -84,6 +87,68 @@ public class CompliantsListController {
 
 
     private ObservableList<Complaint> observableList;
+    @FXML
+    private Button HandleComplaintTab;
+
+    @FXML
+    private TextField HourlyIDTxt;
+
+    @FXML
+    private Button RequestChangeOfPrice;
+
+    @FXML
+    private GridPane SubmitChanges;
+
+    @FXML
+    private VBox SuccessStatus;
+
+    @FXML
+    private Button applyAmountBtn;
+
+    @FXML
+    private Button applyPriceBtn;
+
+    @FXML
+    private VBox errorMsgArea;
+
+    @FXML
+    private HBox handleComplaints;
+
+    @FXML
+    private TextField hourlyPriceTxt;
+
+    @FXML
+    private TableColumn<?, ?> hoursInMonthColumn;
+
+    @FXML
+    private TextField newAmountTxt;
+
+    @FXML
+    private Button okBtn;
+
+    @FXML
+    private Button resetPricngChartBtn;
+
+    @FXML
+    private Button sendRequest;
+
+    @FXML
+    private TableColumn<?, ?> subIDcolumn;
+
+    @FXML
+    private TableColumn<?, ?> subPriceColumn;
+
+    @FXML
+    private TableView<?> subTable;
+
+    @FXML
+    private TextField subToChangeIDtxt;
+
+    @FXML
+    private TableColumn<?, ?> subTypeColumn;
+
+    @FXML
+    private TableColumn<?, ?> totalPriceColumn;
 
     private Complaint selected;
 
@@ -93,6 +158,39 @@ public class CompliantsListController {
 
     private int getParkingLotId;
     private boolean isRemoved;
+
+    @FXML
+    void ChangeView(ActionEvent event) {
+
+    }
+
+    @FXML
+    void HideErrorMsg(ActionEvent event) {
+
+    }
+
+    @FXML
+    void SendAmountChange(ActionEvent event) {
+
+    }
+
+    @FXML
+    void SendPriceChange(ActionEvent event) {
+
+    }
+
+
+
+    @FXML
+    void resetPricingChart(ActionEvent event) {
+
+    }
+
+    @FXML
+    void sendPricingChartRequest(ActionEvent event) {
+
+    }
+
 
 
     @FXML
