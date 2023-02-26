@@ -14,6 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 @Setter
 public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
+
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)
@@ -69,6 +71,17 @@ public abstract class Subscription extends Transactions {
         else
             this.expirationDate=this.expirationDate.plusMonths(1);
 
+    }
+    public boolean checkIfAllowed(){
+        int i=LocalDateTime.now().getDayOfWeek().ordinal();
+        //monday->1 .. sunday->7
+        return allowedDays.charAt(i % 7) == '1';
+
+    }
+    public boolean enteredToday(){
+        if (getLatestLog()!=null)
+            return getLatestLog().getAcutallEntryTime().toLocalDate().equals(LocalDate.now());
+        else return false;
     }
     public void setEntryAndExitLogs(EntryAndExitLog entryAndExitLog){
         this.entryAndExitLogs.add(entryAndExitLog);

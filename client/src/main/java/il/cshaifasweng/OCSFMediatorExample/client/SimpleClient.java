@@ -18,11 +18,14 @@ public class SimpleClient extends AbstractClient {
 		super(host, port);
 	}
 
+
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		Message message = (Message) msg;
 		if(message.getMessage().startsWith("#getPricingChart")){
 			EventBus.getDefault().post(new SubscriptionsChartResults(message));
+		}if(message.getMessage().startsWith("#EnterParkingLot")||message.getMessage().startsWith("#ExitParkingLot")){
+			EventBus.getDefault().post(new EntranceExitResponse(message));
 		}else if(message.getMessage().startsWith("#getAllParkingLots")){
 			EventBus.getDefault().post(new ParkingLotResults(message));
 		} else if (message.getMessage().startsWith("#showOrders")) {
@@ -32,6 +35,8 @@ public class SimpleClient extends AbstractClient {
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
 		}else if(message.getMessage().startsWith("#placeOrder")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
+		}else if(message.getMessage().startsWith("#updateOrderWhenExiting")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().startsWith("#addSubscription")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
@@ -50,6 +55,8 @@ public class SimpleClient extends AbstractClient {
 		}else if(message.getMessage().startsWith("#verifySubscription")){
 			EventBus.getDefault().post(new KioskSubscriber(message));
 		}else if(message.getMessage().startsWith("#verifyOrder")){
+			EventBus.getDefault().post(new KioskSubscriber(message));
+		}else if(message.getMessage().startsWith("#verifyOfflineOrder")){
 			EventBus.getDefault().post(new KioskSubscriber(message));
 		}else if(message.getMessage().startsWith("#getAllOrders")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));

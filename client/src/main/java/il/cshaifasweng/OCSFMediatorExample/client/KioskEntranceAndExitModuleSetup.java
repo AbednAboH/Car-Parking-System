@@ -51,9 +51,9 @@ public class KioskEntranceAndExitModuleSetup {
                         }
                     }
                     System.out.println(SimpleChatClient.getCurrentKioskID().getId());
-                    SimpleChatClient.setRoot("EntranceAndExitModule");
+                    SimpleChatClient.setRoot("EntranceAndExit");
                     EventBus.getDefault().unregister(this);
-                    SimpleChatClient.addScreen("KioskEntranceAndExitModuleSetup");
+                    SimpleChatClient.addScreen("KioskEntranceAndExitPageSetup");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

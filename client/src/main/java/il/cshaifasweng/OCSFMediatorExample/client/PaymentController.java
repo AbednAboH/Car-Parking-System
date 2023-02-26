@@ -3,7 +3,14 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.EntranceExitResponse;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
+import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
+import il.cshaifasweng.customerCatalogEntities.AbstractOrder;
+import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Platform;
@@ -12,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
@@ -20,11 +28,15 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.function.UnaryOperator;
 
-public class PaymentController {
+import static il.cshaifasweng.OCSFMediatorExample.client.currentClientScreenRequest.NONE;
+import static javafx.application.Platform.runLater;
 
+public class PaymentController {
+    PricingChart PCresult=new PricingChart();
     @FXML
     private TextField PLaddress;
 
@@ -115,6 +127,49 @@ public class PaymentController {
 
 
 
+
+
+
+
+    @FXML
+    private TextField PLaddress1;
+
+    @FXML
+    private TextField actualEntryTime;
+
+    @FXML
+    private TextField actualExitTime;
+
+   @FXML
+    private TextField ammountToPay1;
+
+
+    @FXML
+    private Label backInfo;
+
+
+    @FXML
+    private TextField dateTxt11;
+
+
+    @FXML
+    private TextField emailTxt1;
+
+    @FXML
+    private GridPane entryExitGrid;
+
+    @FXML
+    private TextField expectedExit;
+
+    @FXML
+    private TextField newPayment;
+
+    @FXML
+    private TextField parkingHoursTxt1;
+
+    @FXML
+    private TextField plateNumTxt1;
+
     @FXML
     void backToOrder(ActionEvent event) throws IOException {
         EventBus.getDefault().unregister(this);
@@ -162,11 +217,11 @@ public class PaymentController {
     @FXML
     void cvvTxtChange(ActionEvent event) {
         // TODO: 23/02/2023 this might be the problem , check it out please
-        String txt = cvvInput.getText();
-        if (!txt.matches("-?([1-9][0-9]*)?")
-                || txt.length() > 3){
-             cvvInput.setText(txt.substring(0, txt.length() - 1));
-        }
+//        String txt = cvvInput.getText();
+//        if (!txt.matches("-?([1-9][0-9]*)?")
+//                || txt.length() > 3){
+//             cvvInput.setText(txt.substring(0, txt.length() - 1));
+//        }
     }
 
     private boolean orderPaymentValidation() {
@@ -195,7 +250,7 @@ public class PaymentController {
                     Message message = new Message("#placeOrder&"+customerDet, newOnlineOrder);
                     SimpleClient.getClient().sendToServer(message);
 
-                } else {
+                } else  if (SimpleChatClient.getCurrentSubscription()!=null){
                     Subscription subscription = SimpleChatClient.getCurrentSubscription();
                     subscription.setTransaction_method("Credit Card");
                     subscription.setTransactionStatus(true);
@@ -203,6 +258,25 @@ public class PaymentController {
                     Message message = new Message("#addSubscription&"+customerDet, subscription);
                     SimpleClient.getClient().sendToServer(message);
 
+                }
+                else if(SimpleChatClient.getOrderToBePaid()!=null){
+                    AbstractOrder order = (AbstractOrder) SimpleChatClient.getOrderToBePaid();
+                    if (order instanceof OnlineOrder){
+                        Transactions transactionMini=new Transactions();
+                        transactionMini.setValue(Double.parseDouble(newPayment.getText()));
+                        transactionMini.setTransaction_method("Credit Card");
+                        transactionMini.setTransactionStatus(true);
+                        transactionMini.setDate(LocalDate.now());
+                        ((OnlineOrder) order).setExtraTransaction(transactionMini);
+                    }
+                    else if (order instanceof OfflineOrder){
+                        order.setValue(Double.parseDouble(newPayment.getText()));
+                        order.setTransaction_method("Credit Card");
+                        order.setTransactionStatus(true);
+                        order.setDate(LocalDate.now());
+                    }
+                    Message message = new Message("#updateOrderWhenExiting", order);
+                    SimpleClient.getClient().sendToServer(message);
                 }
                 doneIndecator.setVisible(true);
 
@@ -216,10 +290,50 @@ public class PaymentController {
 
     @Subscribe
     public void placeOrderResponse(UpdateMessageEvent event) {
-       Platform.runLater(()-> fxmlHandl(event.getMessage()));
+       runLater(()-> fxmlHandl(event.getMessage()));
        
     }
+    @Subscribe
+    public void getResponse(EntranceExitResponse response){
+        if (response.getMessage().getObject() instanceof EntryAndExitLog){
+                runLater(()-> {
+                    Notifications notificationBuilder = Notifications.create()
+                            .title("Parking Lot")
+                            .text("You have exited the parking lot successfully")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(30))
+                            .position(Pos.CENTER);
+                    notificationBuilder.showConfirm();
+                    SimpleChatClient.setCurrentRequest(NONE.ordinal());
+                    try {
+                        EventBus.getDefault().unregister(this);
+                        SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
 
+        }
+        else {
+            runLater(()->{Notifications notificationBuilder = Notifications.create()
+                    .title("Parking Lot")
+                    .text((String) response.getMessage().getObject())
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(30))
+                    .position(Pos.CENTER);
+                notificationBuilder.showError();
+                try {
+                    EventBus.getDefault().unregister(this);
+                    SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+
+
+    }
     private void fxmlHandl(Message event) {
 
         orderIDTxt.setVisible(true);
@@ -231,11 +345,10 @@ public class PaymentController {
         doneIndecator.setVisible(false);
         try {
             SimpleChatClient.setRegisteredCustomerDetails(null);
-            System.out.println(SimpleChatClient.peekScreen());
-            String temp= SimpleChatClient.getPreviousScreen();
-            SimpleChatClient.setRoot(temp);
             EventBus.getDefault().unregister(this);
             if (SimpleChatClient.getCurrentOrder()!=null){
+                SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+
                 Notifications notificationBuilder = Notifications.create()
                     .title("Order Placed")
                         .hideAfter(Duration.seconds(400))
@@ -243,12 +356,28 @@ public class PaymentController {
                     .position(Pos.CENTER);
                 notificationBuilder.showConfirm();
             }
-            else {
+            else if (SimpleChatClient.getCurrentSubscription()!=null){
+                SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+
                 Notifications notificationBuilder = Notifications.create()
                     .title("Subscription Added")
                     .text("Your subscription has been added successfully\nYour Subscription ID is: "+(int)event.getObject())
                     .position(Pos.CENTER).hideAfter(Duration.seconds(400));
                 notificationBuilder.showConfirm();
+            }
+            else if(SimpleChatClient.getOrderToBePaid()!=null){
+                Notifications notificationBuilder = Notifications.create()
+                        .title("Payment Done")
+                        .text("Your Payment has been Performed Successfully \nYour Payment ID is: "+(int)event.getObject()+
+                                "\nYour Car Will now be Extracted from the parking lot")
+                        .position(Pos.CENTER).hideAfter(Duration.seconds(400));
+                notificationBuilder.showConfirm();
+                AbstractOrder order = (AbstractOrder) event.getObject();
+                if (order instanceof OnlineOrder)
+                    SimpleClient.getClient().sendToServer("#ExitParkingLot&"+order.getParkingLotID().getId() + "&" + 1 + "&"+order.getId()+"&" + order.getEntryAndExitLog().getActiveCar() + "&OnlineOrder");
+                else if (order instanceof OfflineOrder)
+                    SimpleClient.getClient().sendToServer("#ExitParkingLot&"+order.getParkingLotID().getId() + "&" + 1 + "&"+order.getId()+"&" + order.getEntryAndExitLog().getActiveCar() + "&OfflineOrder");
+
             }
         }
         catch (IOException e) {
@@ -295,17 +424,75 @@ public class PaymentController {
         if (SimpleChatClient.getCurrentOrder() != null){
             orderPane.setVisible(true);
             subscriptionPane.setVisible(false);
+            entryExitGrid.setVisible(false);
             orderPane.toFront();
             fillOrderDetails(SimpleChatClient.getCurrentOrder());
         }
         else if (SimpleChatClient.getCurrentSubscription()!=null){
             orderPane.setVisible(false);
+            entryExitGrid.setVisible(false);
             subscriptionPane.setVisible(true);
             subscriptionPane.toFront();
             fillSubscriptionDetails(SimpleChatClient.getCurrentSubscription());}
-        else
+        else if(SimpleChatClient.getOrderToBePaid()!=null){
+            orderPane.setVisible(false);
+            subscriptionPane.setVisible(false);
+            entryExitGrid.setVisible(true);
+            entryExitGrid.toFront();
+            Message message = new Message();
+            message.setMessage("#getPricingChart");
+            try {
+                SimpleClient.getClient().sendToServer(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else
             System.out.println("Error: no order or subscription to pay for");
         doneIndecator.setVisible(false);
+    }
+    @Subscribe
+    public void setSubChartDataFromServer(SubscriptionsChartResults event) {
+        PCresult = (PricingChart) event.getMessage().getObject();
+        runLater(()->{
+            fillEntryExit(SimpleChatClient.getOrderToBePaid(), emailTxt1, plateNumTxt1, dateTxt11, PLaddress1, parkingHoursTxt1, ammountToPay1);
+            AbstractOrder order = (AbstractOrder) SimpleChatClient.getOrderToBePaid();
+            if (order instanceof OnlineOrder){
+                int difference=order.getEntryAndExitLog().calculateDifferenceInTime(order.getEntryAndExitLog().getEstimatedExitTime(), order.getEntryAndExitLog().getAcutallEntryTime());
+                newPayment.setText(difference*PCresult.getOrderBeforeHandPrice()+"");
+            }
+            else if (order instanceof OfflineOrder){
+                int difference=order.getEntryAndExitLog().calculateDifferenceInTime(order.getEntryAndExitLog().getEstimatedExitTime(), order.getEntryAndExitLog().getAcutallEntryTime());
+                newPayment.setText(difference*PCresult.getKioskPrice()+"");
+            }
+        });
+    }
+    public  void fillEntryExit(Transactions abstractOrder, TextField emailTxt, TextField plateNumTxt, TextField dateTxt, TextField pLaddress, TextField parkingHoursTxt, TextField ammountToPay) {
+
+
+        if (abstractOrder instanceof OnlineOrder ){
+            OnlineOrder onlineOrder = (OnlineOrder) abstractOrder;
+            dateTxt.setText(onlineOrder.getDateOfOrder().toString());
+            emailTxt.setText(onlineOrder.getEmail());
+            plateNumTxt.setText(onlineOrder.getCar().toString());
+            pLaddress.setText(onlineOrder.getParkingLotID().getId()+"");
+            ammountToPay.setText(Double.toString(abstractOrder.getValue()));
+            parkingHoursTxt.setText(onlineOrder.getDateOfOrder() + " - " + onlineOrder.getExiting() );
+            this.actualEntryTime.setText(onlineOrder.getEntryAndExitLog().getAcutallEntryTime().toString());
+            this.actualExitTime.setText(LocalDateTime.now().toString());
+            this.expectedExit.setText(onlineOrder.getEntryAndExitLog().getEstimatedExitTime().toString());
+        }
+        else if (abstractOrder instanceof OfflineOrder){
+            OfflineOrder order = (OfflineOrder) abstractOrder;
+            dateTxt.setText(order.getDate().toString());
+            parkingHoursTxt.setText(order.getEntryTimeLimit().minusMinutes(10) + " - " + order.getExiting() );
+            emailTxt.setText(order.getEmail());
+            plateNumTxt.setText(order.getCar().toString());
+            pLaddress.setText(order.getParkingLotID().getId()+"");
+            ammountToPay.setText(Double.toString(order.getValue()));
+            this.actualEntryTime.setText(order.getEntryAndExitLog().getAcutallEntryTime().toString());
+            this.actualExitTime.setText(LocalDateTime.now().toString());
+            this.expectedExit.setText(order.getEntryAndExitLog().getEstimatedExitTime().toString());
+        }
     }
 
 }

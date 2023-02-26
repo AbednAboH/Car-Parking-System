@@ -51,7 +51,9 @@ public enum ServerMessegesEnum {
     REJECT_ALL_PRICE_REQUEST("#RejectAllPriceRequests"),
     GET_ONLINE_ORDER("#getOnlineOrder"),
     SET_OFFLINE_ORDER("#setOfflineOrder"),
-    CHECK_EMPLOYEE_CREDENTIALS("#checkCredentials")
+    CHECK_EMPLOYEE_CREDENTIALS("#checkCredentials"),
+    VERIFY_OFFLINE_ORDER("#verifyOfflineOrder"),
+    updatePrice("#updateOrderWhenExiting");
     ;
 
     final String type;

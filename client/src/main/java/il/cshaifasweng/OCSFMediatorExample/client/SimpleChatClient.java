@@ -1,7 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
+import il.cshaifasweng.MoneyRelatedServices.Transactions;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import il.cshaifasweng.customerCatalogEntities.AbstractOrder;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.application.Application;
@@ -31,6 +33,14 @@ public class SimpleChatClient extends Application {
     private static Stack<String> screenHistory = new Stack<String>();
     private static Integer userID;
     private static ParkingLot currentKioskID;
+
+    private static Transactions orderToBePaid;
+    public static Transactions getOrderToBePaid() {
+        return orderToBePaid;
+    }
+    public static void setOrderToBePaid(Transactions abstractOrder) {
+        SimpleChatClient.orderToBePaid = abstractOrder;
+    }
     public static void setCurrentKioskID(ParkingLot kioskID){
         currentKioskID=kioskID;
     }

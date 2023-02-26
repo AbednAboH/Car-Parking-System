@@ -88,7 +88,6 @@ public class OnlineOrder extends AbstractOrder {
         this.date=date;
         this.parkingLotID = parkingLotID;
         this.exiting =date.atTime(Integer.parseInt(exiting),0);
-
         this.car.setCustomer(this.registeredCustomer);
         this.car.setTransaction(this);
         this.email = email;
