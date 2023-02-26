@@ -2,14 +2,18 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogoutSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingSpotsSubscriber;
 import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -241,11 +245,17 @@ public class Employee_GUI_Controller {
 
     @FXML
     void logOutUser(ActionEvent event) {
+        Message msg=new Message("#LogOut");
         try {
-            EventBus.getDefault().unregister(this);
-            SimpleChatClient.setRoot("logInScreen");
-        } catch (IOException e) {
-            e.printStackTrace();
+            SimpleClient.getClient().sendToServer(msg);
+        }
+        catch (IOException e) {
+            Notifications notificationBuilder = Notifications.create()
+                    .title("Error")
+                    .text("Error while trying to log out, please try again later")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.BOTTOM_RIGHT);
         }
     }
 
@@ -255,6 +265,35 @@ public class Employee_GUI_Controller {
         rowLabel.getSelectionModel().clearSelection();
         depthLabel.getSelectionModel().clearSelection();
         floorLabel.getSelectionModel().clearSelection();
+    }
+    @Subscribe
+    public void LogOutStatus(LogoutSubscriber event){
+        String msg= (String) event.getMessage().getObject();
+        System.out.println(msg);
+        if(msg.startsWith("Success")){
+
+            try {
+                EventBus.getDefault().unregister(this);
+                SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+            } catch (IOException e) {
+                System.out.println("Failed to go back to previous screen");
+            }
+
+        }
+        else{
+            runLater(()->{
+                Notifications notificationBuilder;
+                notificationBuilder = Notifications.create()
+                        .title("Error")
+                        .text("Error while trying to log out, please try again later")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+            });
+
+        }
+
     }
 
 }

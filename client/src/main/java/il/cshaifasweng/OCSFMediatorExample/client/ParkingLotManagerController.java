@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ParkingLotManagerController {
     private TableColumn<OnlineOrder, Integer> customerIDcolumn;
 
     @FXML
-    private TableColumn<OnlineOrder, Date> dateColumn;
+    private TableColumn<OnlineOrder, LocalDateTime> dateColumn;
 
     @FXML
     private TableColumn<OnlineOrder, String> emailColumn;
@@ -110,7 +111,7 @@ public class ParkingLotManagerController {
                 new SimpleObjectProperty<>(data.getValue().getEmail()));
         plateNumColumn.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().getCar().getCarNum()));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfOnlineOrder"));
+        dateColumn.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getDateOfOrder()));
         statusColumn.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().isActive() ? "Active" : "Inactive")
         );
@@ -132,8 +133,7 @@ public class ParkingLotManagerController {
         EventBus.getDefault().register(this);
         ordersCategoryLbl.setText("*Showing All OnlineOrders.");
         showAllOrders(null);
-        String name = ((ParkingLotEmployee) SimpleChatClient.getUser()).getFirstName();
-        userNameLbl.setText("Hello, " + name);
+
     }
 
 }
