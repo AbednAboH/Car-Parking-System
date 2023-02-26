@@ -24,6 +24,10 @@ public class RegularSubscription extends Subscription {
 
     @Column(columnDefinition = "TIME",nullable = false)
     private LocalTime extractionDate;
+
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private OneTimePass oneTimePass;
+
     @Override
     public  String getParkingLotIdAsString(){
         return Integer.toString(desegnatedParkingLot.getId());

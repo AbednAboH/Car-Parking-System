@@ -2,11 +2,8 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.Message;
-import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
-import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingSpotsSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
-import il.cshaifasweng.ParkingLotEntities.ParkingSpot;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -28,16 +25,13 @@ public class ParkingLotManagerController {
     private List<OnlineOrder> orders;
 
     @FXML
-    private Button ActiveOnlineOrders;
+    private Button ActiveOrders;
 
     @FXML
-    private Button AllOnlineOrders;
+    private Label userNameLbl;
 
     @FXML
-    private Button acceptRequestByn;
-
-    @FXML
-    private TableView<OnlineOrder> ordersTable;
+    private Button AllOrders;
 
     @FXML
     private TableColumn<OnlineOrder, Integer> PLcolumn;
@@ -52,44 +46,39 @@ public class ParkingLotManagerController {
     private TableColumn<OnlineOrder, String> emailColumn;
 
     @FXML
+    private Button logOutBtn;
+
+    @FXML
     private TableColumn<OnlineOrder, Integer> orderIDcolumn;
+
+    @FXML
+    private TableView<OnlineOrder> ordersTable;
 
     @FXML
     private TableColumn<OnlineOrder, String> plateNumColumn;
 
     @FXML
+    private Button requestPriceChangeBtn;
+
+    @FXML
     private TableColumn<OnlineOrder, String> statusColumn;
 
     @FXML
-    private TableView<PricingChart> priceTable;
+    private Label ordersCategoryLbl;
 
     @FXML
-    private TableView<PricingChart> requestsTable;
-
-    @FXML
-    private Button rejectAllBtn;
-
-    @FXML
-    private Button rejectRequestBtn;
-
-
-    @FXML
-    private Label userNameLbl;
-
-    @FXML
-    private Button logOutBtn;
-
-    @FXML
-    private Label ordersCategpryLbl;
-
-    @FXML
-    void acceptRequest(ActionEvent event) {
-
+    void logOutUser(ActionEvent event) {
+        try {
+            SimpleChatClient.setRoot("logInScreen");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    void rejectAllRequests(ActionEvent event) {
-        Message message = new Message("#RejectAllPriceRequests");
+    void showActiveOrders(ActionEvent event) {
+        ordersCategoryLbl.setText("*Showing Active Orders.");
+        Message message = new Message("#GetActiveOrders");
         try {
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
@@ -98,33 +87,9 @@ public class ParkingLotManagerController {
     }
 
     @FXML
-    void rejectRequest(ActionEvent event) {
-        if (requestsTable.getSelectionModel().getSelectedItem() != null) {
-            Message message = new Message("#RejectOnePriceRequest");
-            message.setObject(requestsTable.getSelectionModel().getSelectedItem().getId());
-            try {
-                SimpleClient.getClient().sendToServer(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @FXML
-    void showActiveOnlineOrders(ActionEvent event) {
-        ordersCategpryLbl.setText("*Showing Active OnlineOrders.");
-        Message message = new Message("#GetActiveOnlineOrders");
-        try {
-            SimpleClient.getClient().sendToServer(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void showAllOnlineOrders(ActionEvent event) {
-        ordersCategpryLbl.setText("*Showing All OnlineOrders.");
-        Message message = new Message("#GetAllOnlineOrdersForManager");
+    void showAllOrders(ActionEvent event) {
+        ordersCategoryLbl.setText("*Showing All Orders.");
+        Message message = new Message("#GetAllOrdersForManager");
         try {
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
@@ -149,10 +114,10 @@ public class ParkingLotManagerController {
         statusColumn.setCellValueFactory(data ->
                 new SimpleObjectProperty<>(data.getValue().isActive() ? "Active" : "Inactive")
         );
-        refreshOnlineOrdersTable();
+        refreshOrdersTable();
     }
 
-    private void refreshOnlineOrdersTable() {
+    private void refreshOrdersTable() {
         Platform.runLater(() -> {
             ordersTable.getItems().clear();
             orders.forEach(ordersTable.getItems()::add);
@@ -161,34 +126,12 @@ public class ParkingLotManagerController {
         });
     }
 
-    @Subscribe
-    public void GetOnlineOrdersFromServer(UpdateMessageEvent event) {
-        System.out.println("Got response from server");
-        if (event.getMessage().getMessage().compareTo("#RejectAllPriceRequests") == 0)
-            requestsTable.getItems().clear();
-        else {
-            requestsTable.getItems().removeIf(data ->
-                    ((int)event.getMessage().getObject()) == data.getId());
-        }
-        ordersTable.refresh();
-    }
-
-    @FXML
-    void logOutUser(ActionEvent event) {
-        try {
-            EventBus.getDefault().unregister(this);
-            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @FXML
     void initialize() throws Exception {
         EventBus.getDefault().register(this);
-        ordersCategpryLbl.setText("*Showing All OnlineOrders.");
-        showAllOnlineOrders(null);
+        ordersCategoryLbl.setText("*Showing All OnlineOrders.");
+        showAllOrders(null);
         String name = ((ParkingLotEmployee) SimpleChatClient.getUser()).getFirstName();
         userNameLbl.setText("Hello, " + name);
     }

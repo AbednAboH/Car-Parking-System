@@ -53,6 +53,7 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<Customer> customerHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<FullSubscription> fullSubHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RegularSubscription> regularSubHandler=new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<Subscription> SubscriptionHandler = new DataBaseManipulation<>();
     private  static final DataBaseManipulation<RefundChart> refundChartHandler=new DataBaseManipulation<>();
     private  static final DataBaseManipulation<ParkingSpot> pSpot=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
@@ -99,7 +100,6 @@ public class SimpleServerClass extends AbstractServer {
             }
             handleMessegesSession.beginTransaction();
             int type=messageType((Message) msg);
-            System.out.println(((Message) msg).getMessage());
             //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
@@ -147,6 +147,7 @@ public class SimpleServerClass extends AbstractServer {
                 case 42 -> checkKioskEmployeeCreditentials(message,client);
                 case 43 -> verifyOfflineOrder(message,client);
                 case 44 -> updateOrderPaymentUponExiting(message,client);
+                case 45 -> getSubscriptionOrder(message,client);
                 default -> System.out.println("message content doesn't match any request");
                 // TODO: 25/02/2023 add case for updating subscription end date
                 // TODO: 25/02/2023 add case for giving one time pass
@@ -223,6 +224,20 @@ public class SimpleServerClass extends AbstractServer {
             message.setObject(offlineOrder);
 
         }
+    }
+
+    private void getSubscriptionOrder(Message message, ConnectionToClient client) {
+        String[] orderDetails=((String) message.getObject()).split("&");
+        int subscriotionId=Integer.parseInt(orderDetails[0]);
+        String carId=orderDetails[1];
+        message.setObject(null);
+        RegularSubscription actualSubcription= handleMessegesSession.get(RegularSubscription.class, subscriotionId);
+        System.out.println(actualSubcription );
+        if(actualSubcription==null)
+            message.setMessage("#SubcriptionNotFound");
+        else if(actualSubcription.getCar(carId) != null)
+            message.setObject(actualSubcription);
+        else message.setMessage("#SubcriptionNotFound");
     }
 
     private void checkKioskEmployeeCreditentials(Message message, ConnectionToClient client) {
@@ -376,7 +391,6 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void exitParkingLot(Message message, ConnectionToClient client) throws IOException {
-        System.out.println("exitParkingLot");
         EntryExitParkingLot(message,false);
     }
 
@@ -398,7 +412,6 @@ public class SimpleServerClass extends AbstractServer {
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
         Transactions transaction;
         String licensePlate=instructions[4];
-
         switch (instructions[5]) {
             case "Subscription"->transaction = handleMessegesSession.get(Subscription.class, Integer.parseInt(instructions[3]));
             case "OnlineOrder"->transaction = handleMessegesSession.get(OnlineOrder.class, Integer.parseInt(instructions[3]));
@@ -859,8 +872,15 @@ public class SimpleServerClass extends AbstractServer {
     }
     // todo: need to fix it!!!!!!!
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
-        // TODO: get all parkinglots find nearenest that has space
-        message.setMessage("#GO TO :" + "TO BE CONTINUED");
+        if(message.getObject() instanceof OnlineOrder){
+            OnlineOrder order = (OnlineOrder) message.getObject();
+            //OneTimePass newPass = order.getOneTimePass();
+//            handleMessegesSession.save(newPass);
+            handleMessegesSession.saveOrUpdate(order);
+        }else {
+            Subscription sub = (Subscription) message.getObject();
+            handleMessegesSession.saveOrUpdate(sub);
+        }
     }
 
     public void getActiveOrders(Message message, ConnectionToClient client) throws Exception {

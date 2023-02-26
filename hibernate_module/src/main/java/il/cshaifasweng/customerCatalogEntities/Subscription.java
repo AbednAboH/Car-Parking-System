@@ -57,8 +57,7 @@ public abstract class Subscription extends Transactions {
 
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Transactions> renewalsHistory=new ArrayList<>();
-    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
-    private OneTimePass oneTimePass;
+
     public void RenewContranct(String transactionMethode,double value){
         Transactions transactions=new Transactions();
         transactions.setTransaction_method(transactionMethode);

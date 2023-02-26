@@ -101,7 +101,7 @@ public class SimpleChatClient extends Application {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("EntranceAndExitPageSetup"), 1080, 720);
+        scene = new Scene(loadFXML("logInScreen"), 1080, 720);
         stage.setScene(scene);
         stage.show();
     }
