@@ -34,7 +34,7 @@
         </Button>
       <StackPane layoutX="20.0" layoutY="126.0">
          <children>
-              <HBox fx:id="handleComplaints" prefHeight="587.0" prefWidth="1070.0" style="-fx-background-color: #FCFCFE; -fx-border-color: #FCFCFE; -fx-border-radius: 50px; -fx-background-radius: 50px;" visible="false">
+              <HBox fx:id="handleComplaints" prefHeight="587.0" prefWidth="1070.0" style="-fx-background-color: #FCFCFE; -fx-border-color: #FCFCFE; -fx-border-radius: 50px; -fx-background-radius: 50px;">
                   <children>
                       <Pane prefHeight="597.0" prefWidth="310.0">
                           <children>
@@ -94,7 +94,7 @@
                       </Pane>
                   </children>
               </HBox>
-            <GridPane fx:id="SubmitChanges" prefHeight="578.0" prefWidth="1070.0">
+            <GridPane fx:id="SubmitChanges" prefHeight="578.0" prefWidth="1070.0" visible="false">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="530.0" minWidth="10.0" prefWidth="236.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="530.0" minWidth="0.0" prefWidth="17.0" />
@@ -197,7 +197,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="errorMsgArea" GridPane.rowIndex="1">
+                  <VBox fx:id="errorMsgArea" visible="false" GridPane.rowIndex="1">
                      <children>
                         <HBox prefHeight="41.0" prefWidth="659.0">
                            <children>
@@ -215,7 +215,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="SuccessStatus" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
+                  <VBox fx:id="SuccessStatus" prefHeight="200.0" prefWidth="100.0" visible="false" GridPane.columnIndex="3">
                      <children>
                         <HBox prefHeight="245.0" prefWidth="174.0" />
                         <Text fill="#22801f" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Request Sent Successfully" />

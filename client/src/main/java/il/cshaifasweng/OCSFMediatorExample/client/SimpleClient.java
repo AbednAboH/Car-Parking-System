@@ -75,7 +75,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
 		}else if(message.getMessage().startsWith("#GetAllOrdersForManager")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
-		}else if(message.getMessage().startsWith("#RejectAllPriceRequests")){
+		}else if(message.getMessage().startsWith("#RejectAllPriceRequests")||
+		message.getMessage().startsWith("#RequestChangingPCResult")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}
 		else if (message.getMessage().startsWith("#getRefunds")){

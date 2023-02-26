@@ -149,6 +149,8 @@ public class SimpleServerClass extends AbstractServer {
                 case 43 -> verifyOfflineOrder(message,client);
                 case 44 -> updateOrderPaymentUponExiting(message,client);
                 case 45 -> getSubscriptionOrder(message,client);
+                case 46 ->requestPriceChange(message,client);
+
                 default -> System.out.println("message content doesn't match any request");
                 // TODO: 25/02/2023 add case for updating subscription end date
                 // TODO: 25/02/2023 add case for giving one time pass
@@ -165,6 +167,12 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.close();
         }
 
+    }
+
+    private void requestPriceChange(Message message, ConnectionToClient client) {
+        PricingChart pricingChart = (PricingChart) message.getObject();
+        handleMessegesSession.save(pricingChart);
+        System.out.println("price change request saved");
     }
 
     private void updateOrderPaymentUponExiting(Message message, ConnectionToClient client) {
@@ -761,7 +769,12 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
-        message.setObject(pChart.getLastAdded(PricingChart.class));
+        List<PricingChart> priceCharts = pChart.getAll(PricingChart.class);
+        priceCharts.forEach(chart -> {
+            if (chart.isApproved()){
+                message.setObject(chart);
+            }
+        });
     }
 
     public void updatePriceChart(Message message, ConnectionToClient client) {
