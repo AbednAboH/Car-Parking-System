@@ -887,13 +887,24 @@ public class SimpleServerClass extends AbstractServer {
         List<OnlineOrder> orders = (List<OnlineOrder>) orderHandler.getAll(OnlineOrder.class);
         List<OnlineOrder> activeOrders = new ArrayList<>();
         orders.forEach(order -> {
-            if (order.isActive()) activeOrders.add(order);
+            if (order.isActive()) {
+                Hibernate.initialize(order.getCar());
+                Hibernate.initialize(order.getParkingLotID());
+                Hibernate.initialize(order.getEntryAndExitLog());
+                activeOrders.add(order);}
         });
+
         message.setObject(activeOrders);
     }
 
     public void getAllOrdersForManager(Message message, ConnectionToClient client) throws Exception {
-        message.setObject(orderHandler.getAll(OnlineOrder.class));
+        List<OnlineOrder> orders = (List<OnlineOrder>) orderHandler.getAll(OnlineOrder.class);
+        for (OnlineOrder order : orders) {
+            Hibernate.initialize(order.getCar());
+            Hibernate.initialize(order.getParkingLotID());
+            Hibernate.initialize(order.getEntryAndExitLog());
+        }
+        message.setObject(orders);
     }
 
     public void rejectOnePriceRequest(Message message, ConnectionToClient client) throws Exception {

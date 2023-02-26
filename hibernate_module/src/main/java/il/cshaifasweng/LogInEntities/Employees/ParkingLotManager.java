@@ -19,6 +19,11 @@ public class ParkingLotManager extends Employee {
     public ParkingLotManager() {
     }
 
+    @Override
+    public String getGUI() {
+        return "ParkingLotManager";
+    }
+
     public ParkingLot getParkingLot() {
         return parkingLot;
     }

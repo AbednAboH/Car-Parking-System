@@ -13,7 +13,11 @@ import java.util.List;
 public class GlobalManager extends Employee {
     @OneToMany(fetch = FetchType.LAZY)
     private List<ParkingLot> parkingLot;
+    @Override
 
+    public String getGUI() {
+        return "ExecutiveManager";
+    }
 
     public GlobalManager(String name, String title, double salary) {
         super(name, title, salary);

@@ -71,6 +71,7 @@ public class LogInController{
             // Check if the connection with the server is alive.
             Message message = new Message("#ConnectionAlive");
             EventBus.getDefault().register(this);
+            SimpleChatClient.setUser(null);
 
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
