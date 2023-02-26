@@ -468,12 +468,12 @@ public class PaymentController {
             AbstractOrder order = (AbstractOrder) SimpleChatClient.getOrderToBePaid();
             if (order instanceof OnlineOrder){
                 double difference=order.getEntryAndExitLog().calculateDifferenceInTime(LocalDateTime.now(), order.getEntryAndExitLog().getEstimatedExitTime());
-                difference=difference/60;
+                difference=difference/60.d;
                 newPayment.setText(difference*PCresult.getOrderBeforeHandPrice()+"");
             }
             else if (order instanceof OfflineOrder){
-                double difference=order.getEntryAndExitLog().calculateDifferenceInTime(LocalDateTime.now(), order.getEntryAndExitLog().getEstimatedExitTime());
-                difference=difference/60;
+                double difference=order.getEntryAndExitLog().calculateDifferenceInTime(LocalDateTime.now(), order.getEntryAndExitLog().getAcutallEntryTime());
+                difference=difference/60.d;
                 newPayment.setText(difference*PCresult.getKioskPrice()+"");
             }
         });

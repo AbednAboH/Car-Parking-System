@@ -10,12 +10,7 @@ import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.customerCatalogEntities.AbstractOrder;
 import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -70,8 +65,9 @@ public class KioskController {
     @FXML
     void onDontHaveOrder(ActionEvent event) throws IOException {
         // TODO: 25/02/2023 check this one out in the Server
-            popupWindow("Enter Parking Lot Using order", "OfflineOrder", "#verifyOfflineOrder");
+        popupWindow("Enter Parking Lot Using order", "OfflineOrder", "#verifyOfflineOrder");
     }
+
     @FXML
     void onBack(ActionEvent event) throws IOException {
         SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
@@ -149,31 +145,27 @@ public class KioskController {
 
         } else if (SimpleChatClient.getCurrentRequest() == EXIT_PARKING.ordinal()) {
             // TODO: 25/02/2023 make customer pay for difference in price !!!!!!!!!
-            if (SimpleChatClient.getOrderToBePaid() instanceof OnlineOrder){
+            if (SimpleChatClient.getOrderToBePaid() instanceof OnlineOrder) {
                 OnlineOrder order = (OnlineOrder) SimpleChatClient.getOrderToBePaid();
-                if (order.getEntryAndExitLog().getEstimatedExitTime().isBefore(LocalDateTime.now())){
+                if (order.getEntryAndExitLog() != null && order.getEntryAndExitLog().getEstimatedExitTime().isBefore(LocalDateTime.now())) {
                     EventBus.getDefault().unregister(this);
                     SimpleChatClient.setRoot("orderPaymentGUI");
                     SimpleChatClient.addScreen("KioskScreen");
 
-                }
-                else {
+                } else {
                     sendMessagesToServerWithObject("#ExitParkingLot&" + request);
                 }
-            }
-            else if (SimpleChatClient.getOrderToBePaid() instanceof OfflineOrder){
-                if (((OfflineOrder) SimpleChatClient.getOrderToBePaid()).getEntryAndExitLog().getEstimatedExitTime().isBefore(LocalDateTime.now())){
+            } else if (SimpleChatClient.getOrderToBePaid() instanceof OfflineOrder) {
+                if (((OfflineOrder) SimpleChatClient.getOrderToBePaid()).getEntryAndExitLog() != null) {
                     EventBus.getDefault().unregister(this);
                     SimpleChatClient.setRoot("orderPaymentGUI");
                     SimpleChatClient.addScreen("KioskScreen");
-                }
-                else {
+                } else {
                     sendMessagesToServerWithObject("#ExitParkingLot&" + request);
                 }
 
-            }
-            else
-            sendMessagesToServerWithObject("#ExitParkingLot&" + request);
+            } else
+                sendMessagesToServerWithObject("#ExitParkingLot&" + request);
 
 
         } else throw new Exception("Invalid invalid Screen Request");
@@ -186,7 +178,7 @@ public class KioskController {
 
     @Subscribe
     public void getMessage(KioskSubscriber event) {
-        if (event.getMessage().getMessage().startsWith("#verifySubscription") || event.getMessage().getMessage().startsWith("#verifyOrder")|| event.getMessage().getMessage().startsWith("#verifyOfflineOrder")) {
+        if (event.getMessage().getMessage().startsWith("#verifySubscription") || event.getMessage().getMessage().startsWith("#verifyOrder") || event.getMessage().getMessage().startsWith("#verifyOfflineOrder")) {
             System.out.println("Message");
             System.out.println((event.getMessage().getObject()));
             if (event.getMessage().getObject() != null) {
@@ -198,15 +190,16 @@ public class KioskController {
     }
 
     @Subscribe
-    public void getResponse(EntranceExitResponse response){
-        if (response.getMessage().getObject() instanceof EntryAndExitLog){
-            if(response.getMessage().getMessage().startsWith("#EnterParkingLot")){
-                runLater(()->{Notifications notificationBuilder = Notifications.create()
-                        .title("Parking Lot")
-                        .text("You have entered the parking lot successfully")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(30))
-                        .position(Pos.CENTER);
+    public void getResponse(EntranceExitResponse response) {
+        if (response.getMessage().getObject() instanceof EntryAndExitLog) {
+            if (response.getMessage().getMessage().startsWith("#EnterParkingLot")) {
+                runLater(() -> {
+                    Notifications notificationBuilder = Notifications.create()
+                            .title("Parking Lot")
+                            .text("You have entered the parking lot successfully")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(30))
+                            .position(Pos.CENTER);
                     notificationBuilder.showConfirm();
                     SimpleChatClient.setCurrentRequest(NONE.ordinal());
                     try {
@@ -216,9 +209,8 @@ public class KioskController {
                         e.printStackTrace();
                     }
                 });
-            }
-            else {
-                runLater(()-> {
+            } else {
+                runLater(() -> {
                     Notifications notificationBuilder = Notifications.create()
                             .title("Parking Lot")
                             .text("You have exited the parking lot successfully")
@@ -235,14 +227,14 @@ public class KioskController {
                     }
                 });
             }
-        }
-        else {
-            runLater(()->{Notifications notificationBuilder = Notifications.create()
-                    .title("Parking Lot")
-                    .text((String) response.getMessage().getObject())
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(30))
-                    .position(Pos.CENTER);
+        } else {
+            runLater(() -> {
+                Notifications notificationBuilder = Notifications.create()
+                        .title("Parking Lot")
+                        .text((String) response.getMessage().getObject())
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(30))
+                        .position(Pos.CENTER);
                 notificationBuilder.showError();
                 try {
                     EventBus.getDefault().unregister(this);
@@ -254,8 +246,8 @@ public class KioskController {
         }
 
 
-
     }
+
     void sendMessagesToServer(String request) {
         try {
             // Check if the connection with the server is alive.

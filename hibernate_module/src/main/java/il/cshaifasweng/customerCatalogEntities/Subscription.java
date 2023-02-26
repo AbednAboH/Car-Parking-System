@@ -74,8 +74,8 @@ public abstract class Subscription extends Transactions {
     }
     public boolean checkIfAllowed(){
         int i=LocalDateTime.now().getDayOfWeek().ordinal();
-        //monday->1 .. sunday->7
-        return allowedDays.charAt(i % 7) == '1';
+        //monday->0, thursday->1 .... sunday->6
+        return allowedDays.charAt((i +1)% 7) == '1';
 
     }
     public boolean enteredToday(){

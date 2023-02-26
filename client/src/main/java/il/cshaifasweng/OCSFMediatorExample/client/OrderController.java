@@ -14,8 +14,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.util.Callback;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.event.ActionEvent;
@@ -102,11 +104,37 @@ public class OrderController {
         if (exitTime.getValue() < arrivalTime.getValue()){
             return false;
         }
+        showNotifications();
         return InputValidator.isValidPlateNumber(plateNum.getText()) &&
                 InputValidator.isValidEmail(emailInput.getText()) &&
                 InputValidator.isValidNumber(customerID.getText()) &&
                 InputValidator.isValidName(customerName.getText()) &&
                 InputValidator.isValidName(customerLastName.getText());
+    }
+    private void showNotifications() {
+        Platform.runLater(() -> {
+            String out="";
+            if (exitTime.getValue() < arrivalTime.getValue()){
+                out+="Invalid time range\n";
+            }
+            out+=InputValidator.isValidPlateNumber(plateNum.getText())?"":"Invalid plate number\n";
+            out+=InputValidator.isValidEmail(emailInput.getText())?"":"Invalid email\n";
+            out+=InputValidator.isValidNumber(customerID.getText()) ? "":"Invalid ID\n";
+            out+=InputValidator.isValidName(customerName.getText()) ? "":"Invalid name\n";
+            out+=InputValidator.isValidName(customerLastName.getText())?"":"Invalid last name\n";
+
+            if (!out.equals("")){
+                Notifications notificationBuilder = Notifications.create()
+                        .title("Invalid input")
+                        .text(out)
+                        .hideAfter(javafx.util.Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+            }
+
+
+
+        });
     }
     @FXML
     void backToRegisteredCustomer(ActionEvent event) {

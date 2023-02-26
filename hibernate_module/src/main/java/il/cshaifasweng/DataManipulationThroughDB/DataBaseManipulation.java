@@ -119,7 +119,7 @@ public class DataBaseManipulation<T> implements DAO<T>{
             return (T) query.getSingleResult();
         }
         catch (Exception e){
-//            e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
 

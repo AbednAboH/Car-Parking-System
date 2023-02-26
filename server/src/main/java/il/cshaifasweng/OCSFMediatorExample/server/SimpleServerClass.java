@@ -390,10 +390,10 @@ public class SimpleServerClass extends AbstractServer {
     private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
         // TODO: 24/02/2023 [check if car is already in the parking lot]  (WAS CHECKED)
         // TODO: 24/02/2023 [check if the entrance and exit work on offline orders]  (WAS CHECKED)
-        // TODO: 24/02/2023 [make sure that each one that exits the parking lot holding an order is charged] (WORKING ON IT)
-        // TODO: 24/02/2023 [make sure to update the Subscriptions days left +hours left , when they exit the parking lot]  (DONE,HAVE TO CHECK IT)
-        // TODO: 24/02/2023 [figure out the way to charge the customer , ADDED EXTRA TRANSACTION TO ORDER] (NEED TO CHECK IT)
-        // TODO: 25/02/2023 [Make sure to check one time Entry and ,ONE TIME ENTRY NEEDS TO BE CHECKED] (conceptually its done!!!!)
+        // TODO: 24/02/2023 [make sure that each one that exits the parking lot holding an order is charged] (Was Checked)
+        // TODO: 24/02/2023 [make sure to update the Subscriptions days left +hours left , when they exit the parking lot]  (DONe)
+        // TODO: 24/02/2023 [figure out the way to charge the customer , ADDED EXTRA TRANSACTION TO ORDER] (Done)
+        // TODO: 25/02/2023 [Make sure to check one time Entry and ,ONE TIME ENTRY NEEDS TO BE CHECKED] (Done,NotChecked)
         String[] instructions=message.getMessage().split("&");
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
         Transactions transaction;
@@ -428,8 +428,10 @@ public class SimpleServerClass extends AbstractServer {
     private static void enterExitPlot(Message message, boolean isEntry, ParkingLot plot, Transactions transaction, String licensePlate) {
         try {
             EntryAndExitLog log = isEntry ? plot.entryToPLot(transaction, licensePlate): plot.exitParkingLot(transaction, licensePlate);
-            handleMessegesSession.saveOrUpdate(log);
-            message.setObject(log);
+            if (log != null) {
+                handleMessegesSession.saveOrUpdate(log);
+                message.setObject(log);
+            }
         } catch (Exception e) {
             message.setObject(e.getMessage());
         }
@@ -494,19 +496,18 @@ public class SimpleServerClass extends AbstractServer {
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
         orderID = Integer.parseInt(args[3]);
-        String queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
-                + "WHERE o.id = :orderID "
-                + "AND o.registeredCustomer.id = :customerId "
-                + "AND (o.parkingLotID.id = :parkingLotId OR o.oneTimePass.parkingLot.id = :parkingLotId) "
-                + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("orderID", orderID);
-        params.put("customerId", customerID);
-        params.put("parkingLotId", parkingLotId);
-        System.out.println("queryOnOrder: " + queryOnOrder);
-        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnOrder, params);
-        if (lst == null) {
-          message.setMessage(null);
+
+
+        OnlineOrder order1 =handleMessegesSession.get(OnlineOrder.class, orderID);
+        RegisteredCustomer lst= rCustomer.get(customerID, RegisteredCustomer.class);
+        ParkingLot parkingLot = pLot.get(parkingLotId, ParkingLot.class);
+        // TODO: 26/02/2023 maybe sorround it with try catch
+        boolean parkingLotOrOneTimePass=(parkingLot==order1.getParkingLotID())||(order1!=null&&order1.getOneTimePass()!=null && order1.getOneTimePass().getParkingLot()==parkingLot);
+        boolean result =order1!=null &&parkingLotOrOneTimePass &&
+                lst==order1.getRegisteredCustomer()&&order1.isActive()&&order1.getClass().getSimpleName().equals(OnlineOrder.class.getSimpleName());
+        if (!result) {
+          message.setObject(null);
+
         } else {
             message.setMessage(VERIFY_ORDER.type);
             OnlineOrder order = orderHandler.get(orderID, OnlineOrder.class);
