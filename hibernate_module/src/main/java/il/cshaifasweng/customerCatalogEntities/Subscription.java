@@ -14,6 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,9 +25,7 @@ import java.util.List;
 @Setter
 public abstract class Subscription extends Transactions {
     public final int NUMBER_OF_DAYS = 7;
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
+
 
     @ManyToOne
     @JoinColumn(name = "registeredCustomer_id",nullable = false)
@@ -48,12 +47,42 @@ public abstract class Subscription extends Transactions {
 
     @Column(name = "allowed_days")
     private String allowedDays;
+    @Column
+    private String email;
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL)
     private List<EntryAndExitLog> entryAndExitLogs=new ArrayList<>();
 
     @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Car> carsList=new ArrayList<>();
-//    Should we get the cars by the customer? instead of redundantly retrieve the cars twice.
+
+    @OneToMany(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Transactions> renewalsHistory=new ArrayList<>();
+    @OneToOne(fetch=FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private OneTimePass oneTimePass;
+    public void RenewContranct(String transactionMethode,double value){
+        Transactions transactions=new Transactions();
+        transactions.setTransaction_method(transactionMethode);
+        transactions.setValue(value);
+        transactions.setDate(LocalDate.now());
+        transactions.setTransactionStatus(true);
+        renewalsHistory.add(transactions);
+        if (this.expirationDate.isBefore(LocalDate.now()))
+            this.expirationDate=transactions.getDate().plusMonths(1);
+        else
+            this.expirationDate=this.expirationDate.plusMonths(1);
+
+    }
+    public boolean checkIfAllowed(){
+        int i=LocalDateTime.now().getDayOfWeek().ordinal();
+        //monday->0, thursday->1 .... sunday->6
+        return allowedDays.charAt((i +1)% 7) == '1';
+
+    }
+    public boolean enteredToday(){
+        if (getLatestLog()!=null)
+            return getLatestLog().getAcutallEntryTime().toLocalDate().equals(LocalDate.now());
+        else return false;
+    }
     public void setEntryAndExitLogs(EntryAndExitLog entryAndExitLog){
         this.entryAndExitLogs.add(entryAndExitLog);
     }

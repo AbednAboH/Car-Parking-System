@@ -48,7 +48,12 @@ public enum ServerMessegesEnum {
     CONFIRM_CUSTOMER_ARRIVAL("#confirmCustomerArrival"),
     GET_ACTIVE_ORDERS("#GetActiveOrders"),
     GET_ALL_ORDERS_FOR_MANAGER("#GetAllOrdersForManager"),
-    REJECT_ALL_PRICE_REQUEST("#RejectAllPriceRequests")
+    REJECT_ALL_PRICE_REQUEST("#RejectAllPriceRequests"),
+    GET_ONLINE_ORDER("#getOnlineOrder"),
+    SET_OFFLINE_ORDER("#setOfflineOrder"),
+    CHECK_EMPLOYEE_CREDENTIALS("#checkCredentials"),
+    VERIFY_OFFLINE_ORDER("#verifyOfflineOrder"),
+    updatePrice("#updateOrderWhenExiting");
     ;
 
     final String type;

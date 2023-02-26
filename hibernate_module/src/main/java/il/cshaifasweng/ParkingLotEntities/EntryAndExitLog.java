@@ -8,8 +8,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import static il.cshaifasweng.ParkingLotEntities.ConstantVariables.*;
 @Entity
@@ -144,6 +146,20 @@ public class EntryAndExitLog implements Serializable {
 
     public LocalDateTime getEstimatedExitTime() {
         return estimatedExitTime;
+    }
+    public double getDifferenceBetweenEstimatedAndActualExitTime(){
+        if( getOrderSubKioskEntity().getClass().getSimpleName().equals(OnlineOrder.class.getSimpleName()))
+            return calculateDifferenceInTime(Objects.requireNonNullElseGet(acutallExitTime, LocalDateTime::now), estimatedExitTime);
+        else return 0;
+    }
+    public int calculateDifferenceInTime(LocalDateTime c,LocalDateTime d){
+         int diffYears= c.getYear() - d.getYear();
+        int diffMonths= c.getMonthValue() - d.getMonthValue();
+        int diffDays= c.getDayOfMonth() - d.getDayOfMonth();
+         int diffHours= c.getHour() - d.getHour();
+        int diffMinutes= c.getMinute() - d.getMinute();
+        int actualTime=diffYears*365*24*60+diffMonths*30*24*60+diffDays*24*60+diffHours*60+diffMinutes;
+        return Math.max(actualTime, 0);
     }
     @Override
     public boolean equals(Object obj) {

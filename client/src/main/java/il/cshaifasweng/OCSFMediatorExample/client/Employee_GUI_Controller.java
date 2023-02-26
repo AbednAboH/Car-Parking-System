@@ -242,6 +242,7 @@ public class Employee_GUI_Controller {
     @FXML
     void logOutUser(ActionEvent event) {
         try {
+            EventBus.getDefault().unregister(this);
             SimpleChatClient.setRoot("logInScreen");
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import EmailSMPTServices.SendEmail;
 import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
@@ -28,6 +29,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import static il.cshaifasweng.OCSFMediatorExample.server.ServerMessegesEnum.*;
 import static il.cshaifasweng.ParkingLotEntities.ConstantMessegesForClient.*;
@@ -40,6 +42,7 @@ public class SimpleServerClass extends AbstractServer {
     private static  final DataBaseManipulation<ParkingLot> pLot = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<OnlineOrder> orderHandler = new DataBaseManipulation<>();
     private static  final DataBaseManipulation<RegisteredCustomer> rCustomer = new DataBaseManipulation<>();
+    private static  final DataBaseManipulation<OneTimeCustomer> oCustomer = new DataBaseManipulation<>();
     private static Map<Integer, Customer> clientsCustomersMap = new HashMap<>();
     private static Map<Integer, Employee> clientsEmployeeMap = new HashMap<>();
     private static  final DataBaseManipulation<Complaint> complaintHandler = new DataBaseManipulation<>();
@@ -54,7 +57,7 @@ public class SimpleServerClass extends AbstractServer {
     private  static final DataBaseManipulation<ParkingSpot> pSpot=new DataBaseManipulation<>();
     private static Session handleMessegesSession;
     static Session handleDelaysAndPenaltiesSession;
-    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    public ScheduledExecutorService executorService = Executors.newScheduledThreadPool(3);
     public ScheduledFuture<?> HandleOnTimeOrderDelays, HandleSubsReminders;
 
     public SimpleServerClass(int port) {
@@ -64,13 +67,10 @@ public class SimpleServerClass extends AbstractServer {
         AuthenticationService.intiate(handleMessegesSession);
         System.out.println("messegesSession is open");
 
-//        handleDelaysAndPenaltiesSession = MySQL.getSessionFactory().openSession();
-        // TODO: 06/02/2023 testing purposes only !!
-//            HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.SECONDS);
-//            HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this),0, 1, TimeUnit.SECONDS);
-        // TODO: 06/02/2023  should be working correctly use these lines in final project !
+//         TODO: 06/02/2023  should be working correctly use these lines in final project !
 //                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
 //                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleOfflineOrdersTimeLimit(this), 0, 1, TimeUnit.MINUTES);
 
     }
 
@@ -99,6 +99,7 @@ public class SimpleServerClass extends AbstractServer {
             }
             handleMessegesSession.beginTransaction();
             int type=messageType((Message) msg);
+            System.out.println(((Message) msg).getMessage());
             //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
@@ -138,10 +139,18 @@ public class SimpleServerClass extends AbstractServer {
                 case 34-> getCustomerOfflineOrders(message, client);
                 case 35-> getOrdersToBeConfirmed(message, client);
                 case 36-> confirmArrival(message, client);
-
                 case 37 -> getActiveOrders(message, client);
                 case 38 -> getAllOrdersForManager(message, client);
+                case 39 -> RejectAllPriceRequests(message,client);
+                case 40 -> getOnlineOrderForVerificationOfAttendance(message,client);
+                case 41 -> setNewKioskOrder(message,client);
+                case 42 -> checkKioskEmployeeCreditentials(message,client);
+                case 43 -> verifyOfflineOrder(message,client);
+                case 44 -> updateOrderPaymentUponExiting(message,client);
                 default -> System.out.println("message content doesn't match any request");
+                // TODO: 25/02/2023 add case for updating subscription end date
+                // TODO: 25/02/2023 add case for giving one time pass
+
             }
 
             client.sendToClient(message);
@@ -154,6 +163,134 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.close();
         }
 
+    }
+
+    private void updateOrderPaymentUponExiting(Message message, ConnectionToClient client) {
+        AbstractOrder order= (AbstractOrder) message.getObject();
+        if (order instanceof OnlineOrder){
+            OnlineOrder onlineOrder=(OnlineOrder) order;
+            handleMessegesSession.save(onlineOrder.getExtraTransaction());
+            handleMessegesSession.update(onlineOrder);
+        }
+        else if (order instanceof OfflineOrder){
+            OfflineOrder offlineOrder=(OfflineOrder) order;
+            handleMessegesSession.update(offlineOrder);
+        }
+    }
+
+    private void verifyOfflineOrder(Message message, ConnectionToClient client) {
+        String request = message.getMessage();
+        String[] args;
+        args = request.split("&");
+        int parkingLotId;
+        int customerID;
+        int  orderID;
+
+        parkingLotId = Integer.parseInt(args[1]);
+        customerID = Integer.parseInt(args[2]);
+        orderID = Integer.parseInt(args[3]);
+        String queryOnOrder = "SELECT customer FROM OfflineOrder o "
+                + "WHERE o.id = :orderID "
+                + "AND o.customer.id = :customerId "
+                + "AND o.parkingLotID.id = :parkingLotId AND o.active = true";
+//                + "AND o.entryTimeLimit  >=CURDATE() "
+//        +" AND TIMESTAMPDIFF(MINUTE, o.entryTimeLimit, CURRENT_TIMESTAMP) <= 0";
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("orderID", orderID);
+        params.put("customerId", customerID);
+        params.put("parkingLotId", parkingLotId);
+        System.out.println("queryOnOrder: " + queryOnOrder);
+        Customer lst =  rCustomer.queiryData(Customer.class, queryOnOrder, params);
+        if (lst == null) {
+            Customer lst2=oCustomer.queiryData(OneTimeCustomer.class, queryOnOrder, params);
+            if (lst2==null){
+                message.setMessage(VERIFY_OFFLINE_ORDER.type);
+                message.setObject(null);
+            }
+            else {
+                message.setMessage(VERIFY_OFFLINE_ORDER.type);
+                OfflineOrder offlineOrder=handleMessegesSession.get(OfflineOrder.class,orderID);
+                Hibernate.initialize(offlineOrder.getEntryAndExitLog());
+                Hibernate.initialize(offlineOrder.getCar());
+                message.setObject(offlineOrder);
+
+            }
+        } else {
+            message.setMessage(VERIFY_OFFLINE_ORDER.type);
+            OfflineOrder offlineOrder=handleMessegesSession.get(OfflineOrder.class,orderID);
+            Hibernate.initialize(offlineOrder.getEntryAndExitLog());
+            Hibernate.initialize(offlineOrder.getCar());
+            message.setObject(offlineOrder);
+
+        }
+    }
+
+    private void checkKioskEmployeeCreditentials(Message message, ConnectionToClient client) {
+        String[] creditentials=((String) message.getMessage()).split("&");
+        int username=Integer.parseInt(creditentials[1]);
+        String password=creditentials[2];
+        ParkingLotEmployee employee=handleMessegesSession.get(ParkingLotEmployee.class,username);
+        if (employee==null){
+            message.setObject("Wrong Username");
+        }
+        else if (!employee.getPassword().equals(password)){
+            message.setObject("Wrong Password");
+        }
+        else if (!(employee.getParkingLot().getId()==Integer.parseInt(creditentials[3]))){
+            message.setObject("Missmach between employee and parking lot");
+        }
+        else {
+            message.setObject("true");
+        }
+    }
+
+    private void setNewKioskOrder(Message message, ConnectionToClient client) {
+        OfflineOrder order=(OfflineOrder) message.getObject();
+        Customer customer =order.getCustomer();
+        ParkingLot pl=order.getParkingLotID();
+        pl=handleMessegesSession.get(ParkingLot.class,pl.getId());
+        if (pl.isFull()){
+            message.setObject("Parking Lot Is Full ,please refer to the Kiosk worker for more information");
+        }
+        else if(pl.inParkingLot(order.getCar().getCarNum())) {
+            message.setObject("Car is already in the parking lot");
+        } else {
+            RegisteredCustomer registeredCustomer = handleMessegesSession.get(RegisteredCustomer.class, customer.getId());
+            if (registeredCustomer == null) {
+               OneTimeCustomer oneTimeCustomer=handleMessegesSession.get(OneTimeCustomer.class,customer.getId());
+                if (oneTimeCustomer==null){
+                     handleMessegesSession.save(customer);
+                     order.setCustomer(customer);
+                }
+                else {
+                     order.setCustomer(oneTimeCustomer);
+                }
+
+            } else {
+                order.setCustomer(registeredCustomer);
+            }
+            order.setParkingLotID(pl);
+            handleMessegesSession.save(order);
+            message.setObject(order.getId());
+
+        }
+    }
+
+    private void getOnlineOrderForVerificationOfAttendance(Message message, ConnectionToClient client) {
+        String[] orderDetails=((String) message.getObject()).split("&");
+        int orderId=Integer.parseInt(orderDetails[0]);
+        String carId=orderDetails[1];
+        message.setObject(null);
+        OnlineOrder actualOrder=orderHandler.get(orderId,OnlineOrder.class);
+        System.out.println(actualOrder );
+        if(actualOrder==null)
+            message.setMessage("#OrderNotFound");
+        else if(actualOrder.getCar().getCarNum().startsWith(carId))
+            message.setObject(actualOrder);
+        else message.setMessage("#OrderNotFound");
+    }
+
+    private void RejectAllPriceRequests(Message message, ConnectionToClient client) {
     }
 
     private void confirmArrival(Message message, ConnectionToClient client) {
@@ -175,7 +312,6 @@ public class SimpleServerClass extends AbstractServer {
                 " AND o.reminderSent = 3 AND agreedToPayPenalty=false";
         HashMap<String, Object> params = new HashMap<>();
         params.put("customerId", customer.getId());
-//        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, hql, params);;
         List<OnlineOrder> orders=orderHandler.executeListQuery(OnlineOrder.class,hql,params,handleMessegesSession);
         Hibernate.initialize(orders);
         message.setObject(orders);
@@ -222,43 +358,82 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void LogOut(Message message, ConnectionToClient client) {
-        client.setInfo("userId", null);
-        // TODO: 15/02/2023 implement log out
+        int id = (Integer) client.getInfo("userId");
+        String type = (String) client.getInfo("userType");
+        try{
+                if (type.startsWith(RegisteredCustomer.class.getName()) || type.startsWith(OneTimeCustomer.class.getName())) clientsCustomersMap.remove(id);
+                else clientsEmployeeMap.remove(id);
+                client.setInfo("userId", null);
+                client.setInfo("userType", null);
+                message.setObject("Success");
+
+        }
+        catch (Exception e){
+            message.setObject("Failed");
+        }
+        System.out.println(message.getObject());
+
     }
 
     private void exitParkingLot(Message message, ConnectionToClient client) throws IOException {
+        System.out.println("exitParkingLot");
         EntryExitParkingLot(message,false);
     }
 
     private void enterParkingLot(Message message, ConnectionToClient client) throws IOException {
+
         EntryExitParkingLot(message,true);
     }
     private RegisteredCustomer getCustomer(ConnectionToClient client){
         return rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
     }
     private static void EntryExitParkingLot(Message message,boolean isEntry) throws IOException {
+        // TODO: 24/02/2023 [check if car is already in the parking lot]  (WAS CHECKED)
+        // TODO: 24/02/2023 [check if the entrance and exit work on offline orders]  (WAS CHECKED)
+        // TODO: 24/02/2023 [make sure that each one that exits the parking lot holding an order is charged] (Was Checked)
+        // TODO: 24/02/2023 [make sure to update the Subscriptions days left +hours left , when they exit the parking lot]  (DONe)
+        // TODO: 24/02/2023 [figure out the way to charge the customer , ADDED EXTRA TRANSACTION TO ORDER] (Done)
+        // TODO: 25/02/2023 [Make sure to check one time Entry and ,ONE TIME ENTRY NEEDS TO BE CHECKED] (Done,NotChecked)
         String[] instructions=message.getMessage().split("&");
         ParkingLot plot=pLot.get(Integer.parseInt(instructions[1]),ParkingLot.class);
-        Transactions transaction=new Transactions();
+        Transactions transaction;
         String licensePlate=instructions[4];
+
         switch (instructions[5]) {
             case "Subscription"->transaction = handleMessegesSession.get(Subscription.class, Integer.parseInt(instructions[3]));
-            case "Order"->transaction = handleMessegesSession.get(OnlineOrder.class, Integer.parseInt(instructions[3]));
-            case "BasicOrder"-> System.out.println("basicOrder");// TODO: 15/02/2023 implement basic order
+            case "OnlineOrder"->transaction = handleMessegesSession.get(OnlineOrder.class, Integer.parseInt(instructions[3]));
+            case "OfflineOrder"-> transaction = handleMessegesSession.get(OfflineOrder.class, Integer.parseInt(instructions[3]));
             default->throw new IOException("transaction type is not valid");
         }
-        //todo: check if the parking lot is full
-        if (isEntry&&plot.isFull()) {
-            message.setMessage(FULL_PARKING_LOT.type);
-        }
-        else{
-            try {
-                EntryAndExitLog log = isEntry?plot.entryToPLot(transaction, licensePlate):plot.exitParkingLot(transaction,licensePlate);
 
-                handleMessegesSession.saveOrUpdate(log);
-            } catch (Exception e) {
-                message.setMessage(e.getMessage());
+        if (isEntry&&plot.isFull()) {
+            message.setObject(FULL_PARKING_LOT.type);
+        }
+        else if (isEntry&&plot.inParkingLot(licensePlate)) {
+            message.setObject(ALREADY_IN_PARKING_LOT.type);
+        } else {
+            if (transaction instanceof Subscription)
+                if(((Subscription) transaction).checkIfAllowed())
+                    if(!((Subscription) transaction).enteredToday())
+                        enterExitPlot(message, isEntry, plot, transaction, licensePlate);
+                    else
+                        message.setObject("You can't Enter the parking lot ,you already entered today");
+                else message.setObject("You can't Enter the parking lot ,your specific subscription doesn't allow entries on this day");
+            else{
+                enterExitPlot(message, isEntry, plot, transaction, licensePlate);
             }
+        }
+    }
+
+    private static void enterExitPlot(Message message, boolean isEntry, ParkingLot plot, Transactions transaction, String licensePlate) {
+        try {
+            EntryAndExitLog log = isEntry ? plot.entryToPLot(transaction, licensePlate): plot.exitParkingLot(transaction, licensePlate);
+            if (log != null) {
+                handleMessegesSession.saveOrUpdate(log);
+                message.setObject(log);
+            }
+        } catch (Exception e) {
+            message.setObject(e.getMessage());
         }
     }
 
@@ -278,11 +453,12 @@ public class SimpleServerClass extends AbstractServer {
         OnlineOrder onlineOrder =orderHandler.get(Integer.parseInt(instructions[2]), OnlineOrder.class) ;
         onlineOrder.setActive(false);
         orderHandler.update(onlineOrder);
-        int customer= (Integer) client.getInfo("userId");
+        int customer=onlineOrder.getRegisteredCustomer().getId();
         Refund refund=new Refund("Calcelation",Double.parseDouble(instructions[1]),rCustomer.get( customer , RegisteredCustomer.class));
         refund.setTransaction_method(onlineOrder.getTransaction_method());
         refund.setTransactionStatus(true);
         handleMessegesSession.save(refund);
+        SendEmail.sendEmail(onlineOrder.getEmail(),"Order Cancellation","Your refund ID is "+refund.getId()+"\n"+"Your refund amount is "+refund.getValue());
         message.setMessage(CANCEL_ORDER_AND_GET_REFUND.type);
 
     }
@@ -320,29 +496,25 @@ public class SimpleServerClass extends AbstractServer {
         parkingLotId = Integer.parseInt(args[1]);
         customerID = Integer.parseInt(args[2]);
         orderID = Integer.parseInt(args[3]);
-        String queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
-                + "WHERE o.id = :orderID "
-                + "AND o.registeredCustomer.id = :customerId "
-                + "AND o.parkingLotID.id = :parkingLotId "
-                + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("orderID", orderID);
-        params.put("customerId", customerID);
-        params.put("parkingLotId", parkingLotId);
-        System.out.println("queryOnOrder: " + queryOnOrder);
-        RegisteredCustomer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnOrder, params);
-        if (lst == null) {
-            queryOnOrder = "SELECT registeredCustomer FROM OnlineOrder o "
-                    + "WHERE o.id = :orderID "
-                    + "AND o.registeredCustomer.id = :customerId "
-                    + "AND o.parkingLotID.id = :parkingLotId "
-                    + "AND o.dateOfOrder  >=CURDATE() AND o.active = true AND TIMESTAMPDIFF(MINUTE, o.dateOfOrder, CURRENT_TIMESTAMP) < 30";
+
+
+        OnlineOrder order1 =handleMessegesSession.get(OnlineOrder.class, orderID);
+        RegisteredCustomer lst= rCustomer.get(customerID, RegisteredCustomer.class);
+        ParkingLot parkingLot = pLot.get(parkingLotId, ParkingLot.class);
+        // TODO: 26/02/2023 maybe sorround it with try catch
+        boolean parkingLotOrOneTimePass=(parkingLot==order1.getParkingLotID())||(order1!=null&&order1.getOneTimePass()!=null && order1.getOneTimePass().getParkingLot()==parkingLot);
+        boolean result =order1!=null &&parkingLotOrOneTimePass &&
+                lst==order1.getRegisteredCustomer()&&order1.isActive()&&order1.getClass().getSimpleName().equals(OnlineOrder.class.getSimpleName());
+        if (!result) {
+          message.setObject(null);
 
         } else {
             message.setMessage(VERIFY_ORDER.type);
-            message.setObject(lst);
+            OnlineOrder order = orderHandler.get(orderID, OnlineOrder.class);
+            Hibernate.initialize(order.getCar());
+            Hibernate.initialize(order.getEntryAndExitLog());
+            message.setObject(orderHandler.get(orderID, OnlineOrder.class));
         }
-        message.setObject(lst);
     }
 
     private void verifySubscription(Message message, ConnectionToClient client) throws IOException {
@@ -359,7 +531,7 @@ public class SimpleServerClass extends AbstractServer {
         String queryOnRegular = "SELECT registeredCustomer FROM RegularSubscription s "
                 + "WHERE s.id = :subscriptionId "
                 + "AND s.registeredCustomer.id = :customerId "
-                + "AND s.desegnatedParkingLot.id = :parkingLotId "
+                + "AND (s.desegnatedParkingLot.id = :parkingLotId OR s.oneTimePass.parkingLot.id = :parkingLotId) "
                 + "AND s.isActive = true";
         String queryOnFull = "SELECT registeredCustomer FROM FullSubscription s "
                 + "WHERE s.id = :subscriptionId "
@@ -370,12 +542,12 @@ public class SimpleServerClass extends AbstractServer {
         params.put("customerId", customerID);
         Customer lst = (RegisteredCustomer) rCustomer.queiryData(Object.class, queryOnFull, params);
         if (lst != null ) {
-            message.setObject(lst);
+            message.setObject(handleMessegesSession.get(FullSubscription.class, subscriptionID));
         } else {
             params.put("parkingLotId", parkingLotId);
             lst= rCustomer.queiryData(RegisteredCustomer.class, queryOnRegular, params);
             if (lst != null ) {
-                message.setObject(lst);
+                message.setObject(handleMessegesSession.get(RegularSubscription.class, subscriptionID));
             } else {
                 message.setObject(null);
             }
@@ -419,11 +591,35 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     private void addSubscription(Message message, ConnectionToClient client) throws IOException {
+        // TODO: 25/02/2023 make an option for updating the expiration date of the subscription
+        String[] instructions=message.getMessage().split("&");
 
-        if(message.getObject().getClass().getSimpleName().compareTo("FullSubscription") == 0)
-            fullSubHandler.save((FullSubscription) message.getObject(), FullSubscription.class);
-        else
-            regularSubHandler.save((RegularSubscription) message.getObject(), RegularSubscription.class);
+        RegisteredCustomer rg = rCustomer.get(Integer.parseInt(instructions[1]), RegisteredCustomer.class);
+        if (rg== null) {
+            rg = new RegisteredCustomer(Integer.parseInt(instructions[1]) ,instructions[2],instructions[3],instructions[4]);
+            rCustomer.save(rg, RegisteredCustomer.class);
+        }
+        Subscription sub=(Subscription) message.getObject();
+        sub.setRegisteredCustomer(rg);
+        if(sub.getClass().getSimpleName().compareTo("FullSubscription") == 0){
+            fullSubHandler.save((FullSubscription) sub, FullSubscription.class);
+            SendEmail.sendEmail(sub.getEmail(),
+                    "Your Full Subscription has been approved",
+                    "Your Full Subscription's id is : " + sub.getId() +
+                            "\nsubscription start date: " + sub.getStartDate() +"\nsubscription end date: " + sub.getExpirationDate() +
+                            "\nThank you for choosing our service!");
+            message.setObject(sub.getId());
+        }
+        else{
+            regularSubHandler.save((RegularSubscription) sub, RegularSubscription.class);
+            SendEmail.sendEmail(sub.getEmail(),
+                    "Your Regular Subscription has been approved",
+                    "Your Regular Subscription's id is : " + sub.getId() +
+                            "\nsubscription start date: " + sub.getStartDate() +"\nsubscription end date: " + sub.getExpirationDate() +
+                            "\nThank you for choosing our service!");
+            message.setObject(sub.getId());
+        }
+
 
     }
 
@@ -455,7 +651,7 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     protected void registerUser(Message message,ConnectionToClient client){
-        // TODO: 1/11/2023 handle messege from client to get email,password,name,.. all items of a Regular customer
+        // TODO: 24/02/2023 check for existing custoemr profile when Registering , if exists then update the profile with the new info , +new password , should'nt be hard
         String[] mess = message.getMessage().split("&");
         String name = mess[4], email = mess[2], password = mess[3], lastName = mess[5], iD = mess[1];
         if (AuthenticationService.checkEmailExistance(email)) {
@@ -581,15 +777,24 @@ public class SimpleServerClass extends AbstractServer {
 
     public void placeOrder(Message message, ConnectionToClient client) throws Exception {
         OnlineOrder newOnlineOrder = (OnlineOrder)message.getObject();
+        String[] instructions=message.getMessage().split("&");
+
+        RegisteredCustomer rg = rCustomer.get(Integer.parseInt(instructions[1]), RegisteredCustomer.class);
+        if (rg== null) {
+            rg = new RegisteredCustomer(Integer.parseInt(instructions[1]) ,instructions[2],instructions[3],instructions[4]);
+            rCustomer.save(rg, RegisteredCustomer.class);
+        }
         //TODO: change to customerID from client saved info
-        RegisteredCustomer rg = rCustomer.get((Integer) client.getInfo("userId"), RegisteredCustomer.class);
         orderHandler.save(newOnlineOrder, OnlineOrder.class);
         message.setObject(newOnlineOrder.getId());
         System.out.println(message.getObject());
         rg.addOrder(newOnlineOrder);
         rCustomer.update(rg);
+        SendEmail.sendEmail(newOnlineOrder.getEmail(),
+                "Order Confirmation",
+                "Your order has been placed successfully\nYour orderId is :"+newOnlineOrder.getId()+"\nIn Parking Lot number :"
+        +newOnlineOrder.getParkingLotID().getId()+"\nThank you for choosing our service");
         message.setObject(newOnlineOrder.getId());
-        client.sendToClient(message);
     }
 
     public void getCustomersOrders(Message message,ConnectionToClient client) throws Exception{
@@ -606,12 +811,18 @@ public class SimpleServerClass extends AbstractServer {
 
     }
     public void getUser(Message message,ConnectionToClient client)throws Exception{
-        int id=(Integer) client.getInfo("userId");
-        String type=(String) client.getInfo("userType");
-        if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
-            message.setObject(rCustomer.get(id,RegisteredCustomer.class));
-        else {
-             message.setObject(getEmployee(id));
+        int id;
+        try{
+            id=(Integer) client.getInfo("userId");
+            String type=(String) client.getInfo("userType");
+            if (type.startsWith(RegisteredCustomer.class.getName())||type.startsWith(OneTimeCustomer.class.getName()))
+                message.setObject(rCustomer.get(id,RegisteredCustomer.class));
+            else {
+                 message.setObject(getEmployee(id));
+            }
+        }
+        catch (Exception e){
+           message.setObject(null);
         }
 
     }
@@ -650,7 +861,6 @@ public class SimpleServerClass extends AbstractServer {
     public void diretToParkingLots(Message message, ConnectionToClient client) throws IOException, Exception {
         // TODO: get all parkinglots find nearenest that has space
         message.setMessage("#GO TO :" + "TO BE CONTINUED");
-        client.sendToClient(message);
     }
 
     public void getActiveOrders(Message message, ConnectionToClient client) throws Exception {

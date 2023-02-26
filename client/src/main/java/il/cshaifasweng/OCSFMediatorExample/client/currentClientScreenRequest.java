@@ -5,4 +5,5 @@ public enum currentClientScreenRequest {
     ENTER_PARKING,
     EXIT_PARKING,
 
+
 }

@@ -18,7 +18,7 @@ import java.util.List;
 public class RegisteredCustomer extends Customer {
 
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private  List<OnlineOrder> OnlineOrders;
+    private  List<OnlineOrder> OnlineOrders=new ArrayList<>();
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Subscription> subscriptions;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
@@ -26,6 +26,9 @@ public class RegisteredCustomer extends Customer {
     @Override
     public String getGUI(){
         return "newCustomerPage";
+    }
+    public boolean isCustomerByDefinition(){
+        return subscriptions.size()>0;
     }
     public RegisteredCustomer(){
 

@@ -25,6 +25,7 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import static com.sun.javafx.application.PlatformImpl.runLater;
 
 import java.io.IOException;
 import java.sql.Ref;
@@ -334,6 +335,8 @@ public class NewCustomerPage {
 
     @FXML
     private Button transactionsTab;
+    @FXML
+    private Button LogOut;
 
     @FXML
     private TableColumn<EntryAndExitLog, Integer> logsTransactiontypeID;
@@ -341,6 +344,9 @@ public class NewCustomerPage {
     @FXML
     void AddSubscriptions(ActionEvent event) {
         try {
+            EventBus.getDefault().unregister(this);
+
+            SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("SubscriptionScreen");
         } catch (IOException e) {
             e.printStackTrace();
@@ -350,13 +356,28 @@ public class NewCustomerPage {
 
     @FXML
     void cancelOrder(ActionEvent event) {
-        EventBus.getDefault().unregister(this);
-        SimpleChatClient.setCurrentOrder(ordersTable.getSelectionModel().getSelectedItem());
-        System.out.println(SimpleChatClient.getCurrentOrder());
+
+        notificationBuilder = Notifications.create()
+                .title("Error")
+                .text("Please select a row")
+                .hideAfter(Duration.seconds(3))
+                .position(Pos.CENTER);
+        if (ordersTable.getSelectionModel().getSelectedItem()!=null){
+            SimpleChatClient.setCurrentOrder(ordersTable.getSelectionModel().getSelectedItem());
+
+
         try {
+            EventBus.getDefault().unregister(this);
+
+            SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("CancelOrder");
+
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        }
+        else{
+            notificationBuilder.showWarning();
         }
     }
 
@@ -364,6 +385,7 @@ public class NewCustomerPage {
     void cancelSubscription(ActionEvent event) {
         // TODO: 21/02/2023 cancel subscription
         try {
+            SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             Message message = new Message("#cancelSubscription");
             SimpleClient.getClient().sendToServer(message);
 
@@ -376,8 +398,10 @@ public class NewCustomerPage {
 
     @FXML
     void placeOrder(ActionEvent event) {
-        EventBus.getDefault().unregister(this);
         try {
+            EventBus.getDefault().unregister(this);
+
+            SimpleChatClient.addScreen(((RegisteredCustomer)SimpleChatClient.getUser()).getGUI());
             SimpleChatClient.setRoot("orderGUI");
         } catch (IOException e) {
             e.printStackTrace();
@@ -412,16 +436,7 @@ public class NewCustomerPage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        Notifications.create()
-//                .title("Title Text")
-//                .text("Hello World 0!")
-//                .showWarning();
-//        Notifications notifications = Notifications.create()
-//                .title("Title Text")
-//                .text("Hello World 1!")
-//                .hideAfter(Duration.seconds(5))
-//                .position(Pos.CENTER);
-//        notifications.show();
+
     }
 
     @Subscribe
@@ -439,7 +454,6 @@ public class NewCustomerPage {
         orderID.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         orderActive.setCellValueFactory(new PropertyValueFactory<>("active"));
-
         orderEntry.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getDateOfOrder()));
         orderExit.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getExiting()));
         orderLicense.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getCar().getCarNum()));
@@ -545,7 +559,7 @@ public class NewCustomerPage {
         enteredAt.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getAcutallEntryTime()));
         exitedAt.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getAcutallExitTime()!=null?data.getValue().getAcutallExitTime().toString():"Pending"));
         // TODO: 21/02/2023 fix this
-//        overStayedHours.setCellValueFactory(data-> new SimpleObjectProperty<>( data.getValue().getAcutallExitTime().minusHours(data.getValue().getAcutallExitTime().getHour())));
+        overStayedHours.setCellValueFactory(data-> new SimpleObjectProperty<>(data.getValue().getDifferenceBetweenEstimatedAndActualExitTime()));
         observableLogs.forEach(logsTable.getItems()::add);
     }
 
@@ -676,6 +690,13 @@ public class NewCustomerPage {
             orderGrid.toFront();
             orderGrid.setVisible(true);
             titleOfPage.setText("Online Orders that were made by you");
+        }else if (event.getSource() == complaintsTab) {
+            SimpleChatClient.addScreen("newCustomerPage");
+            try {
+                SimpleChatClient.setRoot("complaint");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -689,4 +710,50 @@ public class NewCustomerPage {
         transactionGrid.setVisible(false);
         orderGrid.setVisible(false);
     }
+
+
+    @FXML
+    void logOutAction(ActionEvent event) {
+        Message msg=new Message("#LogOut");
+        try {
+            SimpleClient.getClient().sendToServer(msg);
+        }
+        catch (IOException e) {
+            Notifications notificationBuilder = Notifications.create()
+                    .title("Error")
+                    .text("Error while trying to log out, please try again later")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.BOTTOM_RIGHT);
+        }
+    }
+    @Subscribe
+    public void LogOutStatus(LogoutSubscriber event){
+        String msg= (String) event.getMessage().getObject();
+        if(msg.startsWith("Success")){
+
+            try {
+                EventBus.getDefault().unregister(this);
+                SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+            } catch (IOException e) {
+                System.out.println("Failed to go back to previous screen");
+            }
+
+        }
+        else{
+            runLater(()->{
+                Notifications notificationBuilder;
+                notificationBuilder = Notifications.create()
+                        .title("Error")
+                        .text("Error while trying to log out, please try again later")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+            });
+
+        }
+
+    }
+
 }

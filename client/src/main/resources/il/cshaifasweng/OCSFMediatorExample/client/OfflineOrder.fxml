@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #3F2263;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OfflineOrderController">
+   <children>
+      <Label layoutX="351.0" layoutY="42.0" prefHeight="55.0" prefWidth="235.0" text="Kiosk Parking Order " textFill="WHITE">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Button fx:id="submit" layoutX="757.0" layoutY="624.0" mnemonicParsing="false" onAction="#goToPayment" stylesheets="@../../../../botton.css" text="Submit Kiosk Order" textFill="WHITE">
+         <font>
+            <Font size="21.0" />
+         </font></Button>
+      <Label fx:id="warningMsg" layoutX="201.0" layoutY="297.0" text="Please fill in all fields correctly" textFill="RED" visible="false">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="pricePerHour" layoutX="556.0" layoutY="551.0" prefHeight="27.0" prefWidth="235.0" text="Price Per Hour is :" textFill="#d36464">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <VBox layoutX="33.0" layoutY="97.0" prefHeight="508.0" prefWidth="505.0" style="-fx-background-color: #3F2B63;">
+         <children>
+            <Label prefHeight="64.0" prefWidth="505.0" text="Please enter the estimated time that you want to exit the parking lot:" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" prefHeight="64.0" prefWidth="505.0" spacing="10.0">
+               <children>
+                  <Label text="Exit time:" textFill="WHITE" />
+                  <Spinner fx:id="exitTime" prefHeight="25.0" prefWidth="57.0" />
+                  <Label text=":" />
+                  <Spinner fx:id="exitTime1" prefHeight="25.0" prefWidth="57.0" />
+                  <Label disable="true" text="*Format: HH:00 (00-23)" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox prefHeight="45.0" prefWidth="505.0">
+               <children>
+                  <Label prefHeight="70.0" prefWidth="678.0" text="Please fill the details below:" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="505.0" spacing="10.0">
+               <children>
+                  <Label text="Plate number:" textFill="WHITE" />
+                  <TextField fx:id="plateNum" onInputMethodTextChanged="#plateNumTxtChange" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="36.0" prefWidth="505.0" spacing="17.0">
+               <children>
+                  <Label text="CustomerID:" textFill="WHITE" />
+                  <TextField fx:id="customerID" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="505.0" spacing="52.0">
+               <children>
+                  <Label text="Email:" textFill="WHITE" />
+                  <TextField fx:id="emailInput" stylesheets="@../../../../botton.css" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="505.0" spacing="23.0">
+               <children>
+                  <Label text="Last Name:" textFill="WHITE" />
+                  <TextField fx:id="customerLastName" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="505.0" spacing="22.0">
+               <children>
+                  <Label text="First Name:" textFill="WHITE" />
+                  <TextField fx:id="customerName" />
+               </children>
+            </HBox>
+            <Label text="*Make sure to insert the right information before submitting the order" textFill="WHITE" />
+         </children>
+      </VBox>
+      <TextFlow layoutX="592.0" layoutY="97.0" prefHeight="445.0" prefWidth="413.0" style="-fx-background-color: #3F2B63;">
+         <children>
+            <VBox prefHeight="0.0" prefWidth="100.0">
+               <children>
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="This is a type of order that you pay for when you get your car out of the parking lot." wrappingWidth="373.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="In this order you should enter:" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1.Your personal details ." wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2.The plate number of the car ." wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3.The Time in which you think that you will take your car out of the parking lot." wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="After Finishing your order you will get an order ID , you can use this number to enter the parking lot using the machine at the entrance " wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If you require further assistance please turn to the Kiosk Worker , he can further assist you." wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="256.0" strokeType="OUTSIDE" strokeWidth="0.0" text="When Exiting the parking Lot there you will be prompted to pay for the time that you parked here" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thank you For Choosing our Services" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="382.634765625" />
+                  <Text fill="#eeeeee" fontSmoothingType="LCD" layoutX="10.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Price per one hour of Parking is as described below:" wrappingWidth="382.634765625" />
+               </children>
+               <opaqueInsets>
+                  <Insets left="3.0" />
+               </opaqueInsets>
+            </VBox>
+         </children>
+      </TextFlow>
+   </children>
+</AnchorPane>

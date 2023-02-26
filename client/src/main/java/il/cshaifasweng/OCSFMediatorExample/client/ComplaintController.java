@@ -4,6 +4,7 @@ import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ComplaintSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionResponse;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
@@ -70,12 +71,8 @@ public class ComplaintController {
     @FXML
     void backButton(ActionEvent event) {
         try {
-            if (SimpleChatClient.getUser() != null) {
-                SimpleChatClient.setRoot("RegisteredCustomer");
-            } else {
-                SimpleChatClient.setRoot("KioskScreen");
-                // TODO: 04/02/2023 add homescreen for all users as an option 
-            }
+            EventBus.getDefault().unregister(this);
+           SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -292,10 +289,8 @@ public class ComplaintController {
         System.out.println("Complaint Was Sent Successfuly");
         status.setVisible(true);
         try {
-            if (SimpleChatClient.getUser() == null)
-                SimpleChatClient.setRoot("HomePage");
-            else
-                SimpleChatClient.setRoot("RegisteredCustomer");
+            EventBus.getDefault().unregister(this);
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }

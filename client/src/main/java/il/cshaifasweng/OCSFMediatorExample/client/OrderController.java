@@ -4,6 +4,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.RegisteredCutomerSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.ParkingLotModel;
@@ -13,8 +14,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.util.Callback;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.event.ActionEvent;
@@ -27,7 +30,8 @@ import java.util.List;
 public class OrderController {
     RegisteredCustomer rg = new RegisteredCustomer();
     List<ParkingLot> PLresults = new ArrayList<>();
-
+    @FXML
+    private TextField customerID;
     @FXML
     private TextField PLaddress;
 
@@ -81,6 +85,11 @@ public class OrderController {
 
     @FXML
     private TextField plateNum;
+    @FXML
+    private TextField customerLastName;
+    @FXML
+    private TextField customerName;
+
 
     @FXML
     private Button submit;
@@ -91,16 +100,48 @@ public class OrderController {
 
     private double perHourPrice;
     private boolean orderInfoValidation() {
-        if (exitTime.getValue() < arrivalTime.getValue())
+        // TODO: 23/02/2023 add validation indicators for all fields , this is not a job well done !
+        if (exitTime.getValue() < arrivalTime.getValue()){
             return false;
-        if (plateNum.getText().length() < 6)
-            return false;
-        return true;
+        }
+        showNotifications();
+        return InputValidator.isValidPlateNumber(plateNum.getText()) &&
+                InputValidator.isValidEmail(emailInput.getText()) &&
+                InputValidator.isValidNumber(customerID.getText()) &&
+                InputValidator.isValidName(customerName.getText()) &&
+                InputValidator.isValidName(customerLastName.getText());
+    }
+    private void showNotifications() {
+        Platform.runLater(() -> {
+            String out="";
+            if (exitTime.getValue() < arrivalTime.getValue()){
+                out+="Invalid time range\n";
+            }
+            out+=InputValidator.isValidPlateNumber(plateNum.getText())?"":"Invalid plate number\n";
+            out+=InputValidator.isValidEmail(emailInput.getText())?"":"Invalid email\n";
+            out+=InputValidator.isValidNumber(customerID.getText()) ? "":"Invalid ID\n";
+            out+=InputValidator.isValidName(customerName.getText()) ? "":"Invalid name\n";
+            out+=InputValidator.isValidName(customerLastName.getText())?"":"Invalid last name\n";
+
+            if (!out.equals("")){
+                Notifications notificationBuilder = Notifications.create()
+                        .title("Invalid input")
+                        .text(out)
+                        .hideAfter(javafx.util.Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+            }
+
+
+
+        });
     }
     @FXML
     void backToRegisteredCustomer(ActionEvent event) {
         try {
-            SimpleChatClient.setRoot("registeredCustomer");
+            EventBus.getDefault().unregister(this);
+
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,18 +151,33 @@ public class OrderController {
     void goToPayment(ActionEvent event) throws Exception {
         try {
             if (orderInfoValidation()) {
+                RegisteredCustomer customer = (RegisteredCustomer) SimpleChatClient.getUser();
                 int idx = plChoice.getSelectionModel().getSelectedItem();
                 String start = arrivalTime.getValue() + "";
                 String end = exitTime.getValue() + "";
-                // TODO: 1/17/2023 get might get us in trouble , indexes of parking lots aren't linear and don't always start with 1  
-                ParkingLot pl = PLresults.get((int)idx - 1);
-                OnlineOrder newOnlineOrder = new OnlineOrder(rg, pl, dateChoice.getValue(), start, end,
+                // TODO: 1/17/2023 get might get us in trouble , indexes of parking lots aren't linear and don't always start with 1
+                ParkingLot pl=new ParkingLot();
+                for (ParkingLot p :
+                        PLresults) {
+                    if (p.getId() == idx) {
+                        pl=p;
+                        break;
+                    }
+                }
+                if (customer == null) {
+                    customer = new RegisteredCustomer(Integer.parseInt(customerID.getText()), emailInput.getText(), customerName.getText(), customerLastName.getText());
+                    SimpleChatClient.setRegisteredCustomerDetails(customer);
+                }
+                OnlineOrder newOnlineOrder = new OnlineOrder(customer, pl, dateChoice.getValue(), start, end,
                         plateNum.getText(), emailInput.getText());
-                System.out.println(dateChoice.getValue());
+
+                SimpleChatClient.setUserID(Integer.parseInt(customerID.getText()));
+
                 newOnlineOrder.setValue((exitTime.getValue()-arrivalTime.getValue())*perHourPrice);
-                System.out.println(newOnlineOrder.getCar());
                 SimpleChatClient.setCurrentOrder(newOnlineOrder);
+                EventBus.getDefault().unregister(this);
                 SimpleChatClient.setRoot("orderPaymentGUI");
+                SimpleChatClient.addScreen("orderGUI");
             } else {
                 warningMsg.setVisible(true);
             }
@@ -143,6 +199,7 @@ public class OrderController {
 
     @Subscribe
     public void setRegisteredCustomerDataFromServer(RegisteredCutomerSubscriber event) {
+        if (event.getMessage().getObject()!=null){
         RegisteredCustomer result = (RegisteredCustomer) event.getMessage().getObject();
         rg.setId(result.getId());
         rg.setSubscriptions(rg.getSubscriptions());
@@ -154,6 +211,10 @@ public class OrderController {
         rg.setCars(result.getCars());
 
         emailInput.setText(result.getEmail());
+        customerID.setText(result.getId() + "");
+        customerName.setText(result.getFirstName());
+        customerLastName.setText(result.getLastName());
+        }
     }
 
 

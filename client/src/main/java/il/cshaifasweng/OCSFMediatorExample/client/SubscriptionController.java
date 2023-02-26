@@ -1,8 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.ParkingLotResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
@@ -29,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SubscriptionController {
+    @FXML
+    private TextField cusomerID;
 
     @FXML
     private ChoiceBox<Integer> ParkingLotList;
@@ -89,6 +93,10 @@ public class SubscriptionController {
 
     @FXML
     private Label fullPrice;
+    @FXML
+    private TextField firstName;
+    @FXML
+    private TextField lastName;
 
 
     private ObservableList<PricingChart> pricingChartsList = FXCollections.observableArrayList();
@@ -103,6 +111,11 @@ public class SubscriptionController {
         EventBus.getDefault().register(this);
         sendMessagesToServer("#getPricingChart"); // returns the pricingChart data.
         sendMessagesToServer("#getAllParkingLots"); // returns the id's for the parking lots, or can be defined for names later.
+        if (SimpleChatClient.getUser()!=null){
+            Customer customer = (Customer) SimpleChatClient.getUser();
+            cusomerID.setText(customer.getId()+"");
+            emailInput.setText(customer.getEmail());
+        }
         plateNum.setDisable(false);
         plateNumSec.setDisable(true);
         plateNumTwo.setDisable(true);
@@ -111,7 +124,6 @@ public class SubscriptionController {
         rateCol.setCellValueFactory(new PropertyValueFactory<>("rate"));
         subType.setItems(subBoxData);
         exitTime.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
-
         // Enable disable the according to the selected subscription type.
         subType.valueProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -148,7 +160,6 @@ public class SubscriptionController {
                 System.out.println("Hello Parkings");
                 updatePricesTable((PricingChart) event.getMessage().getObject());
             }
-
             if(event.getMessage().getMessage().startsWith("#getAllParkingLots")){
                 parkingLots = (ArrayList<ParkingLot>) event.getMessage().getObject();
                 addParkingLotsNames();
@@ -175,24 +186,34 @@ public class SubscriptionController {
             currParkingLot = pLotsMap.get(ParkingLotList.getValue());
         }
         if (validateInfo()) {
+            Customer customer = (RegisteredCustomer) SimpleChatClient.getUser();
             Subscription subscription ;
             List<String> cars = new ArrayList<>();
             cars.add(plateNum.getText());
+            if (customer==null){
+                SimpleChatClient.setRegisteredCustomerDetails( new RegisteredCustomer(Integer.parseInt(cusomerID.getText()),emailInput.getText(),firstName.getText(),lastName.getText()));
+                customer= SimpleChatClient.getRegisteredCustomerDetails();
+            }
             if (!subType.getValue().equals(Constants.FULL_SUBSCRIPTION.getMessage())) {
                 if (subType.getValue().equals(Constants.REGULAR_MULTI_SUBSCRIPITON.getMessage()))
                     cars.add(plateNumTwo.getText());
 
-                subscription = new RegularSubscription((Customer) SimpleChatClient.getUser(), 100, LocalDate.now(),
+                subscription = new RegularSubscription(customer, 100, LocalDate.now(),
                         LocalDate.now().plusMonths(1), parkingLots.get(parkingLots.indexOf(currParkingLot)), LocalTime.of(exitTime.getValue(), 0), cars);
 
 
             }
             else {
-                subscription = new FullSubscription((Customer) SimpleChatClient.getUser(), 100, LocalDate.now(),
+                subscription = new FullSubscription(customer, 100, LocalDate.now(),
                         LocalDate.now().plusMonths(1),cars,16);
 
             }
+            subscription.setEmail(emailInput.getText());
+
             SimpleChatClient.setCurrentSubscription(subscription);
+            SimpleChatClient.setUserID(Integer.parseInt(this.cusomerID.getText()));
+            SimpleChatClient.addScreen("SubscriptionScreen");
+            EventBus.getDefault().unregister(this);
             SimpleChatClient.setRoot("orderPaymentGUI");
         }
         else {
@@ -203,7 +224,8 @@ public class SubscriptionController {
 
     @FXML
     void goBack(ActionEvent event) throws IOException {
-        SimpleChatClient.setRoot("registeredCustomer");
+        EventBus.getDefault().unregister(this);
+        SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
     }
 
     void sendMessagesToServer(String request){
@@ -295,12 +317,19 @@ public class SubscriptionController {
 
         String validEmail=InputValidator.isValidEmail(emailInput.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
         String validplateNum=InputValidator.isValidPlateNumber(plateNum.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+        String validateID=InputValidator.isValidNumber(cusomerID.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+        String validateName=InputValidator.isValidName(firstName.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+        String validateLast=InputValidator.isValidName(lastName.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
+
         if(!plateNumTwo.isDisable()){
             validplateNumTwo=InputValidator.isValidPlateNumber(plateNumTwo.getText())?"-fx-border-color: green;":"-fx-border-color: red;";
             plateNumTwo.setStyle(validplateNumTwo);
         }
         emailInput.setStyle(validEmail);
         plateNum.setStyle(validplateNum);
+        cusomerID.setStyle(validateID);
+        firstName.setStyle(validateName);
+        lastName.setStyle(validateLast);
         // Show an error message
         Label errorLabel = new Label("There is something wrong with your inputs. Please correct the red fields.");
         errorLabel.setTextFill(Color.RED);

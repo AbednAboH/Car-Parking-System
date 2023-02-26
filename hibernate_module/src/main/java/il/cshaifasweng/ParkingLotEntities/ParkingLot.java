@@ -89,7 +89,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
         // TODO: 13/02/2023 do not allow the same car to enter twice
         if (inParkingLot(licensePlate))
             throw new IllegalArgumentException("Duplicate Car");
-        if (this.getQueue().size()<this.getMaxCapacity()){
+        else if (this.getQueue().size()<this.getMaxCapacity()){
             try {
                 entryAndExitLog=this.EnterAndLog(transaction, licensePlate) ;
                 if (entryAndExitLog!=null){
@@ -100,7 +100,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
 
             }
             catch (Exception e){
-                throw new IllegalArgumentException("Full");
+                throw e;
 
             }
 
@@ -136,7 +136,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
                 return entryAndExitLog;
             }
             catch (Exception e){
-                System.out.println(e.getMessage());
+                throw new IllegalArgumentException(e.getMessage());
 
             }
 

@@ -39,5 +39,10 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Button>
+      <Text fx:id="parkingLotNumber" fill="#31134a" layoutX="144.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parking Lot Number: " textAlignment="CENTER" wrappingWidth="461.0">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Text>
     </children>
 </Pane>

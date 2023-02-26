@@ -17,6 +17,7 @@ public class MainPageController {
     @FXML
     void LogInScreen(ActionEvent event) {
         try {
+            SimpleChatClient.addScreen("mainPage");
             SimpleChatClient.setRoot("logInScreen");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -26,10 +27,20 @@ public class MainPageController {
     @FXML
     void visitor(ActionEvent event) {
         try {
+            SimpleChatClient.addScreen("mainPage");
             SimpleChatClient.setRoot("visitorsController");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    @FXML
+    void initialize() {
+        SimpleChatClient.setRegisteredCustomerDetails(null);
+        SimpleChatClient.setUser(null);
+        SimpleChatClient.setCurrentOrder(null);
+        SimpleChatClient.setCurrentSubscription(null);
+        SimpleChatClient.setCurrentRequest(null);
+        SimpleChatClient.setUserID(null);
     }
 
 }
