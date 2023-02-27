@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import EmailSMPTServices.SendEmail;
 import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;

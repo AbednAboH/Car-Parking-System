@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1079.0" style="-fx-background-color: #FCFCFE;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.KisoskSetup">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1079.0" style="-fx-background-color: #FCFCFE;" stylesheets="@../../../../botton.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.KisoskSetup">
     <children>
       <AnchorPane layoutY="-3.0" prefHeight="756.0" prefWidth="144.0" style="-fx-background-color: #A9A9A9;">
          <children>
@@ -53,6 +53,8 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="405.0" prefHeight="44.0" prefWidth="923.0" />
             <Button fx:id="EnterAsVisitor" layoutX="10.0" layoutY="259.0" mnemonicParsing="false" onAction="#visitor" prefHeight="25.0" prefWidth="204.0" stylesheets="@../../../../botton.css" text="Setup Kiosk" textFill="WHITE" />
+            <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="216.0" prefHeight="44.0" prefWidth="923.0" />
+            <Button fx:id="back" mnemonicParsing="false" onAction="#back" text="back" textFill="WHITE" />
          </children>
       </VBox>
       <Pane layoutX="155.0" layoutY="17.0" prefHeight="64.0" prefWidth="906.0">

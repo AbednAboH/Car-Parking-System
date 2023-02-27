@@ -93,6 +93,42 @@ public class ComplaintController {
         Message requist_submition = new Message();
         String order_subOrKiosk = null, pLotId = "null";
         allValid = true;
+        allValid=allValid&InputValidator.isValidName(firstName.getText());
+        if(!allValid){
+            Notifications notification = Notifications.create()
+                    .title("Invalid First Name")
+                    .text("Enter a valid First Name.")
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.CENTER);
+            notification.showWarning();
+        }
+        allValid=allValid&InputValidator.isValidName(LastName.getText());
+        if(!allValid){
+            Notifications notification = Notifications.create()
+                    .title("Invalid Last Name")
+                    .text("Enter a valid Last Name.")
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.CENTER);
+            notification.showWarning();
+        }
+        allValid=allValid&InputValidator.isValidEmail(email.getText());
+        if(!allValid){
+            Notifications notification = Notifications.create()
+                    .title("Invalid Email")
+                    .text("Enter a valid Email.")
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.CENTER);
+            notification.showWarning();
+        }
+        allValid=allValid&InputValidator.isValidNumber(customerID.getText());
+        if(!allValid){
+            Notifications notification = Notifications.create()
+                    .title("Invalid Customer ID")
+                    .text("Enter a valid Customer ID.")
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.CENTER);
+            notification.showWarning();
+        }
 
         if (Ordersubscription.getValue() != null) {
             if (Ordersubscription.getValue().startsWith("Kiosk")) {
@@ -135,7 +171,6 @@ public class ComplaintController {
                 notification.showError();
             }
         }
-
         if (allValid) {
             if (ComplaintSubject.getValue() != null) {
                 if (complaintBody.getText().length() >= 10) {

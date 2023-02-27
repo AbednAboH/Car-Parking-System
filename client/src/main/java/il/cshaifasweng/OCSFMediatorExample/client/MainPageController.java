@@ -15,6 +15,9 @@ public class MainPageController {
     private Button LogIn;
 
     @FXML
+    private Button back;
+
+    @FXML
     void LogInScreen(ActionEvent event) {
         try {
             SimpleChatClient.addScreen("mainPage");
@@ -41,6 +44,14 @@ public class MainPageController {
         SimpleChatClient.setCurrentSubscription(null);
         SimpleChatClient.setCurrentRequest(null);
         SimpleChatClient.setUserID(null);
+    }
+    @FXML
+    void back(ActionEvent event) {
+        try {
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

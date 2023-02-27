@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1079.0" style="-fx-background-color: #FCFCFE;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.MainPageController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1079.0" style="-fx-background-color: #FCFCFE;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.MainPageController">
     <children>
       <AnchorPane layoutY="-3.0" prefHeight="756.0" prefWidth="144.0" style="-fx-background-color: #A9A9A9;">
          <children>
@@ -21,7 +21,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <VBox layoutX="164.0" layoutY="86.0" prefHeight="652.0" prefWidth="840.0">
+      <VBox layoutX="164.0" layoutY="86.0" prefHeight="652.0" prefWidth="840.0" stylesheets="@../../../../botton.css">
          <children>
             <HBox prefHeight="25.0" prefWidth="926.0">
                <children>
@@ -46,6 +46,8 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="922.13671875" />
             <Text layoutX="10.0" layoutY="297.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="922.13671875" />
             <Button fx:id="EnterAsVisitor" layoutX="10.0" layoutY="259.0" mnemonicParsing="false" onAction="#visitor" prefHeight="25.0" prefWidth="204.0" stylesheets="@../../../../botton.css" text="Enter as a visitor" textFill="WHITE" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="922.13671875" />
+            <Button fx:id="back" mnemonicParsing="false" onAction="#back" text="back" textFill="WHITE" />
          </children>
       </VBox>
       <Pane layoutX="155.0" layoutY="17.0" prefHeight="64.0" prefWidth="906.0">

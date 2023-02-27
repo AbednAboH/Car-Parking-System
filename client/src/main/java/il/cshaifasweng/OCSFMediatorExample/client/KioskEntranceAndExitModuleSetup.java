@@ -31,6 +31,18 @@ public class KioskEntranceAndExitModuleSetup {
     @FXML
     private ComboBox<Integer> pLotCombo;
     private List<ParkingLot> plots;
+
+    @FXML
+    private Button back;
+
+    @FXML
+    void back(ActionEvent event) {
+        try {
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Subscribe
     public void onConfirmingCredintials(UpdateMessageEvent message){
         if(message.getMessage().getObject().equals("true")){

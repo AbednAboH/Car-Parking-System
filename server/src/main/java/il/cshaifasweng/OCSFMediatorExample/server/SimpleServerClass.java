@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import EmailSMPTServices.SendEmail;
 import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.LogInEntities.AuthenticationService;
@@ -8,7 +7,6 @@ import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import il.cshaifasweng.LogInEntities.Employees.*;
-import il.cshaifasweng.LogInEntities.User;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.MoneyRelatedServices.Refund;
@@ -68,11 +66,9 @@ public class SimpleServerClass extends AbstractServer {
         AuthenticationService.intiate(handleMessegesSession);
         System.out.println("messegesSession is open");
 
-//         TODO: 06/02/2023  should be working correctly use these lines in final project !
-//                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
-//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
-//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), 0, TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
-//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleOfflineOrdersTimeLimit(this), 0, 1, TimeUnit.MINUTES);
+                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
+                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleOfflineOrdersTimeLimit(this), 0, 1, TimeUnit.MINUTES);
 
     }
 
@@ -511,6 +507,9 @@ public class SimpleServerClass extends AbstractServer {
         refund.setTransaction_method(onlineOrder.getTransaction_method());
         refund.setTransactionStatus(true);
         handleMessegesSession.save(refund);
+        RegisteredCustomer customer1=onlineOrder.getRegisteredCustomer();
+        customer1.addRefund(refund);
+        rCustomer.update(customer1);
         SendEmail.sendEmail(onlineOrder.getEmail(),"Order Cancellation","Your refund ID is "+refund.getId()+"\n"+"Your refund amount is "+refund.getValue());
         message.setMessage(CANCEL_ORDER_AND_GET_REFUND.type);
 
@@ -621,14 +620,40 @@ public class SimpleServerClass extends AbstractServer {
         complaintId = Integer.parseInt(args[1]);
         Complaint complaint = complaintHandler.get(complaintId,Complaint.class);
         complaint.setActive(false);
-        Customer customer = complaint.getCustomer();
+        int customerID = complaint.getCustomer().getId();
+        Customer customer = handleMessegesSession.get(RegisteredCustomer.class, customerID);
+        if (customer == null) {
+            customer = handleMessegesSession.get(OneTimeCustomer.class, customerID);
+        }
         if(request.contains("With")){
             refundAmount = Double.parseDouble(args[3]);
-            Refund refund = new Refund("Refund on complaint Number:"+complaintId, refundAmount,customer);
-            handleMessegesSession.save(refund);
-            handleMessegesSession.update(complaint);
-            SendEmail.sendEmail(customer.getEmail(),"Refund on complaint Number:"+complaintId,"Your refund amount is: "+refundAmount+"$\n"
-                    +message.getObject()+"\n thank you for using our services");
+            Refund refund;
+            if (customer!=null){
+                if(customer instanceof RegisteredCustomer){
+                     refund= new Refund("Refund on complaint Number:"+complaintId, refundAmount,(RegisteredCustomer) customer);
+                    handleMessegesSession.save(refund);
+                    handleMessegesSession.update(complaint);
+                    refund.setRegisteredCustomer((RegisteredCustomer) customer);
+                    ((RegisteredCustomer) customer).addRefund(refund);
+                    handleMessegesSession.update(customer);
+                    SendEmail.sendEmail(customer.getEmail(),"Refund on complaint Number:"+complaintId,"Your refund amount is: "+refundAmount+"$\n"
+                            +message.getObject()+"\n thank you for using our services");
+                }
+                else {
+                    refund = new Refund("Refund on complaint Number:" + complaintId, refundAmount, (OneTimeCustomer) customer);
+                    handleMessegesSession.save(refund);
+                    handleMessegesSession.update(complaint);
+                    refund.setRegisteredCustomer((OneTimeCustomer) customer);
+                    ((OneTimeCustomer) customer).addRefund(refund);
+                    handleMessegesSession.update(customer);
+
+                    SendEmail.sendEmail(customer.getEmail(),"Refund on complaint Number:"+complaintId,"Your refund amount is: "+refundAmount+"$\n"
+                            +message.getObject()+"\n thank you for using our services");
+                }
+
+
+            }
+
 
         }else if(request.contains("Full")){
 //                TODO:Need to return the full refund but how to know if we don't have the order that was made?
@@ -860,10 +885,10 @@ public class SimpleServerClass extends AbstractServer {
         System.out.println(message.getObject());
         rg.addOrder(newOnlineOrder);
         rCustomer.update(rg);
-//        SendEmail.sendEmail(newOnlineOrder.getEmail(),
-//                "Order Confirmation",
-//                "Your order has been placed successfully\nYour orderId is :"+newOnlineOrder.getId()+"\nIn Parking Lot number :"
-//        +newOnlineOrder.getParkingLotID().getId()+"\nThank you for choosing our service");
+        SendEmail.sendEmail(newOnlineOrder.getEmail(),
+                "Order Confirmation",
+                "Your order has been placed successfully\nYour orderId is :"+newOnlineOrder.getId()+"\nIn Parking Lot number :"
+        +newOnlineOrder.getParkingLotID().getId()+"\nThank you for choosing our service");
         message.setObject(newOnlineOrder.getId());
     }
 

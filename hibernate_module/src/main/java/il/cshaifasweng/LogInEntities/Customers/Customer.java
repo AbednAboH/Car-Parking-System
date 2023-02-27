@@ -28,8 +28,7 @@ public abstract class Customer extends User {
     private List<Complaint> complaint;
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     protected List<OfflineOrder> offlineOrders = new ArrayList<>();
-    @OneToMany(fetch= FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<Refund> refunds;
+
     public Customer() {
     }
 

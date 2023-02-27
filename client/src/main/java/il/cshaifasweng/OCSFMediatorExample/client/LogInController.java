@@ -66,7 +66,7 @@ public class LogInController{
     private CountDownLatch latch;
     public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
-    public void initialize(){
+    void initialize(){
         try {
             // Check if the connection with the server is alive.
             Message message = new Message("#ConnectionAlive");

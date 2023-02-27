@@ -1,6 +1,7 @@
 package il.cshaifasweng.MoneyRelatedServices;
 
 import il.cshaifasweng.LogInEntities.Customers.Customer;
+import il.cshaifasweng.LogInEntities.Customers.OneTimeCustomer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import lombok.Data;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class Refund extends Transactions {
         this.value = value;
         this.registeredCustomer = registeredCustomer;
         this.date= LocalDate.now();
-    }public Refund(String refundType, double value, Customer customer) {
+    }public Refund(String refundType, double value, OneTimeCustomer customer) {
         this.refundType = refundType;
         this.value = value;
         this.registeredCustomer = customer;
