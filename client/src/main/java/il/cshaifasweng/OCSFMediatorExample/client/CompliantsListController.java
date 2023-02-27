@@ -1,7 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -10,11 +14,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -24,6 +34,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static javafx.application.Platform.runLater;
 
 
 public class CompliantsListController {
@@ -84,6 +96,68 @@ public class CompliantsListController {
 
 
     private ObservableList<Complaint> observableList;
+    @FXML
+    private Button HandleComplaintTab;
+
+    @FXML
+    private TextField HourlyIDTxt;
+
+    @FXML
+    private Button RequestChangeOfPrice;
+
+    @FXML
+    private GridPane SubmitChanges;
+
+    @FXML
+    private VBox SuccessStatus;
+
+    @FXML
+    private Button applyAmountBtn;
+
+    @FXML
+    private Button applyPriceBtn;
+
+    @FXML
+    private VBox errorMsgArea;
+
+    @FXML
+    private HBox handleComplaints;
+
+    @FXML
+    private TextField hourlyPriceTxt;
+
+    @FXML
+    private TableColumn<SubscriptionChartModel, Integer> hoursInMonthColumn;
+
+    @FXML
+    private TextField newAmountTxt;
+
+    @FXML
+    private Button okBtn;
+
+    @FXML
+    private Button resetPricngChartBtn;
+
+    @FXML
+    private Button sendRequest;
+
+    @FXML
+    private TableColumn<SubscriptionChartModel, Integer> subIDcolumn;
+
+    @FXML
+    private TableColumn<SubscriptionChartModel, Double> subPriceColumn;
+
+    @FXML
+    private TableView<SubscriptionChartModel> subTable;
+
+    @FXML
+    private TextField subToChangeIDtxt;
+
+    @FXML
+    private TableColumn<?, ?> subTypeColumn;
+
+    @FXML
+    private TableColumn<?, ?> totalPriceColumn;
 
     private Complaint selected;
 
@@ -94,6 +168,189 @@ public class CompliantsListController {
     private int getParkingLotId;
     private boolean isRemoved;
 
+    PricingChart PCresult,ChangedPCresult;
+
+
+    @FXML
+    void HideErrorMsg(ActionEvent event) {
+        errorMsgArea.setVisible(false);
+    }
+
+    boolean isAmountValid() {
+        String subID = subToChangeIDtxt.getText();
+        String newAmount = newAmountTxt.getText();
+
+        if (subID.compareTo("") == 0||newAmount.compareTo("") == 0) {
+            return false;
+        }
+        try {
+            if (Integer.parseInt(newAmount) <= 0||Integer.parseInt(subID) < 3 || Integer.parseInt(subID) > 5)
+                return false;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    boolean isPriceValid() {
+        String subID = HourlyIDTxt.getText();
+        String newPrice = hourlyPriceTxt.getText();
+
+
+        if (subID.compareTo("") == 0||newPrice.compareTo("") == 0)
+            return false;
+        try {
+            if (Double.parseDouble(newPrice) <= 0||Integer.parseInt(subID) <= 0 || Integer.parseInt(subID) > 2)
+                return false;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @FXML
+    void SendPriceChange(ActionEvent event) {
+        String subID = HourlyIDTxt.getText();
+        String newAmount = hourlyPriceTxt.getText();
+
+        if (!isPriceValid()) {
+            errorMsgArea.setVisible(true);
+            hourlyPriceTxt.clear();
+            HourlyIDTxt.clear();
+        }
+        else {
+            errorMsgArea.setVisible(false);
+            hourlyPriceTxt.clear();
+            HourlyIDTxt.clear();
+            switch (Integer.parseInt(subID)) {
+                case 1 -> ChangedPCresult.setKioskPrice(Double.parseDouble(newAmount));
+                case 2 -> ChangedPCresult.setOrderBeforeHandPrice(Double.parseDouble(newAmount));
+                default -> System.out.println("error");
+            }
+
+            fillPricingChart(ChangedPCresult);
+            System.out.println("was here price change");
+
+        }
+    }
+
+    @FXML
+    void SendAmountChange(ActionEvent event) {
+        String subID = subToChangeIDtxt.getText();
+        String newPrice = newAmountTxt.getText();
+
+        if (!isAmountValid()) {
+            errorMsgArea.setVisible(true);
+            subToChangeIDtxt.clear();
+            newAmountTxt.clear();
+        }
+        else {
+            errorMsgArea.setVisible(false);
+            subToChangeIDtxt.clear();
+            newAmountTxt.clear();
+            switch (Integer.parseInt(subID)) {
+                case 3 -> ChangedPCresult.setRegularSubHours(Double.parseDouble(newPrice));
+                case 4 -> ChangedPCresult.setMultipleCarRegularSubHours(Double.parseDouble(newPrice));
+                case 5 -> ChangedPCresult.setFullSubHours(Double.parseDouble(newPrice));
+                default -> System.out.println("error");
+
+            }
+            fillPricingChart(ChangedPCresult);
+            System.out.println("was here ammount change");
+
+        }
+    }
+
+
+    @Subscribe
+    public void setSubChartDataFromServer(SubscriptionsChartResults event) {
+        PCresult = (PricingChart) event.getMessage().getObject();
+        ChangedPCresult=new PricingChart(PCresult);
+        fillPricingChart(ChangedPCresult);
+    }
+
+    private void fillPricingChart(PricingChart PCresult) {
+        runLater(()->{
+            subTable.getItems().clear();
+            ObservableList<SubscriptionChartModel> tmp = FXCollections.observableArrayList();
+            double rate;
+            double[] prices = {PCresult.getKioskPrice(), PCresult.getOrderBeforeHandPrice(), PCresult.getRegularSubHours()
+                    , PCresult.getMultipleCarRegularSubHours(), PCresult.getFullSubHours()};
+            String[] names = {"Kiosk", "OrderBeforeHand", "RegularSubscription", "RegularSubscriptionMultipl", "FullSubscription"};
+            int[] ids = {1, 2, 2, 2, 2};
+            for (int i = 0; i < 5; i++) {
+                if (i < 2)
+                    tmp.add(new SubscriptionChartModel(i + 1, names[i], prices[i], 1, prices[i]));
+                else
+                    tmp.add(new SubscriptionChartModel(i + 1, names[i], prices[i] * prices[1], (int) Double.parseDouble(String.valueOf(prices[i])), prices[i] * prices[1]));
+
+            }
+            subIDcolumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
+            subTypeColumn.setCellValueFactory(new PropertyValueFactory<>("Type"));
+            subPriceColumn.setCellValueFactory(new PropertyValueFactory<>("HourlyPrice"));
+            hoursInMonthColumn.setCellValueFactory(new PropertyValueFactory<>("HoursInMonth"));
+            totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("Total"));
+            subTable.setItems(tmp);
+        });
+    }
+
+    // new handlers for the pricing chart
+    @FXML
+    void resetPricingChart(ActionEvent event) {
+        ChangedPCresult=new PricingChart(PCresult);
+        fillPricingChart(ChangedPCresult);
+    }
+    @Subscribe
+    public void getSuccessFromServer(UpdateMessageEvent event) {
+        runLater(()->{Notifications notificationBuilder = Notifications.create()
+                .title("Success")
+                .text("Your Request Has Been Sent To The Manager")
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.CENTER);
+            notificationBuilder.showConfirm();});
+    }
+
+    @FXML
+    void sendPricingChartRequest(ActionEvent event) {
+        if(ChangedPCresult.equals(PCresult)){
+            return;
+        }
+        else{
+            try {
+
+
+                Message msg = new Message("#RequestChangingPCResult", ChangedPCresult);
+                SimpleClient.getClient().sendToServer(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    @FXML
+    void ChangeView(ActionEvent event) {
+        if (event.getSource() == HandleComplaintTab)
+        {
+            handleComplaints.setVisible(true);
+            handleComplaint.toFront();
+            SubmitChanges.setVisible(false);
+            
+        }
+        else if (event.getSource() == RequestChangeOfPrice)
+        {
+            handleComplaints.setVisible(false);
+            SubmitChanges.setVisible(true);
+            SubmitChanges.toFront();
+        }
+        else {
+            handleComplaints.setVisible(true);
+            handleComplaint.toFront();
+            SubmitChanges.setVisible(false);
+        }
+    }
+
+// Handle the complaints table and stuff
 
     @FXML
     void onBack(ActionEvent event) throws Exception {
@@ -258,6 +515,7 @@ public class CompliantsListController {
 //            userOptBtn.setText("Hello, " + ((CustomerServiceEmployee) SimpleChatClient.getUser()).getFirstName());
             userOptBtn.setText("Hello, " + "Boy");
             sendMessagesToServer("#GetAllCompliants");
+            sendMessagesToServer("#getPricingChart");
             System.out.println("Send to server");
             // update table values
         } catch (Exception e){
@@ -291,7 +549,7 @@ public class CompliantsListController {
 
     }
     private void updateTheTable() throws InterruptedException {
-        Platform.runLater(() -> {
+        runLater(() -> {
             handleComplaint.setDisable(!handleComplaint.isDisabled());
             if(closedCompliants.getText().equals("Closed Complaint")){
                 System.out.println("here1");

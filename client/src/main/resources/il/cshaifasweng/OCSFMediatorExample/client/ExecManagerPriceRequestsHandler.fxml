@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="673.0" prefWidth="950.0" stylesheets="@../../../../botton.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExecManagerPriceRequestsHandlerControlerController">
+   <children>
+      <Button fx:id="acceptRequestBtn" layoutX="150.0" layoutY="332.0" mnemonicParsing="false" onAction="#acceptRequest" prefHeight="50.0" prefWidth="150.0" text="Accept request" textFill="WHITE" />
+      <TableView fx:id="requestsTable" layoutX="24.0" layoutY="44.0" prefHeight="242.0" prefWidth="900.0">
+         <columns>
+            <TableColumn fx:id="idColumn" prefWidth="75.0" text="Request ID" />
+            <TableColumn fx:id="fullSubColumn" prefWidth="119.19998168945312" text="Full Subscription" />
+            <TableColumn fx:id="multRegSubColumn" prefWidth="216.00001525878906" text="Multiple Car Regular Subscription" />
+            <TableColumn fx:id="regularSubColumn" prefWidth="143.20001220703125" text="Regular Subscription" />
+            <TableColumn fx:id="kioskColumn" prefWidth="121.5999755859375" text="Kiosk" />
+            <TableColumn fx:id="orderBeforeColumn" prefWidth="119.19998168945312" text="Order Beforehand" />
+         </columns>
+      </TableView>
+      <Label layoutX="24.0" layoutY="18.0" text="*New price requests">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="24.0" layoutY="488.0" text="*Current rates:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label disable="true" layoutX="24.0" layoutY="291.0" text="*Choose a request from the requests table to accept/reject it.">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label disable="true" layoutX="425.0" layoutY="291.0" text="*Last accepted request will be the new current rate.">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="rejectRequestBtn" layoutX="476.0" layoutY="332.0" mnemonicParsing="false" onAction="#rejectRequest" prefHeight="50.0" prefWidth="150.0" text="Reject request" textFill="WHITE" />
+      <Button fx:id="rejectAllBtn" layoutX="792.0" layoutY="332.0" mnemonicParsing="false" onAction="#rejectAllRequests" prefHeight="50.0" prefWidth="150.0" text="Reject all requests" textFill="WHITE" />
+      <Button fx:id="refreshRequestsBtn" layoutX="497.0" layoutY="423.0" mnemonicParsing="false" onAction="#refreshRequestsTable" prefHeight="46.0" prefWidth="106.0" text="Refresh requests" textFill="WHITE" />
+      <TableView fx:id="currentPriceTable" layoutX="26.0" layoutY="514.0" prefHeight="74.0" prefWidth="900.0">
+         <columns>
+            <TableColumn fx:id="idColumn1" prefWidth="75.0" text="Request ID" />
+            <TableColumn fx:id="fullSubColumn1" prefWidth="119.19998168945312" text="Full Subscription" />
+            <TableColumn fx:id="multRegSubColumn1" prefWidth="216.00001525878906" text="Multiple Car Regular Subscription" />
+            <TableColumn fx:id="regularSubColumn1" prefWidth="143.20001220703125" text="Regular Subscription" />
+            <TableColumn fx:id="kioskColumn1" prefWidth="121.5999755859375" text="Kiosk" />
+            <TableColumn fx:id="orderBeforeColumn1" prefWidth="119.19998168945312" text="Order Beforehand" />
+         </columns>
+      </TableView>
+      <Button layoutX="26.0" layoutY="612.0" mnemonicParsing="false" onAction="#backClick" prefHeight="46.0" prefWidth="82.0" text="Back" textFill="WHITE" />
+   </children>
+</AnchorPane>

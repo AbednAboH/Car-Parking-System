@@ -71,6 +71,7 @@ public class SimpleServerClass extends AbstractServer {
 //         TODO: 06/02/2023  should be working correctly use these lines in final project !
 //                HandleOnTimeOrderDelays = executorService.scheduleAtFixedRate(new handleOrderesAndPenalties(this), 0, 1, TimeUnit.MINUTES);
 //                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), HandleSubscriptionReminders.getDelay(), TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+//                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleSubscriptionReminders(this), 0, TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
 //                HandleSubsReminders = executorService.scheduleAtFixedRate(new HandleOfflineOrdersTimeLimit(this), 0, 1, TimeUnit.MINUTES);
 
     }
@@ -100,6 +101,7 @@ public class SimpleServerClass extends AbstractServer {
             }
             handleMessegesSession.beginTransaction();
             int type=messageType((Message) msg);
+            System.out.println(((Message) msg).getMessage());
             //types of messeges are in ServerMessegesEnum class !pinpoint the number and check the enum value to understand the code !
             switch (type) {
                 case 0 -> message.setMessage("Empty message");
@@ -141,13 +143,18 @@ public class SimpleServerClass extends AbstractServer {
                 case 36-> confirmArrival(message, client);
                 case 37 -> getActiveOrders(message, client);
                 case 38 -> getAllOrdersForManager(message, client);
-                case 39 -> RejectAllPriceRequests(message,client);
+                case 39 -> rejectAllPriceRequests(message,client);
                 case 40 -> getOnlineOrderForVerificationOfAttendance(message,client);
                 case 41 -> setNewKioskOrder(message,client);
                 case 42 -> checkKioskEmployeeCreditentials(message,client);
                 case 43 -> verifyOfflineOrder(message,client);
                 case 44 -> updateOrderPaymentUponExiting(message,client);
                 case 45 -> getSubscriptionOrder(message,client);
+                case 46 -> getPriceRequests(message,client);
+                case 47 -> getCurrentPrice(message,client);
+                case 48 -> rejectOnePriceRequest(message,client);
+                case 49 -> acceptPriceRequests(message,client);
+                case 50 ->requestPriceChange(message,client);
                 default -> System.out.println("message content doesn't match any request");
                 // TODO: 25/02/2023 add case for updating subscription end date
                 // TODO: 25/02/2023 add case for giving one time pass
@@ -164,6 +171,12 @@ public class SimpleServerClass extends AbstractServer {
             handleMessegesSession.close();
         }
 
+    }
+
+    private void requestPriceChange(Message message, ConnectionToClient client) {
+        PricingChart pricingChart = (PricingChart) message.getObject();
+        handleMessegesSession.save(pricingChart);
+        System.out.println("price change request saved");
     }
 
     private void updateOrderPaymentUponExiting(Message message, ConnectionToClient client) {
@@ -303,9 +316,6 @@ public class SimpleServerClass extends AbstractServer {
         else if(actualOrder.getCar().getCarNum().startsWith(carId))
             message.setObject(actualOrder);
         else message.setMessage("#OrderNotFound");
-    }
-
-    private void RejectAllPriceRequests(Message message, ConnectionToClient client) {
     }
 
     private void confirmArrival(Message message, ConnectionToClient client) {
@@ -760,7 +770,12 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void sendPricesChart(Message message, ConnectionToClient client) throws  Exception {
-        message.setObject(pChart.getLastAdded(PricingChart.class));
+        List<PricingChart> priceCharts = pChart.getAll(PricingChart.class);
+        priceCharts.forEach(chart -> {
+            if (chart.isApproved()){
+                message.setObject(chart);
+            }
+        });
     }
 
     public void updatePriceChart(Message message, ConnectionToClient client) {
@@ -908,16 +923,54 @@ public class SimpleServerClass extends AbstractServer {
     }
 
     public void rejectOnePriceRequest(Message message, ConnectionToClient client) throws Exception {
-        PricingChart pc = pChart.get((int) message.getObject(), PricingChart.class);
-        pc.setWaitForPermission(false);
-        pChart.update(pc);
+        PricingChart pcToUpdate = (PricingChart) message.getObject();
+        handleMessegesSession.update(pcToUpdate);
     }
 
     public void rejectAllPriceRequests(Message message, ConnectionToClient client) throws Exception {
         List<PricingChart> allPc = pChart.getAll(PricingChart.class);
         allPc.forEach(pc -> {
             pc.setWaitForPermission(false);
-            pChart.update(pc);
+            handleMessegesSession.update(pc);
         });
     }
+
+    public void acceptPriceRequests(Message message, ConnectionToClient client) throws Exception {
+        List<PricingChart> allPc = pChart.getAll(PricingChart.class);
+        allPc.forEach(pc -> {
+            if (pc.isApproved()){
+                pc.setApproved(false);
+                System.out.println("found one");
+                handleMessegesSession.update(pc);
+            }
+        });
+        System.out.println("gonna update");
+        PricingChart pcToUpdate = handleMessegesSession.get(PricingChart.class, ((PricingChart) message.getObject()).getId());
+        pcToUpdate.setWaitForPermission(false);
+        pcToUpdate.setApproved(true);
+        handleMessegesSession.update(pcToUpdate);
+    }
+
+    public void getPriceRequests(Message message, ConnectionToClient client) throws Exception {
+        List<PricingChart> allPc = pChart.getAll(PricingChart.class);
+        List<PricingChart> reqs = new ArrayList<>();
+        allPc.forEach(pc -> {
+            if (pc.isWaitForPermission()){
+                reqs.add(pc);
+                System.out.println(pc.getId());
+            }
+        });
+        message.setObject(reqs);
+    }
+
+    public void getCurrentPrice(Message message, ConnectionToClient client) throws Exception {
+        List<PricingChart> allPc = pChart.getAll(PricingChart.class);
+        allPc.forEach(pc -> {
+            if (pc.isApproved()){
+                message.setObject(pc);
+                System.out.println(pc.getId());
+            }
+        });
+    }
+
 }

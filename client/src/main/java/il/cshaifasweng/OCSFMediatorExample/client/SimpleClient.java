@@ -22,9 +22,10 @@ public class SimpleClient extends AbstractClient {
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		Message message = (Message) msg;
+		System.out.println(((Message) msg).getMessage());
 		if(message.getMessage().startsWith("#getPricingChart")){
 			EventBus.getDefault().post(new SubscriptionsChartResults(message));
-		}if(message.getMessage().startsWith("#EnterParkingLot")||message.getMessage().startsWith("#ExitParkingLot")){
+		}else if(message.getMessage().startsWith("#EnterParkingLot")||message.getMessage().startsWith("#ExitParkingLot")){
 			EventBus.getDefault().post(new EntranceExitResponse(message));
 		}else if(message.getMessage().startsWith("#getAllParkingLots")){
 			EventBus.getDefault().post(new ParkingLotResults(message));
@@ -35,6 +36,7 @@ public class SimpleClient extends AbstractClient {
 		}else if(message.getMessage().startsWith("#authintication")){
 			EventBus.getDefault().post(new LogInSubscriber(message));
 		}else if(message.getMessage().startsWith("#placeOrder")){
+			System.out.println("in client response");
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
 		}else if(message.getMessage().startsWith("#updateOrderWhenExiting")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
@@ -75,8 +77,17 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
 		}else if(message.getMessage().startsWith("#GetAllOrdersForManager")){
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
-		}else if(message.getMessage().startsWith("#RejectAllPriceRequests")){
+		}else if(message.getMessage().startsWith("#RejectAllPriceRequests")||
+		message.getMessage().startsWith("#RequestChangingPCResult")){
 			EventBus.getDefault().post(new UpdateMessageEvent(message));
+		}else if(message.getMessage().startsWith("#RejectPriceRequests")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
+		}else if(message.getMessage().startsWith("#AcceptPriceRequests")){
+			EventBus.getDefault().post(new UpdateMessageEvent(message));
+		}else if(message.getMessage().startsWith("#GetCurrentPrice")){
+			EventBus.getDefault().post(new CurrentPriceSubscriber(message));
+		}else if(message.getMessage().startsWith("#GetPriceRequests")){
+			EventBus.getDefault().post(new PriceRequestsSubscriber(message));
 		}
 		else if (message.getMessage().startsWith("#getRefunds")){
 			EventBus.getDefault().post(new CustomerRefundsSubscriber(message));
