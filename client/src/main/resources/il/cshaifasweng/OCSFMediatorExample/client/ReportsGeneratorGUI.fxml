@@ -6,13 +6,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ReportGenerator">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../../../botton.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ReportGenerator">
    <children>
       <Label layoutX="32.0" layoutY="41.0" prefHeight="35.0" prefWidth="406.0" text="Please Pick up a date range and a report type" />
       <DatePicker fx:id="startDatePicker" layoutX="32.0" layoutY="111.0" />
       <Label layoutX="32.0" layoutY="76.0" prefHeight="35.0" prefWidth="111.0" text="Pick start date " />
       <ChoiceBox fx:id="reportType" layoutX="32.0" layoutY="200.0" prefWidth="188.0" />
-      <Button layoutX="32.0" layoutY="257.0" mnemonicParsing="false" onAction="#generateButtonAction" prefHeight="25.0" prefWidth="188.0" text="Button" />
+      <Button layoutX="32.0" layoutY="257.0" mnemonicParsing="false" onAction="#generateButtonAction" prefHeight="35.0" prefWidth="100.0" text="Generate" textFill="WHITE" />
       <DatePicker fx:id="endDatePicker" layoutX="32.0" layoutY="158.0" />
+      <Button fx:id="backBtn" layoutX="32.0" layoutY="323.0" mnemonicParsing="false" onAction="#back" prefHeight="35.0" prefWidth="100.0" text="back" textFill="WHITE" />
    </children>
 </AnchorPane>
