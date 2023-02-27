@@ -12,11 +12,14 @@ import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import il.cshaifasweng.customerCatalogEntities.Subscription;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -26,6 +29,7 @@ import java.util.List;
 
 
 public class ComplaintController {
+    private boolean allValid = true;
     private List<OnlineOrder> OnlineOrders;
     private List<Subscription> subscriptions;
     @FXML
@@ -72,7 +76,7 @@ public class ComplaintController {
     void backButton(ActionEvent event) {
         try {
             EventBus.getDefault().unregister(this);
-           SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,30 +91,86 @@ public class ComplaintController {
     void submitComplaintAction(ActionEvent event) {
         // TODO: 1/16/2023 check viability of input!:
         Message requist_submition = new Message();
-        String order_subOrKiosk, pLotId = "null";
+        String order_subOrKiosk = null, pLotId = "null";
+        allValid = true;
 
         if (Ordersubscription.getValue() != null) {
-            if (Ordersubscription.getValue().startsWith("Kiosk"))
-                order_subOrKiosk = orderSubIdText.getText();
-            else
-                order_subOrKiosk = orderSubscriptionBox.getValue();
-        } else
-            order_subOrKiosk = null;
-        if (parkingLot.getValue() != null)
-            pLotId = parkingLot.getValue().toString();
-        Complaint complaintRequest = new Complaint(ComplaintSubject.getValue()
-                , Ordersubscription.getValue(), order_subOrKiosk, complaintBody.getText()
-                , LocalDate.now(), LocalDate.now(), true);
-        requist_submition.setMessage("#applyComplaint&" + firstName.getText() +
-                "&" + LastName.getText() + "&" + customerID.getText() + "&" + email.getText() + "&"
-                + pLotId);
-        requist_submition.setObject(complaintRequest);
-        try {
-            SimpleClient.getClient().sendToServer(requist_submition);
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (Ordersubscription.getValue().startsWith("Kiosk")) {
+                if (orderSubIdText.getText().compareTo("") != 0)
+                    order_subOrKiosk = orderSubIdText.getText();
+                else {
+                    allValid = false;
+                    Notifications notification = Notifications.create()
+                            .title("No ID given")
+                            .text("Enter an Order/Subscription ID.")
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.CENTER);
+                    notification.showWarning();
+                }
+            } else {
+                if (orderSubscriptionBox.getValue() != null)
+                    order_subOrKiosk = orderSubscriptionBox.getValue();
+                else {
+                    allValid = false;
+                    Notifications notification = Notifications.create()
+                            .title("Choose Order/Subscription")
+                            .text("Choose an Order/Subscription from the choice list.")
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.CENTER);
+                    notification.showWarning();
+                }
+            }
         }
-        submitComplaint.setDisable(true);
+
+        if (parkingLot.getValue() != null && allValid)
+            pLotId = parkingLot.getValue().toString();
+        else {
+            if (allValid) {
+                allValid = false;
+                Notifications notification = Notifications.create()
+                        .title("Choose Parking Lot")
+                        .text("Choose a Parking lot ID from the choice list.")
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notification.showError();
+            }
+        }
+
+        if (allValid) {
+            if (ComplaintSubject.getValue() != null) {
+                if (complaintBody.getText().length() >= 10) {
+                    Complaint complaintRequest = new Complaint(ComplaintSubject.getValue()
+                            , Ordersubscription.getValue(), order_subOrKiosk, complaintBody.getText()
+                            , LocalDate.now(), LocalDate.now(), true);
+                    requist_submition.setMessage("#applyComplaint&" + firstName.getText() +
+                            "&" + LastName.getText() + "&" + customerID.getText() + "&" + email.getText() + "&"
+                            + pLotId);
+                    requist_submition.setObject(complaintRequest);
+                    try {
+                        SimpleClient.getClient().sendToServer(requist_submition);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    submitComplaint.setDisable(true);
+                } else {
+                    allValid = false;
+                    Notifications notification = Notifications.create()
+                            .title("Complaint message is too short")
+                            .text("Complaint message must be at least 10 characters long.")
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.CENTER);
+                    notification.showError();
+                }
+            } else {
+                allValid = false;
+                Notifications notification = Notifications.create()
+                        .title("Choose Complaint Subject")
+                        .text("Choose a Complaint subject from the choice list.")
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notification.showError();
+            }
+        }
     }
 
     @FXML

@@ -488,7 +488,7 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="cvvInput" onKeyPressed="#cvvTxtChange" prefHeight="25.0" prefWidth="58.0">
+                              <TextField fx:id="cvvInput" prefHeight="25.0" prefWidth="58.0">
                                  <font>
                                     <Font size="15.0" />
                                  </font>

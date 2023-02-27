@@ -214,15 +214,6 @@ public class PaymentController {
 
     }
 
-    @FXML
-    void cvvTxtChange(ActionEvent event) {
-        // TODO: 23/02/2023 this might be the problem , check it out please
-//        String txt = cvvInput.getText();
-//        if (!txt.matches("-?([1-9][0-9]*)?")
-//                || txt.length() > 3){
-//             cvvInput.setText(txt.substring(0, txt.length() - 1));
-//        }
-    }
 
     private boolean orderPaymentValidation() {
         // TODO: 23/02/2023 what is these crappy checks !!!!! do it again or i'll fix it
@@ -389,6 +380,7 @@ public class PaymentController {
 
                 }
             }
+            System.out.println("it is what it is");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -408,22 +400,6 @@ public class PaymentController {
         monthInput.setValue(1);
         yearInput.getItems().setAll(years);
         yearInput.setValue(1);
-
-        UnaryOperator<TextFormatter.Change> integerFilterNumber = change -> {
-            String newText = change.getControlNewText();
-            if (newText.length() < 17)
-                if (newText.matches("-?([1-9][0-9]*)?"))
-                    return change;
-            return null;
-        };
-
-        UnaryOperator<TextFormatter.Change> integerFilterCVV = change -> {
-            String newText = change.getControlNewText();
-            if (newText.length() < 4)
-                if (newText.matches("-?([1-9][0-9]*)?"))
-                    return change;
-            return null;
-        };
     }
 
     @FXML
