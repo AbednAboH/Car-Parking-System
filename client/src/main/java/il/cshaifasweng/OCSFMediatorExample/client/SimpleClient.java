@@ -31,6 +31,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new ParkingLotResults(message));
 		} else if (message.getMessage().startsWith("#showOrders")) {
 			EventBus.getDefault().post(new OrderHistoryResponse(message));
+		} else if (message.getMessage().startsWith("#getSubOrder")) {
+			EventBus.getDefault().post(new OrderHistoryResponse(message));
 		}else if (message.getMessage().startsWith("#showSubscription")) {
 			EventBus.getDefault().post(new SubscriptionResponse(message));
 		}else if(message.getMessage().startsWith("#authintication")){

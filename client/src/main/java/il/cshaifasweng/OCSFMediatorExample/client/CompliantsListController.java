@@ -3,10 +3,14 @@ import il.cshaifasweng.LogInEntities.Employees.CustomerServiceEmployee;
 import il.cshaifasweng.Message;
 import il.cshaifasweng.MoneyRelatedServices.PricingChart;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.CompliantsSubscriber;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.SubscriptionsChartResults;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.models.SubscriptionChartModel;
+import il.cshaifasweng.customerCatalogEntities.AbstractOrder;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
+import il.cshaifasweng.customerCatalogEntities.OfflineOrder;
+import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -31,14 +35,35 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static javafx.application.Platform.runLater;
 
 
 public class CompliantsListController {
+    private OnlineOrder observableOnlineOrders;
+    @FXML
+    private TableColumn<AbstractOrder, Integer> orderID1;
+
+    @FXML
+    private TableColumn<AbstractOrder,String> orderLicense;
+
+    @FXML
+    private TableColumn<AbstractOrder, String> orderPLotID;
+
+    @FXML
+    private TableColumn<AbstractOrder, LocalDateTime> orderParchaseDate;
+
+    @FXML
+    private TableColumn<AbstractOrder, Double> orderPricePaid;
+
+    @FXML
+    private TableView<AbstractOrder> ordersTable;
+
 
     @FXML
     private TextField amount;
@@ -167,6 +192,13 @@ public class CompliantsListController {
 
     private int getParkingLotId;
     private boolean isRemoved;
+    @FXML
+    private TextArea Reply;
+    @FXML
+    private TextArea Content;
+    @FXML
+    private TableColumn<Complaint, String> orderID;
+
 
     PricingChart PCresult,ChangedPCresult;
 
@@ -233,7 +265,18 @@ public class CompliantsListController {
 
         }
     }
+    @Subscribe
+    public void showOrdersFromServer(OrderHistoryResponse event) {
+        if (event.getMessage().getObject() instanceof OnlineOrder){
+            SetOrdersTable((OnlineOrder) event.getMessage().getObject());
+        }else  if (event.getMessage().getObject() instanceof OfflineOrder){
+            SetOrdersTable((OfflineOrder) event.getMessage().getObject());
+        }
+        else{
+            ordersTable.getItems().clear();
+        }
 
+    }
     @FXML
     void SendAmountChange(ActionEvent event) {
         String subID = subToChangeIDtxt.getText();
@@ -361,9 +404,38 @@ public class CompliantsListController {
 
     @FXML
     void onSave(ActionEvent event) throws Exception {
-        // TODO: 13/01/2023 Save the data changes to the server. 
-    }
+        if(checkIfSelected()){
+            String out="";
+            if(complaints.getSelectionModel().getSelectedItem().getText()!=null){
+                if (complaints.getSelectionModel().getSelectedItem().getParkingLot()!=null)
+                    out+="Parking lot: "+complaints.getSelectionModel().getSelectedItem().getParkingLot().getId()+"\n";
+                if (complaints.getSelectionModel().getSelectedItem().getCustomer()!=null)
+                    out+="Customer: ID "+complaints.getSelectionModel().getSelectedItem().getCustomer().getId()+"\n";
+                if (complaints.getSelectionModel().getSelectedItem().getOrderSubKioskID()!=null){
+                    out+="Transaction: ID "+complaints.getSelectionModel().getSelectedItem().getOrderSubKioskID()+"\n";
+                    String[] are=complaints.getSelectionModel().getSelectedItem().getOrderSubKioskID().split(" ");
+                    Message msg=new Message("#getSubOrder",Integer.parseInt(are[0]));
+                    sendMessagesToServer(msg);
+                }
+                out+=complaints.getSelectionModel().getSelectedItem().getText();
+                Content.setText(out);
 
+            }
+            else
+                Content.setText("Complaint is empty");
+        }
+    }
+    private void SetOrdersTable(AbstractOrder order) {
+        if (ordersTable != null && ordersTable.getItems() != null) {
+            ordersTable.getItems().clear();
+        }
+        orderID1.setCellValueFactory(new PropertyValueFactory<>("id"));
+        orderLicense.setCellValueFactory(date ->new SimpleObjectProperty<>(date.getValue().getCar().getCarNum()));
+        orderParchaseDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        orderPLotID.setCellValueFactory(data -> new SimpleObjectProperty<>(Integer.toString(data.getValue().getParkingLotID().getId())));
+        orderPricePaid.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getFullOrderValue()));
+        ordersTable.getItems().add(order);
+    }
     @FXML
     void onLogout(ActionEvent event) throws Exception {
         EventBus.getDefault().unregister(this);
@@ -385,8 +457,10 @@ public class CompliantsListController {
         messageLabel.setText("");
         getComplaintId = complaints.getSelectionModel().getSelectedItem().getId();
         getUserId = complaints.getSelectionModel().getSelectedItem().getCustomer().getId();
-        getParkingLotId = complaints.getSelectionModel().getSelectedItem().getParkingLot().getId();
+        getParkingLotId = complaints.getSelectionModel().getSelectedItem().getParkingLot()!=null?
+                complaints.getSelectionModel().getSelectedItem().getParkingLot().getId():-1;
         selected = complaints.getSelectionModel().getSelectedItem();
+
 
         // set the button to be useable
         closeComplaint.setDisable(false);
@@ -436,7 +510,7 @@ public class CompliantsListController {
     @FXML
     void onFullRefund(ActionEvent event) throws Exception {
 //        Check first if we have a selected compliant.
-        if(!checkIfSelected()) {
+        if(checkIfSelected()) {
 
             sendMessagesToServer("#CloseComplaintWithFullRefund&"+ complaintId + "&"  + selected.getCustomer().getId());
             // The refund was done successfully.
@@ -467,9 +541,11 @@ public class CompliantsListController {
 
     @FXML
     void onRefundByAmount(ActionEvent event) throws Exception {
+        System.out.println("clicked On refund by ammount");
         // if the amount to refund is empty
-        if(!checkIfSelected()) {
-
+        complaints.requestFocus();
+        if(checkIfSelected()) {
+            System.out.println("clicked On handle complaint and entered");
             if (amount.getText().isBlank()) {
                 messageLabel.setTextFill(Color.RED);
                 messageLabel.setText("Please enter amount to refund!");
@@ -562,21 +638,17 @@ public class CompliantsListController {
         });
     }
 
-    /**
-     * update the table values
-     */
     private void updateTable(Boolean showOpened) {
         if(complaints != null && complaints.getItems() != null) {
             complaints.getItems().clear();
         }
         complaintId.setCellValueFactory(new PropertyValueFactory<>("id"));
         userId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCustomer().getId()));
-        pLotIdCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getParkingLot().getId()));
-        userId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getId()));
-        pLotIdCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getId()));
+        pLotIdCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getParkingLot()!=null?data.getValue().getParkingLot().getId():-1));
         complaintDescription.setCellValueFactory(new PropertyValueFactory<>("text"));
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
         lastDateCol.setCellValueFactory(new PropertyValueFactory<>("durationToAnswer"));
+        orderID.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getOrderSubKioskID()));
         if(showOpened) {
             observableList.stream().filter(complaint -> complaint.isActive()).
                     forEach(complaints.getItems()::add);
@@ -588,10 +660,18 @@ public class CompliantsListController {
     }
     private boolean checkIfSelected(){
         if (complaints.getSelectionModel() == null || complaints.getSelectionModel().getSelectedItem() == null) {
-            messageLabel.setTextFill(Color.RED);
-            messageLabel.setText("Please choose a complaint");
+//            messageLabel.setTextFill(Color.RED);
+//            messageLabel.setText("Please choose a complaint");
+            Notifications notificationBuilder = Notifications.create()
+                    .title("Error")
+                    .text("Please choose a complaint")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.CENTER);
+            notificationBuilder.showError();
             return false;
         }
+        System.out.println();
         return true;
     }
     void sendMessagesToServer(String request){
@@ -599,6 +679,16 @@ public class CompliantsListController {
             // Check if the connection with the server is alive.
             Message message = new Message(request);
             SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            messageLabel.setTextFill(Color.RED);
+            messageLabel.setText(Constants.INTERNAL_ERROR.getMessage());
+            e.printStackTrace();
+        }
+
+    }void sendMessagesToServer(Message request){
+        try {
+            // Check if the connection with the server is alive.
+            SimpleClient.getClient().sendToServer(request);
         } catch (IOException e) {
             messageLabel.setTextFill(Color.RED);
             messageLabel.setText(Constants.INTERNAL_ERROR.getMessage());

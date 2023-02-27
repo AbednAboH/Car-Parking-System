@@ -155,6 +155,8 @@ public class SimpleServerClass extends AbstractServer {
                 case 48 -> rejectOnePriceRequest(message,client);
                 case 49 -> acceptPriceRequests(message,client);
                 case 50 ->requestPriceChange(message,client);
+                case 47 -> getOrderOrSubscription(message,client);
+
                 default -> System.out.println("message content doesn't match any request");
                 // TODO: 25/02/2023 add case for updating subscription end date
                 // TODO: 25/02/2023 add case for giving one time pass
@@ -170,6 +172,34 @@ public class SimpleServerClass extends AbstractServer {
         finally{
             handleMessegesSession.close();
         }
+
+    }
+
+    private void getOrderOrSubscription(Message message, ConnectionToClient client) {
+        Transactions transaction;
+        int transactionID= (int) message.getObject();
+        transaction=handleMessegesSession.get(OnlineOrder.class,transactionID);
+        if (transaction!=null){
+            Hibernate.initialize(((OnlineOrder) transaction).getExtraTransaction());
+            Hibernate.initialize(((OnlineOrder) transaction).getValue());
+            Hibernate.initialize(((OnlineOrder) transaction).getCar());
+            message.setObject(transaction);
+            return;
+        }
+        else {
+            transaction = handleMessegesSession.get(OfflineOrder.class, transactionID);
+            if (transaction != null) {
+                Hibernate.initialize(((OfflineOrder) transaction).getValue());
+                Hibernate.initialize(((OfflineOrder) transaction).getCar());
+                message.setObject(transaction);
+                return;
+            } else {
+                transaction = handleMessegesSession.get(Subscription.class, transactionID);
+                message.setObject(transaction);
+                return;
+            }
+        }
+
 
     }
 
@@ -593,6 +623,7 @@ public class SimpleServerClass extends AbstractServer {
         complaint.setActive(false);
         if(request.contains("With")){
             refundAmount = Double.parseDouble(args[3]);
+
         }else if(request.contains("Full")){
 //                TODO:Need to return the full refund but how to know if we don't have the order that was made?
         }else{

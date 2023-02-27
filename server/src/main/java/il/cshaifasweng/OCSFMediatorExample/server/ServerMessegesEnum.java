@@ -59,8 +59,8 @@ public enum ServerMessegesEnum {
     GET_CURRENT_PRICE("#GetCurrentPrice"),
     REJECT_PRICE_REQUEST("#RejectPriceRequest"),
     ACCEPT_PRICE_REQUEST("#AcceptPriceRequest"),
-    REQUEST_PRICE_CHANGE("#RequestChangingPCResult");
-    ;
+    REQUEST_PRICE_CHANGE("#RequestChangingPCResult"),
+    GET_SUB_ORDER("#getSubOrder");
 
     final String type;
 

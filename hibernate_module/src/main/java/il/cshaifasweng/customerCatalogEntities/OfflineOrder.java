@@ -29,6 +29,13 @@ public class OfflineOrder extends AbstractOrder {
     }
     @Column
     private LocalDateTime entryTimeLimit;
+    @Override
+    public String toString(){
+        return id+" <-order id "+" at"+date;
+    }
+    public double getFullOrderValue(){
+        return value;
+    }
     public OfflineOrder(Customer customer, ParkingLot parkingLotID, LocalDateTime exiting, String car, String email) {
         this.customer = customer;
         this.date=LocalDate.now();
