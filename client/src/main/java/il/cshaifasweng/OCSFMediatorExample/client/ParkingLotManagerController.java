@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.LogInEntities.Employees.ParkingLotEmployee;
 import il.cshaifasweng.Message;
+import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.LogoutSubscriber;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.OrderHistoryResponse;
 import il.cshaifasweng.OCSFMediatorExample.client.Subscribers.UpdateMessageEvent;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+
+import static javafx.application.Platform.runLater;
 
 public class ParkingLotManagerController {
     private List<OnlineOrder> orders;
@@ -85,8 +88,33 @@ public class ParkingLotManagerController {
                     .position(Pos.BOTTOM_RIGHT);
         }
     }
+    @Subscribe
+    public void LogOutStatus(LogoutSubscriber event) {
+        String msg = (String) event.getMessage().getObject();
+        if (msg.startsWith("Success")) {
 
+            try {
+                EventBus.getDefault().unregister(this);
+                SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+            } catch (IOException e) {
+                System.out.println("Failed to go back to previous screen");
+            }
 
+        } else {
+            runLater(() -> {
+                Notifications notificationBuilder;
+                notificationBuilder = Notifications.create()
+                        .title("Error")
+                        .text("Error while trying to log out, please try again later")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+            });
+
+        }
+
+    }
     @FXML
     void requestPriceChange(ActionEvent event) {
         try {
@@ -140,7 +168,7 @@ public class ParkingLotManagerController {
     }
 
     private void refreshOrdersTable() {
-        Platform.runLater(() -> {
+        runLater(() -> {
             ordersTable.getItems().clear();
             orders.forEach(ordersTable.getItems()::add);
             ordersTable.refresh();

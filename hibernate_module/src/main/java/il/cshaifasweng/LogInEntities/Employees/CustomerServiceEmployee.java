@@ -28,7 +28,7 @@ public class CustomerServiceEmployee extends Employee {
     }
     @Override
     public String getGUI() {
-        return "CustomerServiceEmployeeScreen";
+        return "CompliantsListScreen";
     }
 
 

@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static javafx.application.Platform.runLater;
+
 public class ParkingLotStatus {
     // Store the current scene in a member variable
     private Scene currentScene;
@@ -223,7 +225,8 @@ public class ParkingLotStatus {
             Thread.sleep(600);
             Message message = new Message("#getAllParkingLots");
             SimpleClient.getClient().sendToServer(message);
-            addParkingLotsId();
+            runLater(()->{addParkingLotsId();});
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -237,7 +240,8 @@ public class ParkingLotStatus {
                 System.out.println("Hello");
                 parkingLots = (ArrayList<ParkingLot>) event.getMessage().getObject();
                 parkingLotIntegerHashMap = parkingLots.stream().collect(Collectors.toMap(ParkingLot::getId, Function.identity()));
-                addParkingLotsId();
+                runLater(()->{addParkingLotsId();});
+
             }
         }
     }

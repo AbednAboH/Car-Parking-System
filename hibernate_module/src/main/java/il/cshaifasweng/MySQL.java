@@ -66,10 +66,10 @@ public class MySQL
         try {
 
             connectToDB();
+            GlobalManager gm=new GlobalManager("globalManager","lastname","globalManager","GlobalManager@email.com",122322);
             initiateParkingLot();
             EnterExiteParkingLotPrefixedValuesForTesting(true);
-            EnterExiteParkingLotPrefixedValuesForTesting(false);
-            GlobalManager gm=new GlobalManager("globalManager","lastname","globalManager","GlobalManager@email.com",122322);
+//            EnterExiteParkingLotPrefixedValuesForTesting(false);
 
             session.save(gm);
             session.getTransaction().commit();
