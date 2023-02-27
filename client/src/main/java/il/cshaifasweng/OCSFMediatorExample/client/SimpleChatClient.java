@@ -24,7 +24,9 @@ import org.greenrobot.eventbus.Subscribe;
 public class SimpleChatClient extends Application {
 
     protected static Scene scene;
+
     protected static SimpleClient client;
+
     protected static Object user;
     protected static RegisteredCustomer currentCustomerDetails;
     protected static OnlineOrder currentOnlineOrder;

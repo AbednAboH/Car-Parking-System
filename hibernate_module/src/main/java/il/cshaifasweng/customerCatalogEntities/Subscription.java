@@ -192,7 +192,7 @@ public abstract class Subscription extends Transactions {
 
     @Override
     public  String toString(){
-        return "SubId="+id
+        return id+" <-SubId"
                 +", hours_per_month="+hoursPerMonth
                 +", subscriptionDate="+startDate+
                 ", experation="+expirationDate

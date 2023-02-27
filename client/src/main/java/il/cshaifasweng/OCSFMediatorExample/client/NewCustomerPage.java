@@ -441,10 +441,8 @@ public class NewCustomerPage {
 
     @Subscribe
     public void showOrdersFromServer(OrderHistoryResponse event) {
-        System.out.println("showOrdersFromServer");
         observableOnlineOrders = FXCollections.observableArrayList((List<OnlineOrder>) event.getMessage().getObject());
         SetOrdersTable();
-        System.out.println(observableOnlineOrders);
 
     }
     private void SetOrdersTable() {

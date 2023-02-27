@@ -21,8 +21,7 @@ public class RegisteredCustomer extends Customer {
     private  List<OnlineOrder> OnlineOrders=new ArrayList<>();
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Subscription> subscriptions;
-    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<Refund> refunds;
+
     @Override
     public String getGUI(){
         return "newCustomerPage";

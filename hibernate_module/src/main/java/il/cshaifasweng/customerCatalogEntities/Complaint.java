@@ -3,6 +3,8 @@ package il.cshaifasweng.customerCatalogEntities;
 import il.cshaifasweng.LocalDateAttributeConverter;
 import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.ParkingLotEntities.ParkingLot;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +13,8 @@ import java.time.LocalDate;
 // TODO: 1/9/2023 check the date format annotation as it may cause trouble in the table entries ,for now its set to Transient
 @Entity
 @Table(name="complaints")
+@Getter
+@Setter
 public class Complaint implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

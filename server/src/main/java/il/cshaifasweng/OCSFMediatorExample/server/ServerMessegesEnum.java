@@ -55,7 +55,8 @@ public enum ServerMessegesEnum {
     VERIFY_OFFLINE_ORDER("#verifyOfflineOrder"),
     updatePrice("#updateOrderWhenExiting"),
     GET_SUBSCRIPTION_ORDER("#getSubscriptionOrder"),
-    REQUEST_PRICE_CHANGE("#RequestChangingPCResult");
+    REQUEST_PRICE_CHANGE("#RequestChangingPCResult"),
+    GET_SUB_ORDER("#getSubOrder");
 
     final String type;
 
