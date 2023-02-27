@@ -66,7 +66,7 @@ public class LogInController{
     private CountDownLatch latch;
     public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
-    void initialize(){
+    public void initialize(){
         try {
             // Check if the connection with the server is alive.
             Message message = new Message("#ConnectionAlive");
@@ -102,11 +102,12 @@ public class LogInController{
                   authintication.set(1);
 //                  We  may need to move the assigning of the user to here?
                   SimpleChatClient.setUser(event.getMessage().getObject());
+                  this.user =  event.getMessage().getObject();
+
               }else {
                   authintication.set(2);
               }
 //            EventBus.getDefault().unregister(this);
-        this.user =  event.getMessage().getObject();
 
     }
     @FXML

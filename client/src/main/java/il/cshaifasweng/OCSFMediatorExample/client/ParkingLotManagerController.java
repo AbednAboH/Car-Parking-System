@@ -9,11 +9,14 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -69,9 +72,27 @@ public class ParkingLotManagerController {
 
     @FXML
     void logOutUser(ActionEvent event) {
+        Message msg=new Message("#LogOut");
         try {
-            SimpleChatClient.setRoot("logInScreen");
-        } catch (IOException e) {
+            SimpleClient.getClient().sendToServer(msg);
+        }
+        catch (IOException e) {
+            Notifications notificationBuilder = Notifications.create()
+                    .title("Error")
+                    .text("Error while trying to log out, please try again later")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.BOTTOM_RIGHT);
+        }
+    }
+
+
+    @FXML
+    void requestPriceChange(ActionEvent event) {
+        try {
+            SimpleChatClient.addScreen("ParkingLotManager");
+            SimpleChatClient.setRoot("PlManagerPriceRequest");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
