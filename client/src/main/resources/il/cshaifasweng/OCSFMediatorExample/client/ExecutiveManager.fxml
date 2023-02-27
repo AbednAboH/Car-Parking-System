@@ -31,6 +31,14 @@
          </font>
       </Button>
       <Label fx:id="userNameLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="81.0" layoutY="13.0" prefHeight="45.0" prefWidth="103.0" text="Hello, " textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="handleRequestsBtn" layoutX="216.0" layoutY="327.0" mnemonicParsing="false" onAction="#openRequests" prefHeight="50.0" prefWidth="135.0" text="Handle price requests" textFill="WHITE" />
+      <Button fx:id="handleRequestsBtn" layoutX="399.0" layoutY="175.0" mnemonicParsing="false" onAction="#openRequests" prefHeight="76.0" prefWidth="218.0" text="Handle price requests" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="viewPLstatusBtn" layoutX="399.0" layoutY="308.0" mnemonicParsing="false" onAction="#viewPLstatus" prefHeight="76.0" prefWidth="218.0" text="View Parking Lots visual status" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

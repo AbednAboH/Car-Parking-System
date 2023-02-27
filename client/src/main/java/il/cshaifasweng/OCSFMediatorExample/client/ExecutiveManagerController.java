@@ -23,6 +23,9 @@ public class ExecutiveManagerController {
     private Label userNameLbl;
 
     @FXML
+    private Button viewPLstatusBtn;
+
+    @FXML
     void logOutUser(ActionEvent event) {
         Message msg=new Message("#LogOut");
         try {
@@ -43,6 +46,17 @@ public class ExecutiveManagerController {
         try {
             SimpleChatClient.addScreen("ExecutiveManager");
             SimpleChatClient.setRoot("ExecManagerPriceRequestsHandler");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    void viewPLstatus(ActionEvent event) {
+        try {
+            SimpleChatClient.addScreen("ExecutiveManager");
+            SimpleChatClient.setRoot("parkingLotStatus");
         } catch (Exception e) {
             e.printStackTrace();
         }
