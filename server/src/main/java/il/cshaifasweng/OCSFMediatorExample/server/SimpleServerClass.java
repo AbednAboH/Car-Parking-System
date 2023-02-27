@@ -155,7 +155,7 @@ public class SimpleServerClass extends AbstractServer {
                 case 48 -> rejectOnePriceRequest(message,client);
                 case 49 -> acceptPriceRequests(message,client);
                 case 50 ->requestPriceChange(message,client);
-                case 47 -> getOrderOrSubscription(message,client);
+                case 51 -> getOrderOrSubscription(message,client);
 
                 default -> System.out.println("message content doesn't match any request");
                 // TODO: 25/02/2023 add case for updating subscription end date
@@ -974,11 +974,9 @@ public class SimpleServerClass extends AbstractServer {
         allPc.forEach(pc -> {
             if (pc.isApproved()){
                 pc.setApproved(false);
-                System.out.println("found one");
                 handleMessegesSession.update(pc);
             }
         });
-        System.out.println("gonna update");
         PricingChart pcToUpdate = handleMessegesSession.get(PricingChart.class, ((PricingChart) message.getObject()).getId());
         pcToUpdate.setWaitForPermission(false);
         pcToUpdate.setApproved(true);
