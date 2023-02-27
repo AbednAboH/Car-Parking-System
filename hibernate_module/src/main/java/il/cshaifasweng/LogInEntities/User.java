@@ -22,7 +22,7 @@ public abstract class User implements Serializable {
 
     // TODO: 15/02/2023 gui names can be changed in the future using an enum class !
     public  String getGUI() {
-        return "";
+        return "ExecutiveManager";
     }
 
 }

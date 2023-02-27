@@ -40,9 +40,7 @@ public class ParkingLot extends ParkingLotScheduler implements Serializable{
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "parkingLot",cascade =CascadeType.ALL,orphanRemoval = true)
     private  List<ParkingSpot> spots=new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="executiveManager_id")
-    private static GlobalManager executiveManager=new GlobalManager("ElonMusk","CEO",1000000);
+
 
     public ParkingLot(ParkingLot pl){
 

@@ -11,16 +11,13 @@ import java.util.List;
 @Entity
 @Table(name="globalManagers")
 public class GlobalManager extends Employee {
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<ParkingLot> parkingLot;
-    @Override
-
-    public String getGUI() {
-        return "ExecutiveManager";
-    }
 
     public GlobalManager(String name, String title, double salary) {
         super(name, title, salary);
     }
+    public GlobalManager(String firstName,String lastName, String title,String email, double salary){
+        super(firstName,lastName,title,email,salary);
+    }
     public GlobalManager(){}
+
 }

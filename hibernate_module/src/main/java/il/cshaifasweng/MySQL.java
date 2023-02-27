@@ -69,9 +69,9 @@ public class MySQL
             initiateParkingLot();
             EnterExiteParkingLotPrefixedValuesForTesting(true);
             EnterExiteParkingLotPrefixedValuesForTesting(false);
-//            ParkingLot plot=getEntity(1,ParkingLot.class);
-//            plot.getSpots().get(0).setOccupied(true);
-//            session.update(plot.getSpots().get(0));
+            GlobalManager gm=new GlobalManager("globalManager","lastname","globalManager","GlobalManager@email.com",122322);
+
+            session.save(gm);
             session.getTransaction().commit();
         } catch (Exception exception) {
             if (session != null) {
