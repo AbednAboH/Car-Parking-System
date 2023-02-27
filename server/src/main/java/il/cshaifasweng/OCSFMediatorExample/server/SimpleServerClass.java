@@ -619,13 +619,21 @@ public class SimpleServerClass extends AbstractServer {
         complaintId = Integer.parseInt(args[1]);
         Complaint complaint = complaintHandler.get(complaintId,Complaint.class);
         complaint.setActive(false);
+        Customer customer = complaint.getCustomer();
         if(request.contains("With")){
             refundAmount = Double.parseDouble(args[3]);
+            Refund refund = new Refund("Refund on complaint Number:"+complaintId, refundAmount,customer);
+            handleMessegesSession.save(refund);
+            handleMessegesSession.update(complaint);
+            SendEmail.sendEmail(customer.getEmail(),"Refund on complaint Number:"+complaintId,"Your refund amount is: "+refundAmount+"$\n"
+                    +message.getObject()+"\n thank you for using our services");
 
         }else if(request.contains("Full")){
 //                TODO:Need to return the full refund but how to know if we don't have the order that was made?
         }else{
-//            todo: complaintHandler.delete(complaintHandler.get(complaintId,Complaint.class),Complaint.class);
+          handleMessegesSession.update(complaint);
+            SendEmail.sendEmail(customer.getEmail(),"Complaint","Your complaint has been closed\n"
+                    +message.getObject()+"\n thank you for using our services");
         }
         complaintHandler.update(complaint);
     }

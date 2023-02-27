@@ -417,6 +417,9 @@ public class CompliantsListController {
                     Message msg=new Message("#getSubOrder",Integer.parseInt(are[0]));
                     sendMessagesToServer(msg);
                 }
+                else {
+                    ordersTable.getItems().clear();
+                }
                 out+=complaints.getSelectionModel().getSelectedItem().getText();
                 Content.setText(out);
 
@@ -464,7 +467,7 @@ public class CompliantsListController {
 
         // set the button to be useable
         closeComplaint.setDisable(false);
-        fullRefund.setDisable(false);
+//        fullRefund.setDisable(false);
         refundByAmountBtn.setDisable(false);
         amount.setEditable(true);
     }
@@ -476,7 +479,8 @@ public class CompliantsListController {
         alert.setHeaderText("Complaint closed");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            sendMessagesToServer("#CloseComplaint&" + selected.getId() + "&" + selected.getCustomer().getId());
+            Message msg=new Message("#CloseComplaint&" + selected.getId() + "&" + selected.getCustomer().getId(),Reply.getText());
+            sendMessagesToServer(msg);
 
             // if the task completed successfully
             if (isRemoved) {
@@ -498,7 +502,7 @@ public class CompliantsListController {
 
         // set the buttons to be not useable
         closeComplaint.setDisable(true);
-        fullRefund.setDisable(true);
+//        fullRefund.setDisable(true);
         refundByAmountBtn.setDisable(true);
         amount.clear();
         amount.setEditable(false);
@@ -527,7 +531,7 @@ public class CompliantsListController {
 
             // set the buttons to be not useable
             closeComplaint.setDisable(true);
-            fullRefund.setDisable(true);
+//            fullRefund.setDisable(true);
             refundByAmountBtn.setDisable(true);
             amount.clear();
             amount.setEditable(false);
@@ -554,25 +558,32 @@ public class CompliantsListController {
             try {
                 Double.parseDouble(amount.getText());
             }catch (NumberFormatException e){
-                messageLabel.setTextFill(Color.RED);
-                messageLabel.setText("Please enter a valid amount to refund!");
+               Notifications notificationBuilder = Notifications.create()
+                        .title("Error")
+                        .text("Please enter a valid amount")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(2))
+                        .position(Pos.CENTER);
+                notificationBuilder.showError();
+                return;
             }
             // The refund was done successfully.
-            sendMessagesToServer("#CloseComplaintWithRefund&" +complaintId + "&" +selected.getCustomer().getId() + "&" + amount.getText());
-            if (isRemoved) {
-                messageLabel.setTextFill(Color.GREEN);
-                messageLabel.setText("Order refunded");
-                isRemoved = false;
-                observableList.remove(selected);
-                updateTable(true);
-            } else {
-                messageLabel.setTextFill(Color.RED);
-                messageLabel.setText("Could not refund order");
-            }
-
+//            sendMessagesToServer("#CloseComplaintWithRefund&" +selected.getId() + "&" +selected.getCustomer().getId() + "&" + amount.getText());
+            Message msg=new Message("#CloseComplaintWithRefund&" +selected.getId() + "&" +selected.getCustomer().getId() + "&" + amount.getText(),Reply.getText());
+            sendMessagesToServer(msg);
+//            if (isRemoved) {
+//                messageLabel.setTextFill(Color.GREEN);
+//                messageLabel.setText("Order refunded");
+//                isRemoved = false;
+//                observableList.remove(selected);
+//
+//            } else {
+//                messageLabel.setTextFill(Color.RED);
+//                messageLabel.setText("Could not refund order");
+//            }
             // set the buttons to be not useable
             closeComplaint.setDisable(true);
-            fullRefund.setDisable(true);
+//            fullRefund.setDisable(true);
             refundByAmountBtn.setDisable(true);
             amount.clear();
             amount.setEditable(false);
@@ -619,7 +630,7 @@ public class CompliantsListController {
             }
             return;
         }
-        if(messegeContent.startsWith("#CloseComplaint")){
+        else if(messegeContent.startsWith("#CloseComplaint")){
             isRemoved = true;
         }
 

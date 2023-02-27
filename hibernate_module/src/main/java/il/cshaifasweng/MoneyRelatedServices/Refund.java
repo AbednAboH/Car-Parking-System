@@ -1,5 +1,6 @@
 package il.cshaifasweng.MoneyRelatedServices;
 
+import il.cshaifasweng.LogInEntities.Customers.Customer;
 import il.cshaifasweng.LogInEntities.Customers.RegisteredCustomer;
 import lombok.Data;
 import lombok.Getter;
@@ -20,6 +21,11 @@ public class Refund extends Transactions {
         this.value = value;
         this.registeredCustomer = registeredCustomer;
         this.date= LocalDate.now();
+    }public Refund(String refundType, double value, Customer customer) {
+        this.refundType = refundType;
+        this.value = value;
+        this.registeredCustomer = customer;
+        this.date= LocalDate.now();
     }
     public static enum refundChart{
         LESS_THAN_ONE_HOUR,
@@ -28,7 +34,7 @@ public class Refund extends Transactions {
     }
     private String refundType;
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL,targetEntity = RegisteredCustomer.class)
-    private RegisteredCustomer registeredCustomer;
+    private Customer registeredCustomer;
 
     public Refund(){}
 
