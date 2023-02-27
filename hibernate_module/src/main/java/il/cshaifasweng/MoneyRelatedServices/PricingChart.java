@@ -38,6 +38,16 @@ public class PricingChart implements Serializable {
     public PricingChart() {
 
     }
+    public PricingChart(PricingChart pc){
+        this.kioskPrice = pc.kioskPrice;
+        this.orderBeforeHandPrice = pc.orderBeforeHandPrice;
+        this.regularSubHours = pc.regularSubHours;
+        this.multipleCarRegularSubHours = pc.multipleCarRegularSubHours;
+        this.fullSubHours = pc.fullSubHours;
+        this.Approved=false;
+        this.WaitForPermission=true;
+
+    }
 
 
     public PricingChart(double kioskPrice, double orderBeforeHandPrice, double regularSubHours, double multipleCarRegularSubHours, double fullSubHours) {
@@ -57,6 +67,17 @@ public class PricingChart implements Serializable {
             Approved=true;
             WaitForPermission=false;
         }
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof PricingChart)
+            return this.kioskPrice==((PricingChart)o).kioskPrice&&
+                this.orderBeforeHandPrice==((PricingChart)o).orderBeforeHandPrice&&
+                this.regularSubHours==((PricingChart)o).regularSubHours&&
+                this.multipleCarRegularSubHours==((PricingChart)o).multipleCarRegularSubHours&&
+                this.fullSubHours==((PricingChart)o).fullSubHours;
+        else
+            return false;
     }
 
     public PricingChart(double kioskPrice, double orderBeforeHandPrice,

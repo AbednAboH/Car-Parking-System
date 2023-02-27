@@ -16,16 +16,21 @@ import java.util.List;
 @Getter
 @Setter
 public class RegisteredCustomer extends Customer {
-
+    @OneToMany(fetch= FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Refund> refunds;
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private  List<OnlineOrder> OnlineOrders;
+    private  List<OnlineOrder> OnlineOrders=new ArrayList<>();
     @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     private List<Subscription> subscriptions;
-    @OneToMany(fetch= FetchType.LAZY,mappedBy = "registeredCustomer" ,cascade =CascadeType.ALL,orphanRemoval = true)
-    private List<Refund> refunds;
+    public void addRefund(Refund refund){
+        refunds.add(refund);
+    }
     @Override
     public String getGUI(){
         return "newCustomerPage";
+    }
+    public boolean isCustomerByDefinition(){
+        return subscriptions.size()>0;
     }
     public RegisteredCustomer(){
 

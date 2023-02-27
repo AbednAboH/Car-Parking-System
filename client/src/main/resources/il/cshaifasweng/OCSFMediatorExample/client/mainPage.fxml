@@ -21,7 +21,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <VBox layoutX="164.0" layoutY="86.0" prefHeight="652.0" prefWidth="840.0">
+      <VBox layoutX="164.0" layoutY="86.0" prefHeight="652.0" prefWidth="840.0" stylesheets="@../../../../botton.css">
          <children>
             <HBox prefHeight="25.0" prefWidth="926.0">
                <children>
@@ -46,6 +46,8 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="922.13671875" />
             <Text layoutX="10.0" layoutY="297.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="922.13671875" />
             <Button fx:id="EnterAsVisitor" layoutX="10.0" layoutY="259.0" mnemonicParsing="false" onAction="#visitor" prefHeight="25.0" prefWidth="204.0" stylesheets="@../../../../botton.css" text="Enter as a visitor" textFill="WHITE" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="922.13671875" />
+            <Button fx:id="back" mnemonicParsing="false" onAction="#back" text="back" textFill="WHITE" />
          </children>
       </VBox>
       <Pane layoutX="155.0" layoutY="17.0" prefHeight="64.0" prefWidth="906.0">

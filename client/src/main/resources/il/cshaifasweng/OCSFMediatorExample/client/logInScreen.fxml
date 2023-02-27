@@ -20,7 +20,7 @@
 
 <!-- Main Borderpane start -->
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LogInController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LogInController">
 
     <!-- Beginning of the left part of the Borderpane -->
     <left>
@@ -35,7 +35,7 @@
                         <Image url="@icons/parking-car.png" />
                     </image>
                 </ImageView>
-                <TextField prefHeight="57.0" prefWidth="263.0" style="-fx-background-color: transparent; -fx-text-fill: #24a0ed;" text="CPS">
+                <TextField editable="false" prefHeight="57.0" prefWidth="263.0" style="-fx-background-color: transparent; -fx-text-fill: #24a0ed;" text="CPS">
                     <font>
                         <Font name="SansSerif Regular" size="25.0" />
                     </font>
@@ -62,12 +62,12 @@
                         <Font name="SansSerif Regular" size="30.0" />
                     </font>
                 </Label>
-                <Button fx:id="cancelButton" layoutX="502.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCancelButtonClick" style="-fx-background-color: transparent; -fx-text-fill: #A9A9A9; -fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;" text="Cancel">
+                <Button fx:id="cancelButton" layoutX="502.0" layoutY="13.0" mnemonicParsing="false" onAction="#onCancelButtonClick" stylesheets="@../../../../botton.css" text="Cancel" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
                     </font>
                 </Button>
-                <TextField fx:id="loginUsernameTextField" layoutX="150.0" layoutY="100.0" prefHeight="30.0" prefWidth="300.0" promptText="Username / Email" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <TextField fx:id="loginUsernameTextField" cache="true" layoutX="150.0" layoutY="100.0" prefHeight="30.0" prefWidth="300.0" promptText="Username / Email" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -80,7 +80,7 @@
                         <Image url="@icons/users.png" />
                     </image>
                 </ImageView>
-                <PasswordField fx:id="loginPasswordPasswordField" layoutX="150.0" layoutY="140.0" prefHeight="30.0" prefWidth="300.0" promptText="Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <PasswordField fx:id="loginPasswordPasswordField" cache="true" layoutX="150.0" layoutY="140.0" prefHeight="30.0" prefWidth="300.0" promptText="Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -100,7 +100,7 @@
                         <Insets />
                     </opaqueInsets>
                 </Label>
-                <Button fx:id="LoginButton" layoutX="215.0" layoutY="184.0" mnemonicParsing="false" onAction="#onLoginButtonClick" prefHeight="33.0" prefWidth="148.0" style="-fx-background-color: #24a0ed; -fx-text-fill: white; -fx-border-radius: 5; -fx-border-width: 2; -fx-border-color: #24a0ed;" text="Login">
+                <Button fx:id="LoginButton" layoutX="215.0" layoutY="184.0" mnemonicParsing="false" onAction="#onLoginButtonClick" prefHeight="33.0" prefWidth="148.0" stylesheets="@../../../../botton.css" text="Login" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
                     </font>
@@ -117,7 +117,7 @@
                         <Font name="SansSerif Regular" size="30.0" />
                     </font>
                 </Label>
-                <TextField fx:id="signUpUsernameTextField" layoutX="149.0" layoutY="321.0" prefHeight="30.0" prefWidth="116.0" promptText="First Name" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <TextField fx:id="signUpUsernameTextField" cache="true" layoutX="149.0" layoutY="321.0" prefHeight="30.0" prefWidth="116.0" promptText="First Name" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -130,7 +130,7 @@
                         <Image url="@icons/users.png" />
                     </image>
                 </ImageView>
-                <TextField fx:id="signUpEmailTextField" layoutX="149.0" layoutY="403.0" prefHeight="30.0" prefWidth="297.0" promptText="Email" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <TextField fx:id="signUpEmailTextField" cache="true" layoutX="149.0" layoutY="403.0" prefHeight="30.0" prefWidth="297.0" promptText="Email" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -143,7 +143,7 @@
                         <Image url="@icons/email.png" />
                     </image>
                 </ImageView>
-                <PasswordField fx:id="signUpPasswordPasswordField" layoutX="150.0" layoutY="442.0" prefHeight="30.0" prefWidth="298.0" promptText="Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <PasswordField fx:id="signUpPasswordPasswordField" cache="true" layoutX="150.0" layoutY="442.0" prefHeight="30.0" prefWidth="298.0" promptText="Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -153,7 +153,7 @@
                         <Image url="@icons/lock.png" />
                     </image>
                 </ImageView>
-                <PasswordField fx:id="signUpRepeatPasswordPasswordField" layoutX="150.0" layoutY="483.0" prefHeight="30.0" prefWidth="300.0" promptText="Repeat Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+                <PasswordField fx:id="signUpRepeatPasswordPasswordField" cache="true" layoutX="150.0" layoutY="483.0" prefHeight="30.0" prefWidth="300.0" promptText="Repeat Password" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                     <font>
                         <Font name="SansSerif Regular" size="14.0" />
                     </font>
@@ -192,7 +192,7 @@
                         <Insets />
                     </opaqueInsets>
                 </Label>
-                <Button fx:id="signUpButton" layoutX="230.0" layoutY="615.0" mnemonicParsing="false" onAction="#onSignUpButtonClick" prefHeight="33.0" prefWidth="130.0" style="-fx-background-color: #24a0ed; -fx-text-fill: white; -fx-border-radius: 5; -fx-border-width: 2; -fx-border-color: #24a0ed;" text="Sign-Up">
+                <Button fx:id="signUpButton" layoutX="230.0" layoutY="615.0" mnemonicParsing="false" onAction="#onSignUpButtonClick" prefHeight="33.0" prefWidth="130.0" stylesheets="@../../../../botton.css" text="Sign-Up" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
                     </font>
@@ -202,7 +202,7 @@
                         <Font size="15.0" />
                     </font>
                 </Button>
-            <TextField fx:id="signUpLastNameTextField" layoutX="285.0" layoutY="320.0" prefHeight="30.0" prefWidth="130.0" promptText="Last Name" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+            <TextField fx:id="signUpLastNameTextField" cache="true" layoutX="285.0" layoutY="320.0" prefHeight="30.0" prefWidth="130.0" promptText="Last Name" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                <font>
                   <Font name="SansSerif Regular" size="14.0" />
                </font>
@@ -210,7 +210,7 @@
                   <Cursor fx:constant="TEXT" />
                </cursor>
             </TextField>
-            <TextField fx:id="signUpIDTextField" layoutX="151.0" layoutY="363.0" prefHeight="30.0" prefWidth="158.0" promptText="Identification Number" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
+            <TextField fx:id="signUpIDTextField" cache="true" layoutX="151.0" layoutY="363.0" prefHeight="30.0" prefWidth="158.0" promptText="Identification Number" style="-fx-border-width: 2; -fx-border-color: #A9A9A9; -fx-border-radius: 5;">
                <font>
                   <Font name="SansSerif Regular" size="14.0" />
                </font>

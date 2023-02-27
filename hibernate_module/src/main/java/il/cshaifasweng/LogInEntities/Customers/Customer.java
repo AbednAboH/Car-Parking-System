@@ -1,6 +1,7 @@
 package il.cshaifasweng.LogInEntities.Customers;
 
 import il.cshaifasweng.LogInEntities.User;
+import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import il.cshaifasweng.ParkingLotEntities.EntryAndExitLog;
 import il.cshaifasweng.customerCatalogEntities.Complaint;
@@ -27,6 +28,7 @@ public abstract class Customer extends User {
     private List<Complaint> complaint;
     @OneToMany(fetch=FetchType.LAZY,mappedBy = "customer" ,cascade =CascadeType.ALL,orphanRemoval = true)
     protected List<OfflineOrder> offlineOrders = new ArrayList<>();
+
     public Customer() {
     }
 

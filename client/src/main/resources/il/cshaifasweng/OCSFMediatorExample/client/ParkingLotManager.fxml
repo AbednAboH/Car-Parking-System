@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@../../../../botton.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ParkingLotManagerController">
+   <children>
+      <ImageView fitHeight="38.0" fitWidth="43.0" layoutX="192.0" layoutY="26.0">
+         <image>
+            <Image url="@icons/User.png" />
+         </image>
+      </ImageView>
+      <Line endX="-60.49998474121094" endY="-89.5" layoutX="296.0" layoutY="114.0" startX="-60.49998474121094" startY="-47.500003814697266" />
+      <Line endX="100.0" layoutX="135.0" layoutY="24.0" startX="-110.00001525878906" />
+      <Line endX="-153.5" endY="-25.5" layoutX="178.0" layoutY="49.0" startX="-153.0" startY="18.0" />
+      <Line endX="100.0" layoutX="135.0" layoutY="67.0" startX="-110.0" />
+      <Line endX="-121.5" endY="-62.5" layoutX="213.0" layoutY="87.0" startX="-121.50000762939453" startY="-19.500003814697266" />
+      <Button fx:id="logOutBtn" layoutX="26.0" layoutY="23.0" mnemonicParsing="false" onAction="#logOutUser" prefHeight="45.0" prefWidth="65.0" style="-fx-background-color: transparent;" text="logout" textFill="#2b0548">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label fx:id="userNameLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="91.0" layoutY="23.0" prefHeight="45.0" prefWidth="103.0" text="Hello, " textAlignment="CENTER" wrapText="true" />
+      <Label layoutX="398.0" layoutY="42.0" text="ParkingLot Manager">
+         <font>
+            <Font size="34.0" />
+         </font>
+      </Label>
+      <AnchorPane layoutX="-1.0" layoutY="537.0" prefHeight="183.0" prefWidth="1080.0">
+         <children>
+            <Button fx:id="AllOrders" layoutX="175.0" layoutY="87.0" mnemonicParsing="false" onAction="#showAllOrders" prefHeight="50.0" prefWidth="150.0" text=" Show all orders" textFill="WHITE" />
+            <Button fx:id="ActiveOrders" layoutX="418.0" layoutY="87.0" mnemonicParsing="false" onAction="#showActiveOrders" prefHeight="50.0" prefWidth="150.0" text="Show Active orders" textFill="WHITE" />
+            <Line endX="609.7928466796875" endY="-0.79290771484375" layoutX="359.0" layoutY="155.0" startX="-242.0" />
+            <Line endX="465.7928466796875" layoutX="503.0" layoutY="69.0" startX="-387.0" />
+            <Line endX="51.5" endY="-21.0" layoutX="65.0" layoutY="52.0" startX="51.5" startY="102.5" />
+            <Line endX="702.7928466796875" endY="-1.20709228515625" layoutX="266.0" layoutY="31.0" startX="-149.0" />
+            <Line endX="-47.5" endY="86.5" layoutX="1017.0" layoutY="67.0" startX="-47.5001220703125" startY="-36.603515625" />
+            <Label layoutX="191.0" layoutY="41.0" text="Reports: " textAlignment="CENTER">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Button fx:id="requestPriceChangeBtn" layoutX="730.0" layoutY="87.0" mnemonicParsing="false" onAction="#requestPriceChange" prefHeight="50.0" prefWidth="150.0" text="Request price change" textFill="WHITE" />
+            <Line endX="-22.0" endY="113.5" layoutX="655.0" layoutY="41.0" startX="-22.0" startY="-9.5" />
+            <Label layoutX="657.0" layoutY="41.0" prefHeight="21.0" prefWidth="73.0" text="Requests:" textAlignment="CENTER">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="ordersCategoryLbl" layoutX="117.0" layoutY="-5.0" textFill="#008b09">
+               <font>
+                  <Font name="System Italic" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <TableView fx:id="ordersTable" layoutX="114.0" layoutY="104.0" prefHeight="414.0" prefWidth="853.0">
+         <columns>
+            <TableColumn fx:id="orderIDcolumn" prefWidth="75.0" text="Order ID" />
+            <TableColumn fx:id="PLcolumn" prefWidth="75.0" text="Parking lot" />
+            <TableColumn fx:id="customerIDcolumn" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="emailColumn" prefWidth="97.33334350585938" text="Customer Email" />
+            <TableColumn fx:id="plateNumColumn" prefWidth="132.0" text="Car Plate Number" />
+            <TableColumn fx:id="dateColumn" prefWidth="78.0" text="Order Date" />
+            <TableColumn fx:id="statusColumn" prefWidth="106.0" text="Order status" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SubscriptionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SubscriptionController">
     <children>
         <Label layoutX="250.0" layoutY="14.0" text="Subscribe">
             <font>
@@ -48,7 +48,7 @@
             <Font size="28.0" />
          </font>
       </Label>
-      <Label fx:id="totalPrice" layoutX="667.0" layoutY="412.0" prefHeight="45.0" prefWidth="90.0">
+      <Label fx:id="totalPrice" layoutX="240.0" layoutY="474.0" prefHeight="45.0" prefWidth="129.0">
          <font>
             <Font size="28.0" />
          </font>
@@ -93,8 +93,12 @@
             </Label>
          </children>
       </VBox>
-      <TextField layoutX="471.0" layoutY="318.0" />
+      <TextField fx:id="cusomerID" layoutX="471.0" layoutY="318.0" />
       <Label layoutX="369.0" layoutY="322.0" text="customer ID:" />
+      <Label layoutX="38.0" layoutY="374.0" text="First Name:" />
+      <TextField fx:id="firstName" layoutX="120.0" layoutY="370.0" />
+      <TextField fx:id="lastName" layoutX="471.0" layoutY="370.0" />
+      <Label layoutX="374.0" layoutY="374.0" text="Last Name:" />
     </children>
 
 

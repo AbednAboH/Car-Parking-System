@@ -38,7 +38,7 @@
             <Button fx:id="logsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="118.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Log of entrances" textFill="WHITE" />
             <Button fx:id="approvalsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="172.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Approvals " textFill="WHITE" />
             <Button fx:id="refundsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="226.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Refunds" textFill="WHITE" />
-            <Button fx:id="complaintsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="280.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Complaints" textFill="WHITE" />
+            <Button fx:id="complaintsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="280.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Complain" textFill="WHITE" />
          </children>
       </VBox>
       <StackPane fx:id="stackedpane" layoutX="232.0" layoutY="209.0" prefHeight="508.0" prefWidth="844.0">
@@ -313,5 +313,6 @@
                </font>
             </Label>
          </children></Pane>
+      <Button fx:id="LogOut" layoutX="832.0" layoutY="14.0" mnemonicParsing="false" onAction="#logOutAction" prefHeight="27.0" prefWidth="157.0" stylesheets="@../../../../botton.css" text="Logout" textFill="WHITE" />
    </children>
 </AnchorPane>

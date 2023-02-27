@@ -40,37 +40,22 @@
               </VBox>
          </children>
       </AnchorPane>
-          <Button fx:id="haveOrder" layoutX="411.0" layoutY="591.0" mnemonicParsing="false" onAction="#onHaveOrder" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Login and registration" textAlignment="CENTER" textFill="#fcfcfe">
+          <Button fx:id="haveOrder" layoutX="397.0" layoutY="539.0" mnemonicParsing="false" onAction="#mainPage" prefHeight="77.0" prefWidth="705.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Online Entrance to personal account +A visitors page , that you can order from or create a subscription" textAlignment="CENTER" textFill="#fcfcfe" wrapText="true">
               <font>
                   <Font name="System Bold" size="20.0" />
               </font>
           </Button>
-          <Button fx:id="dontHaveOrder" layoutX="411.0" layoutY="649.0" mnemonicParsing="false" onAction="#onDontHaveOrder" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Entrance and exit screen " textAlignment="CENTER" textFill="#fcfcfe">
+          <Button fx:id="dontHaveOrder" layoutX="398.0" layoutY="675.0" mnemonicParsing="false" onAction="#entranceAndExitParkingLot" prefHeight="46.0" prefWidth="717.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Entrance and exit screen " textAlignment="CENTER" textFill="#fcfcfe">
               <font>
                   <Font name="System Bold" size="20.0" />
               </font>
           </Button>
-      <Button fx:id="haveSub" layoutX="411.0" layoutY="525.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Jump start the server" textAlignment="CENTER" textFill="#fcfcfe">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Button>
       <Text fill="#31134a" layoutX="397.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="here you can start the server ,log in screen,enter a parking lot ,and more , if you are unsure of how to select press the help button above:  " textAlignment="CENTER" wrappingWidth="686.0">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
-      <Button fx:id="haveSub1" layoutX="807.0" layoutY="525.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="edit parking lots" textAlignment="CENTER" textFill="#fcfcfe">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Button>
-      <Button fx:id="haveSub11" layoutX="807.0" layoutY="591.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="add /edit employee" textAlignment="CENTER" textFill="#fcfcfe">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Button>
-      <Button fx:id="haveSub111" layoutX="807.0" layoutY="649.0" mnemonicParsing="false" onAction="#onHaveSub" prefHeight="46.0" prefWidth="285.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Kiosk screen" textAlignment="CENTER" textFill="#fcfcfe">
+      <Button fx:id="haveSub111" layoutX="397.0" layoutY="622.0" mnemonicParsing="false" onAction="#KioskScreen" prefHeight="46.0" prefWidth="717.0" style="-fx-border-color: #2B0548; -fx-background-color: #2B0548; -fx-background-radius: 20; -fx-border-radius: 20;" text="Kiosk screen" textAlignment="CENTER" textFill="#fcfcfe">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -80,22 +65,17 @@
             <Font size="20.0" />
          </font>
       </Text>
-      <Text fill="#31134a" layoutX="389.0" layoutY="228.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. edit parking lots means adding a new parking lot and a new manager for that parking lot" textAlignment="CENTER" wrappingWidth="686.0">
+      <Text fill="#31134a" layoutX="397.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2.login works for both Registered customers and Employees , including the CEO of the company , but the registration is only for a customer . and this is only a demo , a normal user or the ceo for that matter cannot use the add/edit employee or edit parking lots , as its an external service that we have no control over ." textAlignment="CENTER" wrappingWidth="686.0">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
-      <Text fill="#31134a" layoutX="397.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3.login works for both Registered customers and Employees , including the CEO of the company , but the registration is only for a customer . and this is only a demo , a normal user or the ceo for that matter cannot use the add/edit employee or edit parking lots , as its an external service that we have no control over ." textAlignment="CENTER" wrappingWidth="686.0">
+      <Text fill="#31134a" layoutX="397.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3.Entrance and exit screen is the screen that should be displayed for the customer when he wants to get his car in or out of the parking lot" textAlignment="CENTER" wrappingWidth="686.0">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
-      <Text fill="#31134a" layoutX="397.0" layoutY="434.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4.Entrance and exit screen is the screen that should be displayed for the customer when he wants to get his car in or out of the parking lot" textAlignment="CENTER" wrappingWidth="686.0">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fill="#31134a" layoutX="397.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4.add/edit employee allows you to add a new employee for your specific tests " textAlignment="CENTER" wrappingWidth="686.0">
+      <Text fill="#31134a" layoutX="397.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. Kiosk screen is the Offline Order (Kiosk Order Screen)" textAlignment="CENTER" wrappingWidth="686.0">
          <font>
             <Font size="20.0" />
          </font>

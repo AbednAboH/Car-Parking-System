@@ -29,3 +29,6 @@
 .table-row-cell:selected .text {
     -fx-fill:white;
 }
+.TextField{
+    -fx-border-color: #3F2B63;;
+}

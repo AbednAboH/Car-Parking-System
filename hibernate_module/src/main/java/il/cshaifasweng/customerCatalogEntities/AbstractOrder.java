@@ -27,4 +27,7 @@ public abstract class AbstractOrder extends Transactions {
     protected Car car;
     @Column(name="email")
     protected String email;
+    public double getFullOrderValue(){
+        return value;
+    }
 }

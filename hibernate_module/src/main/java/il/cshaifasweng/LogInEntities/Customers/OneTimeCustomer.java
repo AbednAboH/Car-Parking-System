@@ -1,5 +1,6 @@
 package il.cshaifasweng.LogInEntities.Customers;
 
+import il.cshaifasweng.MoneyRelatedServices.Refund;
 import il.cshaifasweng.ParkingLotEntities.Car;
 import lombok.Data;
 
@@ -12,8 +13,11 @@ import java.util.List;
 @Table(name = "one_time_customer")
 public class OneTimeCustomer extends Customer {
 
-
-
+    @OneToMany(fetch= FetchType.LAZY,cascade =CascadeType.ALL,orphanRemoval = true)
+    private List<Refund> refunds;
+    public void addRefund(Refund refund){
+        refunds.add(refund);
+    }
     public OneTimeCustomer(){
     }
 

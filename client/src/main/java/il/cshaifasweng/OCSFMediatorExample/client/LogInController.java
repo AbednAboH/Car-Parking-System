@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 
 public class LogInController{
-
+    LogInSubscriber logInSubscriber ;
     protected
     String successMessage = String.format("-fx-text-fill: GREEN;");
     String errorMessage = String.format("-fx-text-fill: RED;");
@@ -67,11 +67,12 @@ public class LogInController{
     public static AtomicInteger authintication=new AtomicInteger(0);
     @FXML
     void initialize(){
-        EventBus.getDefault().register(LogInController.this);
-
         try {
             // Check if the connection with the server is alive.
             Message message = new Message("#ConnectionAlive");
+            EventBus.getDefault().register(this);
+            SimpleChatClient.setUser(null);
+
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             showErrorMessage(Constants.INTERNAL_ERROR);
@@ -82,8 +83,15 @@ public class LogInController{
     // Creation of methods which are activated on events in the forms
     @FXML
     protected void onCancelButtonClick() {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+//        Stage stage = (Stage) cancelButton.getScene().getWindow();
+//        stage.close();
+        try {
+            EventBus.getDefault().unregister(this);
+            SimpleChatClient.setRoot(SimpleChatClient.getPreviousScreen());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Subscribe
@@ -94,11 +102,12 @@ public class LogInController{
                   authintication.set(1);
 //                  We  may need to move the assigning of the user to here?
                   SimpleChatClient.setUser(event.getMessage().getObject());
+                  this.user =  event.getMessage().getObject();
+
               }else {
                   authintication.set(2);
               }
 //            EventBus.getDefault().unregister(this);
-        this.user =  event.getMessage().getObject();
 
     }
     @FXML
@@ -124,8 +133,10 @@ public class LogInController{
                         loginUsernameTextField.setStyle(successStyle);
                         try {
                             Object obj=SimpleChatClient.getUser();
-                            if (obj instanceof User)
-                                SimpleChatClient.setRoot(((User) obj).getGUI());
+                            if (obj instanceof User){
+                                EventBus.getDefault().unregister(this);
+                                SimpleChatClient.addScreen("logInScreen");
+                                SimpleChatClient.setRoot(((User) obj).getGUI());}
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -160,15 +171,6 @@ public class LogInController{
     @FXML
     protected void onSignUpButtonClick() {
 
-//        male.setToggleGroup(toggleGroup);
-//        female.setToggleGroup(toggleGroup);
-//        // Set one of the radio buttons as the default selection
-//        male.setSelected(true);
-//        // Create a horizontal box to hold the radio buttons
-//        HBox hbox = new HBox(male, female);
-//        toggleGroup.selectedToggleProperty().addListener((ov, oldToggle, newToggle) -> {
-//            selected = (RadioButton) newToggle;
-//        });
         String username = signUpUsernameTextField.getText();
         String lastName = signUpLastNameTextField.getText();
         String id = signUpIDTextField.getText();
@@ -273,6 +275,7 @@ public class LogInController{
 
         return Pattern.compile(regexPattern).matcher(mail).matches();
     }
+    // TODO: 23/02/2023 remove screen if pressed back !
 
 
 }

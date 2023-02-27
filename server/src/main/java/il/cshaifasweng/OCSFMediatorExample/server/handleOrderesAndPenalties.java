@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import EmailSMPTServices.SendEmail;
 import il.cshaifasweng.DataManipulationThroughDB.DAO;
 import il.cshaifasweng.DataManipulationThroughDB.DataBaseManipulation;
 import il.cshaifasweng.customerCatalogEntities.OnlineOrder;
@@ -15,8 +14,8 @@ import java.util.Map;
 public class handleOrderesAndPenalties extends  TimeTriggeredThread{
     // TODO: 06/02/2023 add session and check the option to add another field in all transaction entities, or paid entities , for entrance and exit form the parking lot ,
     // TODO: 06/02/2023 meaning actuall arival time , and exit time ,this might be troublesome for subscriptions , as they enter multiple times
-    // // TODO: 06/02/2023 maybe change the name to currently using for subscriptions , and is using for orders !! this way entrance and exit can be attended
-
+    // TODO: 06/02/2023 maybe change the name to currently using for subscriptions , and is using for orders !! this way entrance and exit can be attended
+    // TODO: 25/02/2023 check if the order's owner has a subscription , if he does then don't send him a reminder , and don't charge him a penalty !
     public handleOrderesAndPenalties(SimpleServerClass server) {
         super(server);
     }
@@ -40,7 +39,7 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
     public void run() {
         // code for sending reminders and handling penalties
         List<OnlineOrder> OnlineOrders;
-        String hql = "FROM Order o "
+        String hql = "FROM OnlineOrder o "
                 + "WHERE o.dateOfOrder >= CURDATE()" +
                 " AND o.reminderSent != 3 AND o.active = true";
         Map<String,Object> params = new HashMap<>();
@@ -57,14 +56,20 @@ public class handleOrderesAndPenalties extends  TimeTriggeredThread{
                 onlineOrder.setReminderSent(LATE);
             }
             else if(minutesToEnter<=0&&minutesToEnter>=-5 && onlineOrder.getReminderSent()==LATE){
-                SendEmail.sendEmail(onlineOrder.getEmail(),"Reminder","You are late on your Appointment." +
+                if (!onlineOrder.getRegisteredCustomer().isCustomerByDefinition())
+                    SendEmail.sendEmail(onlineOrder.getEmail(),"Reminder","You are late on your Appointment." +
                         "\n In ParkingLot number: "+ onlineOrder.getParkingLotID().getId()+"\n Please enter Your Account and Confirm Your arrival."
                         +"\nIf you don't confirm your arrival in 30 Minutes your Order will be canceled."
                         +"\nIf you do confirm your arrival , your account will be charged 20% of the Orders value"+
                         "\n upon confirming your account will be charged "+ onlineOrder.getValue()*1.2+
                         "\nPlease enter your account and confirm your arrival."
-                        +"Your order id is: "+ onlineOrder.getId()+"please enter your account details and in the main page press on your order , there you will be prompted to confirm your arrival."
-//                        +"Or reply yes to this email to confirm your arrival. and no to cancel your order."
+                        +"Your order id is: "+ onlineOrder.getId()+"please enter your account details and in the main page press on unconfirmed arrivals , there you will be prompted to confirm your arrival."
+                        +"\n Thank you for using our service.");
+                else SendEmail.sendEmail(onlineOrder.getEmail(),"Reminder","You are late on your Appointment." +
+                        "\n In ParkingLot number: "+ onlineOrder.getParkingLotID().getId()+"\n Please enter Your Account and Confirm Your arrival."
+                        +"\nIf you don't confirm your arrival in 30 Minutes your Order will be canceled."
+                        +"\nPlease enter your account and confirm your arrival."
+                        +"Your order id is: "+ onlineOrder.getId()+"please enter your account details and in the main page press on your Unconfirmed arrival, there you will be prompted to confirm your arrival."
                         +"\n Thank you for using our service.");
                 onlineOrder.setReminderSent(NO_SHOW);
 

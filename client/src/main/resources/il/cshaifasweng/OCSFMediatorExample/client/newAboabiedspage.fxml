@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -16,6 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="726.0" prefWidth="1101.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.visitorsController">
     <children>
@@ -31,46 +33,18 @@
                     </children>
                 </Pane>
                 <Button fx:id="onlineOrdersTab" alignment="BASELINE_LEFT" focusTraversable="false" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Online Orders" textFill="WHITE" />
-                <Button fx:id="subscriptionsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Subscriptions" textFill="WHITE" />
                 <Button fx:id="approvalsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="172.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Approvals " textFill="WHITE" />
-                <Button fx:id="complaintsTab" alignment="BASELINE_LEFT" focusTraversable="false" layoutX="10.0" layoutY="280.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#switchContext" prefHeight="54.0" prefWidth="218.0" stylesheets="@../../../../botton.css" text="Complaints" textFill="WHITE" />
             </children>
         </VBox>
-        <StackPane fx:id="stackedpane" layoutX="232.0" layoutY="209.0" prefHeight="508.0" prefWidth="844.0">
+        <StackPane fx:id="stackedpane" layoutX="232.0" layoutY="226.0" prefHeight="351.0" prefWidth="844.0">
             <children>
-                <GridPane fx:id="subsGrid" layoutX="10.0" layoutY="10.0" prefHeight="372.0" prefWidth="844.0" visible="false">
+                <GridPane fx:id="orderGrid" prefHeight="345.0" prefWidth="844.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="84.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                            <padding>
-                                <Insets left="250.0" />
-                            </padding>
-                        </HBox>
-                  <VBox prefHeight="503.0" prefWidth="538.0" spacing="50.0">
-                     <children>
-                        <Label text="To create  a new subscription press the button :">
-                           <font>
-                              <Font size="26.0" />
-                           </font>
-                        </Label>
-                                <Button fx:id="addsubscriptionbutton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#AddSubscriptions" prefHeight="54.0" prefWidth="207.0" stylesheets="@../../../../botton.css" text="Add New Subscription" textFill="WHITE" />
-                     </children>
-                  </VBox>
-                    </children>
-                </GridPane>
-                <GridPane fx:id="orderGrid" prefHeight="315.0" prefWidth="844.0">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="330.0" minHeight="10.0" prefHeight="330.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="98.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="330.0" minHeight="10.0" prefHeight="227.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="77.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
                         <TableView fx:id="ordersTable" blendMode="SRC_ATOP" cache="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="114.0" prefWidth="844.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" stylesheets="@../../../../botton.css" tableMenuButtonVisible="true" GridPane.rowIndex="1">
@@ -95,79 +69,37 @@
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                             </columnResizePolicy>
                         </TableView>
-                        <HBox alignment="CENTER_LEFT" prefHeight="99.0" prefWidth="844.0" spacing="10.0" GridPane.rowIndex="2">
-                            <children>
-                                <Button id="buttonCss" fx:id="placebutton" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#placeOrder" prefHeight="32.0" prefWidth="157.0" stylesheets="@../../../../botton.css" text="Place Order" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                                <Button fx:id="cancelorderbutton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="33.0" prefWidth="140.0" stylesheets="@../../../../botton.css" text="Cancel Order" textFill="WHITE" />
-                            </children>
-                            <padding>
-                                <Insets left="250.0" />
-                            </padding>
-                        </HBox>
-                  <VBox>
+                  <VBox prefHeight="257.0" prefWidth="844.0">
                      <children>
-                              <HBox alignment="CENTER_LEFT" prefHeight="99.0" prefWidth="844.0" spacing="10.0">
+                              <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="844.0" spacing="10.0">
                                   <children>
                               <Label prefHeight="17.0" prefWidth="59.0" text="Order Id" />
                                       <TextField fx:id="orderIDtext" prefHeight="27.0" prefWidth="236.0" style="-fx-border-color: #3F2B63; -fx-background-color: #fff;" />
                                   </children>
                               </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="99.0" prefWidth="844.0" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="60.0" prefWidth="844.0" spacing="10.0">
                            <children>
                               <Label prefHeight="17.0" prefWidth="59.0" text="Car ID" />
                               <TextField fx:id="carIDorderText" prefHeight="27.0" prefWidth="236.0" style="-fx-border-color: #3F2B63; -fx-background-color: #fff;" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="109.0" prefHeight="99.0" prefWidth="844.0" spacing="10.0" />
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="109.0" prefHeight="99.0" prefWidth="633.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="searchOrderButton" mnemonicParsing="false" onAction="#searchForOrder" prefHeight="25.0" prefWidth="62.0" stylesheets="@../../../../botton.css" text="Search" textFill="WHITE" />
+                           </children></HBox>
                      </children>
                   </VBox>
                     </children>
                 </GridPane>
-            <GridPane fx:id="approvalGrid" layoutX="10.0" layoutY="10.0" prefHeight="315.0" prefWidth="844.0" visible="false">
+            <GridPane fx:id="SubscriptionsGrid" layoutX="10.0" layoutY="10.0" prefHeight="315.0" prefWidth="844.0" visible="false">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="330.0" minHeight="10.0" prefHeight="330.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="98.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <TableView fx:id="ordersTable1" blendMode="SRC_ATOP" cache="true" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="114.0" prefWidth="844.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" stylesheets="@../../../../botton.css" tableMenuButtonVisible="true" GridPane.rowIndex="1">
-                     <columns>
-                        <TableColumn fx:id="orderID1" prefWidth="58.0" text="Order id" />
-                        <TableColumn fx:id="orderParchaseDate1" prefWidth="130.0" text="Parchase Date" />
-                        <TableColumn fx:id="orderEntry1" prefWidth="142.0" text="Expected Entry Time" />
-                        <TableColumn fx:id="orderExit1" prefWidth="121.0" text="Expected Exit time" />
-                        <TableColumn fx:id="orderLicense1" prefWidth="85.0" text="License Plate">
-                           <graphic>
-                              <Button fx:id="orderSearchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" stylesheets="@../../../../botton.css" text="Search" textFill="WHITE" />
-                           </graphic>
-                        </TableColumn>
-                        <TableColumn fx:id="orderPLotID1" prefWidth="113.0" text="Parking Lot ID" />
-                        <TableColumn fx:id="orderActive1" prefWidth="55.0" text="Active" />
-                        <TableColumn fx:id="orderEmail1" prefWidth="132.0" text="Email of Parchase" />
-                        <TableColumn fx:id="orderPricePaid1" prefWidth="98.0" text="Price Paid" />
-                     </columns>
-                     <opaqueInsets>
-                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                     </opaqueInsets>
-                     <effect>
-                        <Blend mode="BLUE" />
-                     </effect>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-                  <HBox alignment="CENTER_LEFT" prefHeight="99.0" prefWidth="844.0" spacing="10.0" GridPane.rowIndex="2">
-                     <children>
-                        <Button id="buttonCss" fx:id="approve" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#placeOrder" prefHeight="32.0" prefWidth="157.0" stylesheets="@../../../../botton.css" text="Approve Arrival" textFill="WHITE" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="decline" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="33.0" prefWidth="140.0" stylesheets="@../../../../botton.css" text="Decline Arrival" textFill="WHITE" />
-                     </children>
-                     <padding>
-                        <Insets left="250.0" />
-                     </padding>
-                  </HBox>
                   <VBox prefHeight="304.0" prefWidth="844.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="69.0" prefWidth="844.0" spacing="10.0">
@@ -177,23 +109,35 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="69.0" prefWidth="844.0" spacing="10.0">
                            <children>
-                              <Label prefHeight="17.0" prefWidth="59.0" text="Order Id" />
+                              <Label prefHeight="17.0" prefWidth="87.0" text="Subscription Id:" />
                               <TextField fx:id="orderIDtext1" prefHeight="27.0" prefWidth="236.0" style="-fx-border-color: #3F2B63; -fx-background-color: #fff;" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="71.0" prefWidth="844.0" spacing="10.0">
                            <children>
-                              <Label prefHeight="17.0" prefWidth="59.0" text="Car ID" />
+                              <Label prefHeight="17.0" prefWidth="41.0" text="Car ID" />
                               <TextField fx:id="carIDorderText1" prefHeight="27.0" prefWidth="236.0" style="-fx-border-color: #3F2B63; -fx-background-color: #fff;" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="109.0" prefHeight="62.0" prefWidth="844.0" spacing="10.0">
                            <children>
-                              <Button fx:id="orderSearchButton1" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" stylesheets="@../../../../botton.css" text="search" textFill="WHITE" />
+                              <Button fx:id="orderSearchButton1" mnemonicParsing="false" onAction="#searchForOrder" prefHeight="25.0" prefWidth="107.0" stylesheets="@../../../../botton.css" text="search" textFill="WHITE" />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
+                  <TableView fx:id="subsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="389.0" prefWidth="844.0" snapToPixel="false" style="-fx-background-color: #b3a7da;" stylesheets="@../../../../botton.css" GridPane.rowIndex="1">
+                     <columns>
+                        <TableColumn fx:id="subID" prefWidth="48.0" text="ID" />
+                        <TableColumn fx:id="subTypeTable" prefWidth="128.0" text="Subscription Type" />
+                        <TableColumn fx:id="subCars" prefWidth="132.0" text="Cars in Subscription" />
+                        <TableColumn fx:id="subPLot" prefWidth="147.0" text="Designated Parking Lot" />
+                        <TableColumn fx:id="subDaysToPark" prefWidth="90.0" text="Days To Park" />
+                        <TableColumn fx:id="subParchaseDate" prefWidth="104.0" text="Parchase Date" />
+                        <TableColumn fx:id="subExpiration" prefWidth="99.0" text="Expiration Date" />
+                        <TableColumn fx:id="subHoursToPark" prefWidth="120.0" text="Hours Left To Park" />
+                     </columns>
+                  </TableView>
                </children>
             </GridPane>
             </children>
@@ -206,6 +150,13 @@
                     </font>
                 </Label>
             </children></Pane>
-      <Button fx:id="back" layoutX="937.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" prefHeight="25.0" prefWidth="140.0" stylesheets="@../../../../botton.css" text="Back To Main" textFill="WHITE" />
+      <Button fx:id="back" layoutX="937.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" prefHeight="25.0" prefWidth="140.0" stylesheets="@../../../../botton.css" text="Back" textFill="WHITE" />
+      <HBox alignment="CENTER_LEFT" layoutX="238.0" layoutY="577.0" prefHeight="100.0" prefWidth="653.0" spacing="20.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Available Parking Lot:s" />
+            <ComboBox fx:id="PLid" prefWidth="150.0" />
+            <Button fx:id="directBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="146.0" stylesheets="@../../../../botton.css" text="Redirect" textFill="WHITE" />
+         </children>
+      </HBox>
     </children>
 </AnchorPane>

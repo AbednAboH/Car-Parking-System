@@ -1,4 +1,4 @@
-package EmailSMPTServices;
+package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -46,10 +46,9 @@ public class SendEmail {
             );
             message.setSubject(subject);
             message.setText(body);
-            // TODO: 11/02/2023 apply this when done testing on random emails
-//            Transport.send(message);
+            Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            System.out.println("couldn't Send Email");;
         }
     }
 
