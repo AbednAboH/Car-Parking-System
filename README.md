@@ -1,4 +1,7 @@
 # CPS system :
+
+# UPDATE these notes for the future ! this is not the final version , the project should be explained in more detail 
+
 * This project is a Car Parking System that allows costumers to :
   * subscribe to a monthly subscription
   * onlineOrder a spot in a specific parking lot before hand 
@@ -64,3 +67,6 @@ Date 8.1.2023
  ![image](https://user-images.githubusercontent.com/92520508/212211370-d96bbfeb-e9d8-45df-a5dc-40d8381f4e49.png)
 
   the final version would be updated for more fields as this is a proof of concept page !
+ 
+ 
+ 
