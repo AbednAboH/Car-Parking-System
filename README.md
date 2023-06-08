@@ -29,16 +29,23 @@ Before you try to enter any screen in the project I advise using the first emplo
    ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/a3b8e905-a4df-4e91-80ac-b1d67fd35b42)
 
    * there were some changes done on the UML structure above , such as Order and Subscription both now have a commmon base class called transaction , and both now have an element called entryAndExit log That logs the entrance and exit from the parking lot so that the customer and the employees can see in real time when the vehicle entered and exited the parking lot and so that the payment would be done according to the Entry and Exit log times so that each customer can know why he was charged this much and so that the customer service employee can know what actually happened if she/he gets a complaint on a specific order or subscribtion even a kiosk order is registered with this log .
+   
+   * transaction is common for all money related services ! not as the UML above suggests so that each transaction is present in the companies personal files with serialized numbers to prevent fradulant actions from all sides , its used for all types of orders , renewals of subscriptions and Refunds .
+   
    * this approch also helps with the reports that should be created to the global manager because they contain all the information needed , thus also allowing us to dump the calculations and filtering that should be done to the Data base instead of throwing this burden on the server .
    
+   * added a one time pass object for if a customer that has a subscribtion/online order of a specific parking lot , the kiosk employee can send them to another parking lot with a one time pass object in their Order/Subscription if the current parking lot is full.
+   
+      
 * This implemintation needs an internet connection , as it uses a live Azure server      
-* server : 
+
+## server : 
    * the server does all regularitory actions such as :
      * reminding the subscribers that there subscribtion is about to expire using email services.
      * sends emails when an order is placed ,or when a complaint is answered , recipets and much more email services   
   ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/1dc2c4f8-7d24-4420-b561-4938dc4de730)
 
-* Client:
+## Client:
 
   * there are 3 types of clients :
     1. A personal account that can be accessed for eaither the client or an employee ,or a general page that allows ordering a parking spot without the need for an account 
@@ -47,19 +54,23 @@ Before you try to enter any screen in the project I advise using the first emplo
  
 ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/878217ca-c5b3-42de-bdda-50806d88cb98)
 
-Customers For testing:
+## Customers For testing:
+
+Password is : 123456789 for all default customers
 
 ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/341449dd-5983-4f80-ad39-69f3342236da)
 
-Employees for Testing:
+## Employees for Testing:
+password is in the 5'th row
 
 ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/383a2c97-2260-48a8-9372-495e4099dbfa)
 ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/2b013350-8036-4c69-9afc-72f33d9b4b62)
 
 
-Personal account:
+## Personal account:
 
-1.
+
+# 1.
  ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/2bbc4fca-48c6-4231-91b3-2bfc1508f77f)
 
 
