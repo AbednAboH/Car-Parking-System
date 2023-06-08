@@ -101,7 +101,8 @@ password is in the 5'th row
     
  1.3 Parking Lot manager : 
 
-  ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/8c4c4ed7-dda5-4a9f-8f50-e7addab056c5)
+  ![image](https://github.com/AbednAboH/Car-Parking-System/assets/92520508/7fac572f-5e0e-4245-933d-a48269e6ccc8)
+
   
   Request to change price :
   
